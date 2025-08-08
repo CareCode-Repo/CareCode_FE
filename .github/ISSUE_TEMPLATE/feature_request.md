@@ -1,3 +1,11 @@
+---
+name: ✨ Feature Request
+about: 새로운 기능을 제안해주세요
+title: '[FEATURE] '
+labels: enhancement
+assignees: ''
+---
+
 ## ✨어떤 기능인가요?
 
 > 추가하려는 기능에 대한 간단한 설명을 해주세요
