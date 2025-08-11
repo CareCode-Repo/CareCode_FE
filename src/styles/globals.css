@@ -10,6 +10,13 @@
   --foreground: #171717;
 }
 
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/PretendardVariable.woff2') format('woff2');
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -39,19 +46,87 @@
   --color-gray-900: #212121;
 }
 
-@media (prefers-color-scheme: dark) {
+@theme {
+  --text-h1-bold: 1.563rem;
+  --text-h1-bold--leading: 2.438rem;
+  --text-h1-bold--font-weight: 700;
+  --text-h1-bold--letter-spacing: -0.02em;
+
+  --text-h2-bold: 1.5rem;
+  --text-h2-bold--leading: 2.125rem;
+  --text-h2-bold--font-weight: 700;
+  --text-h2-bold--letter-spacing: -0.02em;
+
+  --text-h3-bold: 1.25rem;
+  --text-h3-bold--leading: 1.875rem;
+  --text-h3-bold--font-weight: 700;
+  --text-h3-bold--letter-spacing: -0.02em;
+
+  --text-t1-semibold: 1.125rem;
+  --text-t1-semibold--leading: 1.6875rem;
+  --text-t1-semibold--font-weight: 600;
+  --text-t1-semibold--letter-spacing: -0.02em;
+
+  --text-t2-semibold: 1rem;
+  --text-t2-semibold--leading: 1.5625rem;
+  --text-t2-semibold--font-weight: 600;
+  --text-t2-semibold--letter-spacing: -0.02em;
+
+  --text-t2-medium: 1rem;
+  --text-t2-medium--leading: 1.5rem;
+  --text-t2-medium--font-weight: 500;
+  --text-t2-medium--letter-spacing: -0.02em;
+
+  --text-t2-regular: 1rem;
+  --text-t2-regular--leading: 1.5rem;
+  --text-t2-regular--font-weight: 400;
+  --text-t2-regular--letter-spacing: -0.02em;
+
+  --text-b1-semibold: 0.875rem;
+  --text-b1-semibold--leading: 1.375rem;
+  --text-b1-semibold--font-weight: 600;
+  --text-b1-semibold--letter-spacing: -0.02em;
+
+  --text-b1-medium: 0.875rem;
+  --text-b1-medium--leading: 1.375rem;
+  --text-b1-medium--font-weight: 500;
+  --text-b1-medium--letter-spacing: -0.02em;
+
+  --text-b1-regular: 0.875rem;
+  --text-b1-regular--leading: 1.375rem;
+  --text-b1-regular--font-weight: 400;
+  --text-b1-regular--letter-spacing: -0.02em;
+
+  --text-b2-semibold: 0.75rem;
+  --text-b2-semibold--leading: 1.1875rem;
+  --text-b2-semibold--font-weight: 600;
+  --text-b2-semibold--letter-spacing: -0.02em;
+
+  --text-b2-medium: 0.75rem;
+  --text-b2-medium--leading: 1.1875rem;
+  --text-b2-medium--font-weight: 500;
+  --text-b2-medium--letter-spacing: -0.02em;
+
+  --text-b2-regular: 0.75rem;
+  --text-b2-regular--leading: 1.1875rem;
+  --text-b2-regular--font-weight: 400;
+  --text-b2-regular--letter-spacing: -0.02em;
+
+  --text-c1-regular: 0.625rem;
+  --text-c1-regular--leading: 1rem;
+  --text-c1-regular--font-weight: 400;
+  --text-c1-regular--letter-spacing: -0.02em;
+}
+
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-
-  max-width: 600px;
-  margin: 0 auto;
-  overflow-y: scroll;
+  font-family: 'Pretendard', Arial;
 }
