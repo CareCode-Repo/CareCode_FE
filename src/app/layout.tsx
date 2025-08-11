@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`font-pretendard antialiased w-full max-w-sm mx-auto border-2 min-h-dvh`}>
+      <body className={`font-pretendard antialiased w-full max-w-lg mx-auto border-2 min-h-dvh`}>
         {children}
       </body>
     </html>
