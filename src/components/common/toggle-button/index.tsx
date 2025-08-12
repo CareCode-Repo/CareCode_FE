@@ -1,5 +1,5 @@
+import * as Toggle from '@radix-ui/react-toggle'
 import clsx from 'clsx'
-import { Toggle } from 'radix-ui'
 import { ComponentProps, forwardRef, ComponentRef } from 'react'
 
 interface ToggleButtonProps extends ComponentProps<typeof Toggle.Root> {
@@ -25,5 +25,4 @@ const ToggleButton = forwardRef<ComponentRef<typeof Toggle.Root>, ToggleButtonPr
 )
 
 ToggleButton.displayName = 'ToggleButton'
-
 export default ToggleButton

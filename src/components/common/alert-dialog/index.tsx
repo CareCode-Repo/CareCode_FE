@@ -1,5 +1,5 @@
+import * as RadixAlertDialog from '@radix-ui/react-alert-dialog'
 import React, { ReactNode } from 'react'
-import { AlertDialog as RadixAlertDialog } from 'radix-ui'
 
 interface DialogProps {
   isOpen: boolean

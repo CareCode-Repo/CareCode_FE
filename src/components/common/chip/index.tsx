@@ -1,5 +1,7 @@
 import clsx from 'clsx'
+import { memo } from 'react'
 import CloseIcon from '@/assets/icons/close_mid.svg'
+
 interface BaseChipProps {
   size?: 'md' | 'sm'
   shape?: 'square' | 'round'
@@ -22,7 +24,7 @@ interface NonDeletableChipProps extends BaseChipProps {
 
 type ChipProps = DeletableChipProps | NonDeletableChipProps
 
-const Chip = ({
+const Chip = memo(function Chip({
   size = 'sm',
   shape = 'square',
   color = 'green',
@@ -30,7 +32,7 @@ const Chip = ({
   onDelete,
   className,
   children,
-}: ChipProps) => {
+}: ChipProps) {
   return (
     <div
       className={clsx(
@@ -60,7 +62,7 @@ const Chip = ({
     >
       {children}
       {deletable && (
-        <button type="button" onClick={onDelete}>
+        <button type="button" onClick={onDelete} aria-label="삭제">
           <CloseIcon
             className={clsx('w-4 h-4', {
               'stroke-gray-700': color === 'white' || color === 'transparent',
@@ -71,6 +73,6 @@ const Chip = ({
       )}
     </div>
   )
-}
+})
 
 export default Chip

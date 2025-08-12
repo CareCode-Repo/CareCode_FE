@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: string
+  children: React.ReactNode
   size?: 'full' | 'small'
   color: 'green' | 'gray' | 'red'
   className?: string

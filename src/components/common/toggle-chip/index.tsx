@@ -1,7 +1,6 @@
+import * as Toggle from '@radix-ui/react-toggle'
 import clsx from 'clsx'
-import { Toggle } from 'radix-ui'
-import { forwardRef } from 'react'
-import { ComponentProps, ComponentRef } from 'react'
+import { forwardRef, ComponentProps, ComponentRef } from 'react'
 
 interface ToggleChipProps extends ComponentProps<typeof Toggle.Root> {
   className?: string
@@ -26,5 +25,4 @@ const ToggleChip = forwardRef<ComponentRef<typeof Toggle.Root>, ToggleChipProps>
 )
 
 ToggleChip.displayName = 'ToggleChip'
-
 export default ToggleChip
