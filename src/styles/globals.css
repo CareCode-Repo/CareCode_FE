@@ -23,16 +23,16 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --color-main-50: #edfae8;
-  --color-main-100: #d3f1c4;
-  --color-main-200: #b5e89e;
-  --color-main-300: #95de75;
-  --color-main-400: #7bd653;
-  --color-main-500: #5fce2f;
-  --color-main-600: #4fbe27;
-  --color-main-700: #36aa1c;
-  --color-main-800: #139510;
-  --color-main-900: #007300;
+  --color-green-50: #edfae8;
+  --color-green-100: #d3f1c4;
+  --color-green-200: #b5e89e;
+  --color-green-300: #95de75;
+  --color-green-400: #7bd653;
+  --color-green-500: #5fce2f;
+  --color-green-600: #4fbe27;
+  --color-green-700: #36aa1c;
+  --color-green-800: #139510;
+  --color-green-900: #007300;
 
   --color-gray-50: #fafafa;
   --color-gray-100: #f5f5f5;
@@ -44,6 +44,12 @@
   --color-gray-700: #616161;
   --color-gray-800: #424242;
   --color-gray-900: #212121;
+
+  /* 커스텀 색상 추가 */
+  --color-purple: #876bc8;
+  --color-blue: #2764be;
+  --color-red: #e55656;
+  --color-yellow: #ffe54e;
 }
 
 @theme {
