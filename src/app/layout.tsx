@@ -10,9 +10,9 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   minimumScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: 'contain',
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`font-pretendard antialiased w-full max-w-lg mx-auto border-2 min-h-dvh`}>
+      <body className={`font-pretendard antialiased w-full min-h-dvh`}>
         {children}
       </body>
     </html>
