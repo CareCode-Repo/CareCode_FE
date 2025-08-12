@@ -136,3 +136,8 @@ body {
   color: var(--foreground);
   font-family: 'Pretendard', Arial;
 }
+
+html body[data-scroll-locked] {
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
