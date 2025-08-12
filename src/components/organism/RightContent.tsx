@@ -13,7 +13,7 @@ const RightContent: React.FC = () => {
       <div className="w-full max-w-md h-full bg-white shadow-lg rounded-lg overflow-hidden flex flex-col">
         <StoreHeader />
         <TabNavigation tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-        
+
         <div className="flex-1 p-6 overflow-y-auto">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
