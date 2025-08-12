@@ -5,9 +5,8 @@ import StoreHeader from './StoreHeader';
 import TabNavigation from '../molecule/TabNavigation';
 
 const RightContent: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('Arti');
-
   const tabs = ['정책정보', '시설정보', '홈', '마이페이지'];
+  const [activeTab, setActiveTab] = useState(tabs[0]);
 
   return (
     <div className="w-2/3 bg-gray-100 h-screen flex justify-center items-center">
