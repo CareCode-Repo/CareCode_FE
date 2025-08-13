@@ -65,8 +65,8 @@ const Chip = memo(function Chip({
         <button type="button" onClick={onDelete} aria-label="삭제">
           <CloseIcon
             className={clsx('w-4 h-4', {
-              'stroke-gray-700': color === 'white' || color === 'transparent',
-              'stroke-gray-50': color !== 'white' && color !== 'transparent',
+              'fill-gray-700': color === 'white' || color === 'transparent',
+              'fill-gray-50': color !== 'white' && color !== 'transparent',
             })}
           />
         </button>

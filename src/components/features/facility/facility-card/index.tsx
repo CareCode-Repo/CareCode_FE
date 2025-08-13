@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import Stat from './stat'
 import MapIcon from '@/assets/icons/map_thin.svg'
-import ReviewIcon from '@/assets/icons/review1.svg'
+import ReviewIcon from '@/assets/icons/review.svg'
 import StarIcon from '@/assets/icons/star.svg'
 import Chip from '@/components/common/chip'
 import DetailItem from '@/components/common/detail-item'
@@ -67,7 +67,7 @@ const FacilityCard = ({
       </div>
       <div className="flex flex-col gap-1 items-center">
         <button className="border border-gray-800 rounded-full p-1.5">
-          <MapIcon className="w-4.5 h-4.5 text-gray-500 stroke-gray-800 stroke-2" />
+          <MapIcon className="w-4.5 h-4.5 text-gray-500 fill-gray-800" />
         </button>
         <span className="text-c1-regular text-gray-800">경로</span>
       </div>

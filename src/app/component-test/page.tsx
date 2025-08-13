@@ -26,7 +26,7 @@ export default function ComponentTest(): ReactElement {
         Green Full Button
       </Button>
       {/* svg 아이콘 테스트 */}
-      <WarningIcon className="w-6 h-6 fill-red-500" />
+      <WarningIcon className="w-6 h-6 fill-red" />
       {/* alert 다이얼로그 테스트 */}
       <Button color="green" size="large" onClick={() => setIsOpen(true)}>
         버튼
@@ -49,7 +49,7 @@ export default function ComponentTest(): ReactElement {
       />
       {/* 드롭다운메뉴 테스트 */}
       <Menubox
-        triggerButton={<KebabIcon className="w-6 h-6 cursor-pointer" />}
+        triggerButton={<KebabIcon className="w-6 h-6 cursor-pointer fill-black" />}
         items={[
           {
             content: '수정',
@@ -75,6 +75,15 @@ export default function ComponentTest(): ReactElement {
         Text
       </Chip>
       <Chip size="md" color="blue" shape="round">
+        Text
+      </Chip>
+      <Chip
+        size="md"
+        color="white"
+        shape="round"
+        deletable
+        onDelete={() => console.log('칩 삭제됨')}
+      >
         Text
       </Chip>
       <Chip
