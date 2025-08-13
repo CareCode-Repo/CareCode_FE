@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { ReactElement, useState } from 'react'
 import KebabIcon from '@/assets/icons/edit.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import TrachIcon from '@/assets/icons/trash.svg'
@@ -13,16 +13,20 @@ import Switch from '@/components/common/switch'
 import ToggleButton from '@/components/common/toggle-button'
 import ToggleChip from '@/components/common/toggle-chip'
 
-export default function ComponentTest() {
+export default function ComponentTest(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
   const handleClose = () => setIsOpen(false)
 
   return (
     <div>
+      {/* button 테스트 */}
+      <Button color="green" size="large" disabled>
+        Green Full Button
+      </Button>
       {/* svg 아이콘 테스트 */}
       <WarningIcon className="w-6 h-6 fill-red-500" />
       {/* alert 다이얼로그 테스트 */}
-      <Button color="green" size="full" onClick={() => setIsOpen(true)}>
+      <Button color="green" size="large" onClick={() => setIsOpen(true)}>
         버튼
       </Button>
       <AlertDialog
@@ -30,15 +34,15 @@ export default function ComponentTest() {
         description="This is a description for the dialog."
         isOpen={isOpen}
         onClose={handleClose}
-        buttons={
-          <div className="flex justify-end gap-2">
-            <Button color="gray" size="small" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button color="red" size="small" onClick={handleClose}>
-              Confirm
-            </Button>
-          </div>
+        cancelButton={
+          <Button color="gray" size="small" onClick={handleClose}>
+            Cancel
+          </Button>
+        }
+        confirmButton={
+          <Button color="red" size="small" onClick={handleClose}>
+            Confirm
+          </Button>
         }
       />
       {/* 드롭다운메뉴 테스트 */}

@@ -1,8 +1,8 @@
 import * as RadixSwitch from '@radix-ui/react-switch'
 import clsx from 'clsx'
-import { forwardRef } from 'react'
+import { ComponentProps, forwardRef } from 'react'
 
-interface SwitchProps extends React.ComponentProps<typeof RadixSwitch.Root> {
+interface SwitchProps extends ComponentProps<typeof RadixSwitch.Root> {
   className?: string
 }
 

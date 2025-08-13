@@ -12,8 +12,8 @@ const ToggleButton = forwardRef<ComponentRef<typeof Toggle.Root>, ToggleButtonPr
       <Toggle.Root
         ref={ref}
         className={clsx(
-          'text-b1-regular p-2.5 h-14 bg-gray-100 border border-gray-400 rounded-lg text-gray-800 text-center transition-colors',
-          'data-[state=on]:border-green-700 data-[state=on]:bg-green-100 data-[state=on]:text-green-700',
+          'text-b1-regular p-2.5 h-14 min-w-40 bg-gray-100 border border-gray-400 rounded-lg text-gray-800 text-center transition-colors',
+          'data-[state=on]:bg-green-100 data-[state=on]:border-green-700  data-[state=on]:text-green-700',
           className,
         )}
         {...props}

@@ -1,15 +1,23 @@
 import * as RadixAlertDialog from '@radix-ui/react-alert-dialog'
-import React, { ReactNode } from 'react'
+import { Children, ReactElement, ReactNode } from 'react'
 
 interface DialogProps {
   isOpen: boolean
   title: string
   description: string
-  buttons: ReactNode
+  cancelButton?: ReactNode
+  confirmButton?: ReactNode
   onClose: () => void
 }
 
-const AlertDialog = ({ isOpen, onClose, title, description, buttons }: DialogProps) => {
+const AlertDialog = ({
+  isOpen,
+  onClose,
+  title,
+  description,
+  cancelButton,
+  confirmButton,
+}: DialogProps): ReactElement => {
   return (
     <RadixAlertDialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <RadixAlertDialog.Portal>
@@ -21,7 +29,10 @@ const AlertDialog = ({ isOpen, onClose, title, description, buttons }: DialogPro
           <RadixAlertDialog.Description className="text-b1-regular text-gray-600 text-center mb-5">
             {description}
           </RadixAlertDialog.Description>
-          {buttons}
+          <div className="flex justify-end gap-2">
+            {cancelButton}
+            {confirmButton}
+          </div>
         </RadixAlertDialog.Content>
       </RadixAlertDialog.Portal>
     </RadixAlertDialog.Root>
