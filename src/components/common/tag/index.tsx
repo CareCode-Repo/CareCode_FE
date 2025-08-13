@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 
-interface TagItemProps {
+interface TagProps {
   tag: string
 }
 
-const TagItem = ({ tag }: TagItemProps): ReactElement => {
+const Tag = ({ tag }: TagProps): ReactElement => {
   return <span className="text-c1-regular text-gray-700">{`# ${tag}`}</span>
 }
 
-export default TagItem
+export default Tag

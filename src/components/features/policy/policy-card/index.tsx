@@ -1,8 +1,9 @@
 import { ReactElement } from 'react'
-import DetailItem from './detail-item'
-import TagItem from './tag'
+
 import Chip from '@/components/common/chip'
+import DetailItem from '@/components/common/detail-item'
 import Spacer from '@/components/common/spacer'
+import Tag from '@/components/common/tag'
 import { PolicyType } from '@/types/policy'
 
 type PolicyCardProps = {
@@ -47,7 +48,7 @@ const PolicyCard = ({
       <div className="flex items-center gap-2.5">
         <Chip color={getChipColor()}>{(dday && `D-${dday}`) || type}</Chip>
         {tags.map((tag) => (
-          <TagItem key={tag} tag={tag} />
+          <Tag key={tag} tag={tag} />
         ))}
       </div>
       <Spacer className="h-2.5" />
