@@ -50,6 +50,8 @@
   --color-blue: #2764be;
   --color-red: #e55656;
   --color-yellow: #ffe54e;
+
+  --color-black: #212121;
 }
 
 @theme {

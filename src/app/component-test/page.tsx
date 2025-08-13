@@ -12,6 +12,7 @@ import { Menubox } from '@/components/common/menubox'
 import Switch from '@/components/common/switch'
 import ToggleButton from '@/components/common/toggle-button'
 import ToggleChip from '@/components/common/toggle-chip'
+import PolicyCard from '@/components/features/policy/policy-card'
 
 export default function ComponentTest(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
@@ -84,6 +85,18 @@ export default function ComponentTest(): ReactElement {
       >
         Text
       </Chip>
+      <div className="mt-4 flex flex-col gap-4">
+        <PolicyCard
+          type="상시접수"
+          tags={['건강검진', '서비스지원']}
+          title="경기형 가족돌봄수당"
+          description="생후 24~48개월 미만 아동 돌보는 친인척/이웃에게 60만원"
+          region="경기도 '건강검진', '서비스지원' 생후 24~48개월 미만 아동 돌보는 친인척/이웃에게 60만원 생후 24~48개월 미만 아동 돌보는 친인척/이웃에게 60만원"
+          targetAge="생후 24개월 ~ 48개월 미만 아동대상"
+          applicationPeriod="매월 1~15일 온라인 신청"
+          onClick={() => console.log('정책 카드 클릭됨')}
+        />
+      </div>
     </div>
   )
 }
