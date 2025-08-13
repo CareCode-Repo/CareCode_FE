@@ -1,0 +1,78 @@
+import clsx from 'clsx'
+import { memo } from 'react'
+import CloseIcon from '@/assets/icons/close_mid.svg'
+
+interface BaseChipProps {
+  size?: 'md' | 'sm'
+  shape?: 'square' | 'round'
+  color?: 'green' | 'purple' | 'blue' | 'red' | 'yellow' | 'black' | 'white' | 'transparent'
+  className?: string
+  children: React.ReactNode
+}
+
+interface DeletableChipProps extends BaseChipProps {
+  size: 'md'
+  deletable: true
+  onDelete: () => void
+}
+
+interface NonDeletableChipProps extends BaseChipProps {
+  size?: 'sm' | 'md'
+  deletable?: false
+  onDelete?: never
+}
+
+type ChipProps = DeletableChipProps | NonDeletableChipProps
+
+const Chip = memo(function Chip({
+  size = 'sm',
+  shape = 'square',
+  color = 'green',
+  deletable = false,
+  onDelete,
+  className,
+  children,
+}: ChipProps) {
+  return (
+    <div
+      className={clsx(
+        'inline-flex items-center gap-1 font-medium',
+        {
+          'px-2 text-b2-medium': size === 'sm',
+          'pl-3 py-0.5 text-b1-medium': size === 'md',
+          'pr-3': size === 'md' && !deletable,
+          'pr-2': size === 'md' && deletable,
+        },
+        {
+          'rounded-sm': shape === 'square',
+          'rounded-3xl border border-gray-400': shape === 'round',
+        },
+        {
+          'bg-green-600 text-white': color === 'green',
+          'bg-purple text-white': color === 'purple',
+          'bg-blue text-white': color === 'blue',
+          'bg-red text-white': color === 'red',
+          'bg-yellow text-gray-800': color === 'yellow',
+          'bg-gray-800 text-white': color === 'black',
+          'bg-gray-50 text-gray-700': color === 'white',
+          'bg-transparent text-gray-700': color === 'transparent',
+        },
+        className,
+      )}
+    >
+      {children}
+      {deletable && (
+        <button type="button" onClick={onDelete} aria-label="삭제">
+          <CloseIcon
+            className={clsx('w-4 h-4', {
+              'stroke-gray-700': color === 'white' || color === 'transparent',
+              'stroke-gray-50': color !== 'white' && color !== 'transparent',
+            })}
+          />
+        </button>
+      )}
+    </div>
+  )
+})
+
+export default Chip
