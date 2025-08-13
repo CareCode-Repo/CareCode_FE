@@ -1,7 +1,7 @@
 import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
-const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인: 로그 출력 판단
+const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인
 
 const setInterceptor = (url?: string): AxiosInstance => {
   const baseUrl = url ?? process.env.API_URL
