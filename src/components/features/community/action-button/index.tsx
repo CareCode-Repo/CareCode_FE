@@ -1,15 +1,15 @@
 import clsx from 'clsx'
 import { ReactElement } from 'react'
-import BookmarkIcon from '@/assets/icons/bookmark_thin.svg'
-import CommentIcon from '@/assets/icons/chat_circle_thin.svg'
+import CommentIcon from '@/assets/icons/chat_small.svg'
+import LikeIcon from '@/assets/icons/like.svg'
 
 const ICON_MAP = {
-  bookmark: BookmarkIcon,
+  like: LikeIcon,
   comment: CommentIcon,
 } as const
 
 const TEXT_MAP = {
-  bookmark: '스크랩',
+  like: '좋아요',
   comment: '댓글',
 } as const
 

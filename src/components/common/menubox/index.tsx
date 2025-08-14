@@ -46,7 +46,11 @@ export const Menubox = ({
             >
               {item.icon && (
                 <item.icon
-                  className={clsx('w-4 h-4', item.variant === 'destructive' && 'stroke-red')}
+                  className={clsx(
+                    'w-4 h-4',
+                    item.variant === 'destructive' && 'fill-red',
+                    item.variant === 'default' && 'fill-black',
+                  )}
                 />
               )}
               <span>{item.content}</span>

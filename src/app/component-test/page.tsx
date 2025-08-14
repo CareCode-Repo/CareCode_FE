@@ -206,7 +206,7 @@ export default function ComponentTest(): ReactElement {
             timeAgo="3시간 전"
           />
           <div className="flex gap-4.5">
-            <ActionButton type="bookmark" count={10} onClick={() => console.log('북마크 클릭됨')} />
+            <ActionButton type="like" count={10} onClick={() => console.log('북마크 클릭됨')} />
             <ActionButton type="comment" count={10} onClick={() => console.log('북마크 클릭됨')} />
           </div>
         </div>
