@@ -8,6 +8,7 @@ import WarningIcon from '@/assets/icons/warning.svg'
 import AlertDialog from '@/components/common/alert-dialog'
 import Button from '@/components/common/button'
 import Chip from '@/components/common/chip'
+import MainSection from '@/components/common/main-section'
 import { Menubox } from '@/components/common/menubox'
 import Switch from '@/components/common/switch'
 import ToggleButton from '@/components/common/toggle-button'
@@ -214,6 +215,58 @@ export default function ComponentTest(): ReactElement {
         </div>
       </div>
       <MyPageMenuList title="메뉴분류" items={mockMenuItems} />
+      <div className="flex flex-col p-4">
+        <MainSection title="최근 정책">
+          <div className="px-4 flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
+            <PolicyCard
+              type="상시접수"
+              tags={['건강검진', '서비스지원']}
+              title={`정책 카드 1`}
+              description="생후 24~48개월 60만원"
+              region="경기도"
+              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
+              applicationPeriod="매월 1~15일 온라인 신청"
+              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+            />
+            <PolicyCard
+              type="상시접수"
+              tags={['건강검진', '서비스지원']}
+              title={`정책 카드 1`}
+              description="생후 24~48개월 60만원 생후 24~48개월 60만원 생후 24~48개월 60만원"
+              region="경기도"
+              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
+              applicationPeriod="매월 1~15일 온라인 신청"
+              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+            />
+          </div>
+        </MainSection>
+        <MainSection title="인기 게시글">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
+            <PolicyCard
+              className="w-64"
+              type="상시접수"
+              tags={['건강검진', '서비스지원']}
+              title={`정책 카드 1`}
+              description="생후 24~48개월 60만원"
+              region="경기도"
+              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
+              applicationPeriod="매월 1~15일 온라인 신청"
+              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+            />
+            <PolicyCard
+              className="grow-0"
+              type="상시접수"
+              tags={['건강검진', '서비스지원']}
+              title={`정책 카드 1`}
+              description="생후 24~48개월 60만원 생후 24~48개월 60만원 생후 24~48개월 60만원"
+              region="경기도"
+              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
+              applicationPeriod="매월 1~15일 온라인 신청"
+              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+            />
+          </div>
+        </MainSection>
+      </div>
     </div>
   )
 }

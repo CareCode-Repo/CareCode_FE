@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { ReactElement } from 'react'
 
 import Chip from '@/components/common/chip'
@@ -13,6 +14,7 @@ type PolicyCardProps = {
   region: string
   targetAge: string
   applicationPeriod: string
+  className?: string
   onClick?: () => void
 } & ({ type: 'D-Day'; dday: number } | { type: Exclude<PolicyType, 'D-Day'>; dday?: never })
 
@@ -25,6 +27,7 @@ const PolicyCard = ({
   targetAge,
   applicationPeriod,
   dday,
+  className,
   onClick,
 }: PolicyCardProps): ReactElement => {
   const getChipColor = () => {
@@ -42,7 +45,10 @@ const PolicyCard = ({
   return (
     <div
       role="button"
-      className="flex flex-col p-4.5 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+      className={clsx(
+        'flex flex-col p-4.5 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors',
+        className,
+      )}
       onClick={onClick}
     >
       <div className="flex items-center gap-2.5">
