@@ -10,6 +10,7 @@ import Button from '@/components/common/button'
 import Chip from '@/components/common/chip'
 import MainSection from '@/components/common/main-section'
 import { Menubox } from '@/components/common/menubox'
+import Seperator from '@/components/common/seperator'
 import Switch from '@/components/common/switch'
 import ToggleButton from '@/components/common/toggle-button'
 import ToggleChip from '@/components/common/toggle-chip'
@@ -18,6 +19,7 @@ import ChatRecommendationList from '@/components/features/chat/chat-recommnendat
 import ActionButton from '@/components/features/community/action-button'
 import Comment from '@/components/features/community/comment'
 import CommunityPost from '@/components/features/community/community-post'
+import PopularPost from '@/components/features/community/popular-post'
 import FacilityCard from '@/components/features/facility/facility-card'
 import MyPageMenuList from '@/components/features/mypage/menu-list'
 import NotificationCard from '@/components/features/notification/notification-card'
@@ -241,28 +243,21 @@ export default function ComponentTest(): ReactElement {
           </div>
         </MainSection>
         <MainSection title="인기 게시글">
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
-            <PolicyCard
-              className="w-64"
-              type="상시접수"
-              tags={['건강검진', '서비스지원']}
-              title={`정책 카드 1`}
-              description="생후 24~48개월 60만원"
-              region="경기도"
-              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
-              applicationPeriod="매월 1~15일 온라인 신청"
-              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+          <div className="px-4 flex flex-col">
+            <PopularPost
+              content="이것은 인기 게시글의 내용입니다."
+              likeCount={10}
+              commentCount={5}
+              createdDate="2023-10-01"
+              createdTime="12:00"
             />
-            <PolicyCard
-              className="grow-0"
-              type="상시접수"
-              tags={['건강검진', '서비스지원']}
-              title={`정책 카드 1`}
-              description="생후 24~48개월 60만원 생후 24~48개월 60만원 생후 24~48개월 60만원"
-              region="경기도"
-              targetAge="생후 24개월 ~ 48개월 미만 아동대상"
-              applicationPeriod="매월 1~15일 온라인 신청"
-              onClick={() => console.log(`정책 카드 1 클릭됨`)}
+            <Seperator />
+            <PopularPost
+              content="이것은 인기 게시글의 내용입니다. 여러 줄로 작성할 수 있습니다.dddddd"
+              likeCount={10}
+              commentCount={5}
+              createdDate="2023-10-01"
+              createdTime="12:00"
             />
           </div>
         </MainSection>
