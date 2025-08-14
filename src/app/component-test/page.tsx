@@ -15,6 +15,7 @@ import ToggleChip from '@/components/common/toggle-chip'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
 import ActionButton from '@/components/features/community/action-button'
+import Comment from '@/components/features/community/comment'
 import CommunityPost from '@/components/features/community/community-post'
 import FacilityCard from '@/components/features/facility/facility-card'
 import NotificationCard from '@/components/features/notification/notification-card'
@@ -23,6 +24,24 @@ import PolicyCard from '@/components/features/policy/policy-card'
 export default function ComponentTest(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
   const handleClose = () => setIsOpen(false)
+
+  const mockComment = {
+    author: '하늘이야빠',
+    content: '모빌 정말 추천해요! 시각 발달에도 도움 된다고 하더라고요.',
+    timestamp: '08/10 20:27',
+    replies: [
+      {
+        author: '하늘이야빠',
+        content: '모빌 정말 추천해요!',
+        timestamp: '08/10 20:28',
+      },
+      {
+        author: '하늘이야빠',
+        content: '시각 발달에도 도움 된다고 하더라고요.',
+        timestamp: '08/10 22:27',
+      },
+    ],
+  }
 
   return (
     <div>
@@ -169,6 +188,9 @@ export default function ComponentTest(): ReactElement {
           <ActionButton type="bookmark" count={10} onClick={() => console.log('북마크 클릭됨')} />
           <ActionButton type="comment" count={10} onClick={() => console.log('북마크 클릭됨')} />
         </div>
+      </div>
+      <div>
+        <Comment comment={mockComment} />
       </div>
     </div>
   )
