@@ -15,6 +15,7 @@ import ToggleChip from '@/components/common/toggle-chip'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
 import FacilityCard from '@/components/features/facility/facility-card'
+import NotificationCard from '@/components/features/notification/notification-card'
 import PolicyCard from '@/components/features/policy/policy-card'
 
 export default function ComponentTest(): ReactElement {
@@ -126,7 +127,7 @@ export default function ComponentTest(): ReactElement {
         isMyMessage={false}
       />
       <ChatMessage message="안녕하세요! 어떻게 도와드릴까요?" isMyMessage={true} />
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-2">
         <ChatRecommendationList
           recommendations={[
             '최근 육아정책',
@@ -136,6 +137,20 @@ export default function ComponentTest(): ReactElement {
             '태교에 좋은 \n노래 5가지 추천해줘',
           ]}
           onRecommendationClick={(text) => console.log(`클릭됨: ${text}`)}
+        />
+        <NotificationCard
+          timeAgo="2시간 전"
+          title="새로운 정책이 등록되었습니다"
+          content="경기도에서 새로운 가족돌봄수당 정책이 등록되었습니다. 자세한 내용은 정책 페이지를 확인하세요. 알림 내용 텍스트입니다.알림 내용 텍스트입니다."
+          isRead={false}
+          onClick={() => console.log('알림 카드 클릭됨')}
+        />
+        <NotificationCard
+          timeAgo="2시간 전"
+          title="새로운 정책이 등록되었습니다"
+          content="경기도에서 새로운 가족돌봄수당 정책이 등록되었습니다. 자세한 내용은 정책 페이지를 확인하세요. 알림 내용 텍스트입니다.알림 내용 텍스트입니다."
+          isRead={true}
+          onClick={() => console.log('알림 카드 클릭됨')}
         />
       </div>
     </div>
