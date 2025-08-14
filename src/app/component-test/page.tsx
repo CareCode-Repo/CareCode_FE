@@ -16,6 +16,7 @@ import ToggleButton from '@/components/common/toggle-button'
 import ToggleChip from '@/components/common/toggle-chip'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
+import ChatSection from '@/components/features/chat/chat-section'
 import ActionButton from '@/components/features/community/action-button'
 import Comment from '@/components/features/community/comment'
 import CommunityPost from '@/components/features/community/community-post'
@@ -67,7 +68,8 @@ export default function ComponentTest(): ReactElement {
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-col p-5">
+      <div className="flex flex-col p-5 gap-2">
+        <ChatSection />
         <div>
           {/* button 테스트 */}
           <Button color="green" size="large" disabled>
