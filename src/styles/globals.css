@@ -132,6 +132,15 @@
     --foreground: #ededed;
   }
 } */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
 
 body {
   background: var(--background);
@@ -143,3 +152,4 @@ html body[data-scroll-locked] {
   margin: 0 auto !important;
   padding: 0 !important;
 }
+

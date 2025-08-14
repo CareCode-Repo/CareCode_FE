@@ -12,6 +12,8 @@ import { Menubox } from '@/components/common/menubox'
 import Switch from '@/components/common/switch'
 import ToggleButton from '@/components/common/toggle-button'
 import ToggleChip from '@/components/common/toggle-chip'
+import ChatMessage from '@/components/features/chat/chat-message'
+import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
 import FacilityCard from '@/components/features/facility/facility-card'
 import PolicyCard from '@/components/features/policy/policy-card'
 
@@ -107,16 +109,6 @@ export default function ComponentTest(): ReactElement {
           onClick={() => console.log('정책 카드 클릭됨')}
         />
         <FacilityCard
-          type="센터"
-          tags={['건강검진', '서비스지원']}
-          title="아이사랑 어린이집"
-          region="경기도 고양시 일산동구"
-          phoneNumber="031-123-4567"
-          reviewCount={10}
-          rating={4.5}
-          onClick={() => console.log('시설 카드 클릭됨')}
-        />
-        <FacilityCard
           type="어린이집"
           tags={['건강검진', '서비스지원']}
           title="아이사랑 어린이집"
@@ -126,15 +118,24 @@ export default function ComponentTest(): ReactElement {
           rating={4.5}
           onClick={() => console.log('시설 카드 클릭됨')}
         />
-        <FacilityCard
-          type="유치원"
-          tags={['건강검진', '서비스지원']}
-          title="아이사랑 어린이집"
-          region="경기도 고양시 일산동구"
-          phoneNumber="031-123-4567"
-          reviewCount={10}
-          rating={4.5}
-          onClick={() => console.log('시설 카드 클릭됨')}
+      </div>
+      <ChatMessage
+        message="그렇군요. 어떤 종류의 육아 고민이신가요? 지금 겪고 계신 상황이나 걱정되는 점을 말씀해주시면, 구체적으로 도와드릴 수 있어요. 
+                  예를 들어: 아이의 수면 습관이나 식사 문제, 감정 표현, 떼쓰기, 말 안 듣는 행동,유치원 적응이나 형제·자매 관계,
+                  부모로서의 양육 스트레스 등 어떤 이야기든 괜찮으니, 편하게 말씀해 주세요."
+        isMyMessage={false}
+      />
+      <ChatMessage message="안녕하세요! 어떻게 도와드릴까요?" isMyMessage={true} />
+      <div className="flex flex-col">
+        <ChatRecommendationList
+          recommendations={[
+            '최근 육아정책',
+            '육아 꿀템을\n추천해줘',
+            '태교에 좋은 \n노래 5가지 추천해줘',
+            '육아 관련 책\n추천해줘',
+            '태교에 좋은 \n노래 5가지 추천해줘',
+          ]}
+          onRecommendationClick={(text) => console.log(`클릭됨: ${text}`)}
         />
       </div>
     </div>
