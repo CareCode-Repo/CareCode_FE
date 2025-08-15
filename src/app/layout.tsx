@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/globals.css'
+import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
   title: '맘편한',
@@ -19,12 +20,10 @@ export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
-}>) {
+}>): ReactNode {
   return (
     <html lang="ko">
-      <body className={`font-pretendard antialiased w-full min-h-dvh`}>
-        {children}
-      </body>
+      <body className={`font-pretendard antialiased w-full min-h-dvh`}>{children}</body>
     </html>
   )
 }
