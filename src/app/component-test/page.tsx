@@ -5,26 +5,26 @@ import KebabIcon from '@/assets/icons/edit.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import TrachIcon from '@/assets/icons/trash.svg'
 import WarningIcon from '@/assets/icons/warning.svg'
-import AlertDialog from '@/components/common/alert-dialog'
-import Button from '@/components/common/button'
-import Chip from '@/components/common/chip'
-import MainSection from '@/components/common/main-section'
+import AlertDialog from '@/components/common/AlertDialog'
+import Button from '@/components/common/Button'
+import Chip from '@/components/common/Chip'
+import MainSection from '@/components/common/MainSection'
+import Separator from '@/components/common/Separator'
+import Switch from '@/components/common/Switch'
+import ToggleButton from '@/components/common/ToggleButton'
+import ToggleChip from '@/components/common/ToggleChip'
 import { Menubox } from '@/components/common/menubox'
-import Seperator from '@/components/common/seperator'
-import Switch from '@/components/common/switch'
-import ToggleButton from '@/components/common/toggle-button'
-import ToggleChip from '@/components/common/toggle-chip'
+import ChatSection from '@/components/features/chat/ChatSection'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
-import ChatSection from '@/components/features/chat/chat-section'
-import ActionButton from '@/components/features/community/action-button'
-import Comment from '@/components/features/community/comment'
-import CommunityPost from '@/components/features/community/community-post'
+import ActionButton from '@/components/features/community/ActionButton'
+import Comment from '@/components/features/community/Comment'
+import CommunityPost from '@/components/features/community/CommunityPost'
 import PopularPost from '@/components/features/community/popular-post'
 import FacilityCard from '@/components/features/facility/facility-card'
-import MyPageMenuList from '@/components/features/mypage/menu-list'
-import NotificationCard from '@/components/features/notification/notification-card'
-import PolicyCard from '@/components/features/policy/policy-card'
+import MenuList from '@/components/features/mypage/MenuList'
+import NotificationCard from '@/components/features/notification/NotificationCard'
+import PolicyCard from '@/components/features/policy/PolicyCard'
 
 export default function ComponentTest(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
@@ -218,7 +218,7 @@ export default function ComponentTest(): ReactElement {
           <Comment comment={mockComment} />
         </div>
       </div>
-      <MyPageMenuList title="메뉴분류" items={mockMenuItems} />
+      <MenuList title="메뉴분류" items={mockMenuItems} />
       <div className="flex flex-col p-4">
         <MainSection title="최근 정책">
           <div className="px-4 flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
@@ -253,7 +253,7 @@ export default function ComponentTest(): ReactElement {
               createdDate="2023-10-01"
               createdTime="12:00"
             />
-            <Seperator />
+            <Separator />
             <PopularPost
               content="이것은 인기 게시글의 내용입니다. 여러 줄로 작성할 수 있습니다.dddddd"
               likeCount={10}

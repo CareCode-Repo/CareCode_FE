@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import Stat from './stat'
+import PostStat from './PostStat'
 import CommentIcon from '@/assets/icons/chat.svg'
 import LikeIcon from '@/assets/icons/like.svg'
 
@@ -29,8 +29,8 @@ const PopularPost = ({
         </span>
       </div>
       <div className="shrink-0 flex gap-1 items-end">
-        <Stat icon={LikeIcon} count={likeCount} className="[&_svg]:fill-red text-red" />
-        <Stat icon={CommentIcon} count={commentCount} className="[&_svg]:fill-blue text-blue" />
+        <PostStat icon={LikeIcon} count={likeCount} className="[&_svg]:fill-red text-red" />
+        <PostStat icon={CommentIcon} count={commentCount} className="[&_svg]:fill-blue text-blue" />
       </div>
     </div>
   )

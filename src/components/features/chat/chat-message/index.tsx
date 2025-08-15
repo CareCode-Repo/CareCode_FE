@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { ReactElement } from 'react'
 
-import ChatBubble from './chat-bubble'
+import ChatBubble from './ChatBubble'
 import AssistantIcon from '@/assets/icons/assistant.svg'
 
 interface ChatMessageProps {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const PromotionPanel: React.FC = () => {
   return (
@@ -9,17 +9,15 @@ const PromotionPanel: React.FC = () => {
         </div>
         <span className="text-white text-2xl font-bold">CareCode</span>
       </div>
-      
+
       {/* 헤드라인 */}
-      <h1 className="text-white text-xl text-center mb-8">
-        우리 아이 케어를 위한 엄마들의 선택 
-      </h1>
-      
+      <h1 className="text-white text-xl text-center mb-8">우리 아이 케어를 위한 엄마들의 선택</h1>
+
       {/* QR 코드 */}
       <div className="w-32 h-32 bg-white rounded-lg mb-8 flex items-center justify-center">
         <div className="text-gray-400 text-xs">QR Code</div>
       </div>
-      
+
       {/* 기능 설명 */}
       <div className="space-y-4 text-white text-sm">
         <div className="flex items-start">
@@ -36,7 +34,7 @@ const PromotionPanel: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PromotionPanel; 
+export default PromotionPanel

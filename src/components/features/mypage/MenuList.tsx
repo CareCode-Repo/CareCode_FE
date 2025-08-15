@@ -7,13 +7,13 @@ type MenuItem = {
   onClick?: () => void
 }
 
-interface MyPageMenuListProps {
+interface MenuListProps {
   title: string
   items: MenuItem[]
   className?: string
 }
 
-const MyPageMenuList = ({ title, items, className }: MyPageMenuListProps): ReactElement => {
+const MenuList = ({ title, items, className }: MenuListProps): ReactElement => {
   return (
     <div className={clsx('flex flex-col gap-4 p-7.5 text-black', className)}>
       {/* 메뉴 제목 */}
@@ -35,4 +35,4 @@ const MyPageMenuList = ({ title, items, className }: MyPageMenuListProps): React
   )
 }
 
-export default MyPageMenuList
+export default MenuList

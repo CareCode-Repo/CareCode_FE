@@ -1,12 +1,12 @@
 import { ReactElement } from 'react'
 
-interface StatProps {
+interface FacilityStatProps {
   icon: React.FC<React.SVGProps<SVGSVGElement>>
   value: string | number
   className?: string
 }
 
-const Stat = ({ icon: Icon, value, className = '' }: StatProps): ReactElement => {
+const FacilityStat = ({ icon: Icon, value, className = '' }: FacilityStatProps): ReactElement => {
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       <Icon className="w-3 h-3 fill-gray-700" />
@@ -15,4 +15,4 @@ const Stat = ({ icon: Icon, value, className = '' }: StatProps): ReactElement =>
   )
 }
 
-export default Stat
+export default FacilityStat

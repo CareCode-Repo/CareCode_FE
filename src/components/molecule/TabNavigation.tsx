@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 interface TabNavigationProps {
-  tabs: string[];
-  activeTab: string;
-  onTabChange: (tab: string) => void;
+  tabs: string[]
+  activeTab: string
+  onTabChange: (tab: string) => void
 }
 
 const TabNavigation: React.FC<TabNavigationProps> = ({ tabs, activeTab, onTabChange }) => {
@@ -25,7 +25,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ tabs, activeTab, onTabCha
         </button>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default TabNavigation; 
+export default TabNavigation

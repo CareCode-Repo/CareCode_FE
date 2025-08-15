@@ -1,12 +1,12 @@
 import clsx from 'clsx'
 import { ReactElement } from 'react'
 
-interface SeperatorProps {
+interface SeparatorProps {
   className?: string
 }
 
-const Seperator = ({ className }: SeperatorProps): ReactElement => {
+const Separator = ({ className }: SeparatorProps): ReactElement => {
   return <div className={clsx('h-px bg-gray-300', className)} />
 }
 
-export default Seperator
+export default Separator

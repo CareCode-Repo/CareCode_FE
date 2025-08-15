@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import Spacer from '@/components/common/spacer'
+import Spacer from '@/components/common/Spacer'
 
 interface CommunityPostProps {
   title: string
@@ -23,4 +23,5 @@ const CommunityPost = ({ title, content, author, timeAgo }: CommunityPostProps):
     </div>
   )
 }
+
 export default CommunityPost

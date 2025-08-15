@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const StoreHeader: React.FC = () => {
   return (
@@ -8,13 +8,12 @@ const StoreHeader: React.FC = () => {
         <div className="w-4 h-0.5 bg-gray-600 mb-1"></div>
         <div className="w-4 h-0.5 bg-gray-600"></div>
       </div>
-      
-      <h1 className="text-lg font-semibold text-gray-800">맘편한</h1>
-      
-      <div className="w-6 h-6 cursor-pointer">
-      </div>
-    </div>
-  );
-};
 
-export default StoreHeader; 
+      <h1 className="text-lg font-semibold text-gray-800">맘편한</h1>
+
+      <div className="w-6 h-6 cursor-pointer"></div>
+    </div>
+  )
+}
+
+export default StoreHeader

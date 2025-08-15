@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 
-interface DetailItemProps {
+interface DescriptionItemProps {
   title: string
   content: string
 }
 
-const DetailItem = ({ title, content }: DetailItemProps): ReactElement => {
+const DescriptionItem = ({ title, content }: DescriptionItemProps): ReactElement => {
   return (
     <div className="flex items-start gap-2 text-c1-regular">
       <dt className="text-gray-700 whitespace-nowrap flex-shrink-0">{title}</dt>
@@ -14,4 +14,4 @@ const DetailItem = ({ title, content }: DetailItemProps): ReactElement => {
   )
 }
 
-export default DetailItem
+export default DescriptionItem

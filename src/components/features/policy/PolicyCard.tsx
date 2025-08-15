@@ -1,10 +1,10 @@
 import clsx from 'clsx'
 import { ReactElement } from 'react'
 
-import Chip from '@/components/common/chip'
-import DetailItem from '@/components/common/detail-item'
-import Spacer from '@/components/common/spacer'
-import Tag from '@/components/common/tag'
+import Chip from '@/components/common/Chip'
+import DescriptionItem from '@/components/common/DescriptionItem'
+import Spacer from '@/components/common/Spacer'
+import Tag from '@/components/common/Tag'
 import { PolicyType } from '@/types/policy'
 
 type PolicyCardProps = {
@@ -62,9 +62,9 @@ const PolicyCard = ({
       <p className="text-c1-regular text-gray-700 truncate">{description}</p>
       <Spacer className="h-3.5" />
       <dl className="flex flex-col gap-0.5">
-        <DetailItem title="지역" content={region} />
-        <DetailItem title="연령" content={targetAge} />
-        <DetailItem title="신청기간" content={applicationPeriod} />
+        <DescriptionItem title="지역" content={region} />
+        <DescriptionItem title="연령" content={targetAge} />
+        <DescriptionItem title="신청기간" content={applicationPeriod} />
       </dl>
     </div>
   )

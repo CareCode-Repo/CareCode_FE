@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import RecommendationChip from './recommendation-chip'
+import RecommendationChip from './RecommendationChip'
 
 interface ChatRecommendationListProps {
   recommendations: string[]

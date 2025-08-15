@@ -1,13 +1,13 @@
 import { ReactElement } from 'react'
 
-import Stat from './stat'
+import FacilityStat from './FacilityStat'
 // import MapIcon from '@/assets/icons/map_thin.svg'
 import ReviewIcon from '@/assets/icons/chat_small.svg'
 import StarIcon from '@/assets/icons/star_small.svg'
-import Chip from '@/components/common/chip'
-import DetailItem from '@/components/common/detail-item'
-import Spacer from '@/components/common/spacer'
-import Tag from '@/components/common/tag'
+import Chip from '@/components/common/Chip'
+import DescriptionItem from '@/components/common/DescriptionItem'
+import Spacer from '@/components/common/Spacer'
+import Tag from '@/components/common/Tag'
 import { FacilityType } from '@/types/facility'
 
 type FacilityCardProps = {
@@ -57,11 +57,11 @@ const FacilityCard = ({
         <h3 className="text-b1-medium text-black">{title}</h3>
         <Spacer className="h-3.5" />
         <dl className="flex flex-col gap-1">
-          <DetailItem title="지역" content={region} />
-          <DetailItem title="번호" content={phoneNumber} />
+          <DescriptionItem title="지역" content={region} />
+          <DescriptionItem title="번호" content={phoneNumber} />
           <div className="flex items-center gap-5.5">
-            <Stat icon={ReviewIcon} value={reviewCount} />
-            <Stat icon={StarIcon} value={rating} />
+            <FacilityStat icon={ReviewIcon} value={reviewCount} />
+            <FacilityStat icon={StarIcon} value={rating} />
           </div>
         </dl>
       </div>

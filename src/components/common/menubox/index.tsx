@@ -1,13 +1,6 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import clsx from 'clsx'
-import { FC, ReactElement, ReactNode, SVGProps } from 'react'
-
-interface MenuItemProps {
-  content: string
-  icon?: FC<SVGProps<SVGSVGElement>>
-  variant?: 'default' | 'destructive'
-  onSelect?: () => void
-}
+import { ReactElement, ReactNode } from 'react'
+import MenuItem, { MenuItemProps } from './MenuItem'
 
 interface MenuboxProps {
   triggerButton: ReactNode
@@ -36,25 +29,7 @@ export const Menubox = ({
           alignOffset={alignOffset}
         >
           {items.map((item, idx) => (
-            <DropdownMenu.Item
-              key={`${item.content}-${idx}`}
-              className={clsx(
-                'text-b1-regular flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-100',
-                item.variant === 'destructive' && 'text-red',
-              )}
-              onSelect={item.onSelect}
-            >
-              {item.icon && (
-                <item.icon
-                  className={clsx(
-                    'w-4 h-4',
-                    item.variant === 'destructive' && 'fill-red',
-                    item.variant === 'default' && 'fill-black',
-                  )}
-                />
-              )}
-              <span>{item.content}</span>
-            </DropdownMenu.Item>
+            <MenuItem key={`${item.content}-${idx}`} {...item} />
           ))}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
