@@ -1,6 +1,9 @@
 'use client'
 
 import { ReactElement, useState } from 'react'
+import SettingIcon from '@/assets/icons/setting.svg'
+import HamburgerIcon from '@/assets/icons/hamburger.svg'
+import BellIcon from '@/assets/icons/bell.svg'
 import KebabIcon from '@/assets/icons/edit.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import TrachIcon from '@/assets/icons/trash.svg'
@@ -26,6 +29,8 @@ import FacilityCard from '@/components/features/facility/facility-card'
 import MenuList from '@/components/features/mypage/MenuList'
 import NotificationCard from '@/components/features/notification/NotificationCard'
 import PolicyCard from '@/components/features/policy/PolicyCard'
+import IconButton from '@/components/common/top-navbar/IconButton'
+import TopNavBar from '@/components/common/top-navbar'
 
 export default function ComponentTest(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
@@ -70,6 +75,19 @@ export default function ComponentTest(): ReactElement {
   return (
     <div className="flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+      {/* 탑네브바 테스트 */}
+      <TopNavBar
+        title="회원가입"
+        hasBackButton
+        actionButtons={[{ icon: SettingIcon }, { icon: BellIcon, showBadge: true }]}
+      />
+      <div>
+        <IconButton icon={SettingIcon} />
+        <IconButton icon={BellIcon} />
+        <IconButton icon={HamburgerIcon} />
+        <IconButton icon={BellIcon} showBadge />
+      </div>
+      <TopNavBar />
       {/* 탭바 테스트 */}
       <TabBar />
       <div className="flex flex-col p-5 gap-2">
