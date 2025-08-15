@@ -14,6 +14,7 @@ import Switch from '@/components/common/Switch'
 import ToggleButton from '@/components/common/ToggleButton'
 import ToggleChip from '@/components/common/ToggleChip'
 import { Menubox } from '@/components/common/menubox'
+import TabBar from '@/components/common/tab-bar'
 import ChatSection from '@/components/features/chat/ChatSection'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
@@ -68,6 +69,9 @@ export default function ComponentTest(): ReactElement {
 
   return (
     <div className="flex flex-col">
+      <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+      {/* 탭바 테스트 */}
+      <TabBar />
       <div className="flex flex-col p-5 gap-2">
         <ChatSection />
         <div>
