@@ -1,53 +1,42 @@
 import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { getAccessToken, refreshAccessToken, clearAccessToken } from './auth'
 
 const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인
 
-const setInterceptor = (url?: string): AxiosInstance => {
-  const baseUrl = url ?? process.env.API_URL
-  if (!baseUrl) throw new Error('API URL is not defined')
+export const CareCode: AxiosInstance = axios.create({
+  baseURL: process.env.API_URL,
+  timeout: 30_000,
+  headers: { Accept: '*/*' },
+  withCredentials: true, // refreshToken은 HttpOnly 쿠키
+})
 
-  const axiosInstance: AxiosInstance = axios.create({
-    baseURL: baseUrl,
-    timeout: 30000,
-    headers: { Accept: '*/*' },
-  })
+// 요청 시 Authorization 헤더 적용
+CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
+  if (isDevelopment) printRequestConsole(config)
+  const token = getAccessToken()
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
-  axiosInstance.interceptors.request.use(
-    async (config: InternalAxiosRequestConfig<any>) => {
-      if (isDevelopment) printRequestConsole(config)
-
-      if (config.url !== '/auth/kakao') {
-        const user = { uid: '111' } // temp
-
-        config.headers.Authorization = `Bearer ${user.uid}`
-
-        if (config.data instanceof FormData) {
-          // multipart/form-data는 boundary 때문에 직접 지정하지 않는 게 좋음
-          delete config.headers['Content-Type']
-        } else {
-          config.headers['Content-Type'] = 'application/json'
-        }
+// 401 발생 시 refresh + 재시도
+CareCode.interceptors.response.use(
+  (res: AxiosResponse<any, any>) => {
+    printResponseConsole(res)
+    return res
+  },
+  async (error) => {
+    if (isDevelopment) printErrorConsole(error)
+    if (error.response?.status === 401) {
+      try {
+        const newToken = await refreshAccessToken()
+        error.config.headers.Authorization = `Bearer ${newToken.accessToken}`
+        return CareCode(error.config)
+      } catch {
+        clearAccessToken()
+        window.location.href = '/login' // 로그인 화면으로 이동
       }
-      return config
-    },
-    (error) => {
-      if (isDevelopment) printErrorConsole(error)
-      return Promise.reject(error)
-    },
-  )
-
-  axiosInstance.interceptors.response.use(
-    (response: AxiosResponse<any, any>) => {
-      if (isDevelopment) printResponseConsole(response)
-      return response
-    },
-    (error) => {
-      if (isDevelopment) printErrorConsole(error)
-      return Promise.reject(error)
-    },
-  )
-  return axiosInstance
-}
-
-export const CareCode = setInterceptor()
+    }
+    return Promise.reject(error)
+  },
+)
