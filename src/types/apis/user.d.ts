@@ -7,10 +7,10 @@ export const UserSchema = zod.object({
   name: zod.string(),
   phoneNumber: zod.string(),
   birthDate: zod.string().regex(/^\d{4}-\d{2}-\d{2}$/, '날짜 형식은 YYYY-MM-DD여야 합니다'), // YYYY-MM-DD 형식
-  gender: zod.string(),
+  gender: zod.enum(['MALE', 'FEMALE']),
   address: zod.string(),
   profileImageUrl: zod.string(),
-  role: zod.enum(['PARENT', 'CHILD']),
+  role: zod.enum(['PARENT', 'CHILD']).optional(),
   isActive: zod.boolean(),
   emailVerified: zod.boolean(),
   lastLoginAt: zod.date(), // 2024-01-15T10:30:00
