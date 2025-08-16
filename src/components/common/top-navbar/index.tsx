@@ -31,7 +31,7 @@ const TopNavBar = ({
         <IconButton icon={BackIcon} iconClassName="fill-black size-6" onClick={handleBackClick} />
       )}
       {/* title */}
-      <div className="grow pl-2.5 text-h3-bold text-black">{title}</div>
+      <div className="grow h-8 pl-2.5 text-h3-bold text-black content-center">{title}</div>
       {/* action buttons */}
       <div className="flex items-center gap-2.5">
         {actionButtons.map((button, index) => (
