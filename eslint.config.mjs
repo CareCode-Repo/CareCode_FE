@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { FlatCompat } from '@eslint/eslintrc'
 import { fixupConfigRules, fixupPluginRules } from '@eslint/compat'
+import { FlatCompat } from '@eslint/eslintrc'
 
 import js from '@eslint/js'
 import typescriptEslint from '@typescript-eslint/eslint-plugin'
@@ -18,7 +18,7 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 })
 
-export default [
+const eslintConfig = [
   // Next.js 기본 설정
   ...fixupConfigRules(compat.extends('next/core-web-vitals', 'next/typescript')),
 
@@ -42,7 +42,6 @@ export default [
       parser: tsParser,
     },
     rules: {
-      // TypeScript 규칙
       '@typescript-eslint/explicit-module-boundary-types': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-function': ['error'],
@@ -52,8 +51,6 @@ export default [
         { allowShortCircuit: true, allowTernary: true },
       ],
       '@typescript-eslint/no-unused-vars': 'warn',
-
-      // import 관련 규칙
       'import/no-named-as-default-member': 'off',
       'import/no-named-as-default': 'off',
       'import/export': 'error',
@@ -65,16 +62,11 @@ export default [
           alphabetize: { order: 'asc' },
         },
       ],
-
-      // Prettier
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
-
-      // Next.js (React 17+)
       'react/react-in-jsx-scope': 'off',
     },
   },
 
-  // ✅ TypeScript 파일 전용 룰
   {
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
@@ -84,3 +76,5 @@ export default [
     },
   },
 ]
+
+export default eslintConfig
