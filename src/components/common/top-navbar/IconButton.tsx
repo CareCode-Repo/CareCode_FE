@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { ComponentType } from 'react'
+import { ComponentType, ReactElement } from 'react'
 // 햄버거, 세팅, 알림 사이즈 32, 색 블랙
 
 export interface IconButtonProps {
@@ -16,7 +16,7 @@ const IconButton = ({
   iconClassName = '',
   showBadge,
   onClick,
-}: IconButtonProps) => {
+}: IconButtonProps): ReactElement => {
   return (
     <button onClick={onClick} className={clsx('inline-block', className)}>
       <div className="relative">

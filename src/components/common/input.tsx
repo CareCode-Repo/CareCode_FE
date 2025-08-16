@@ -1,7 +1,7 @@
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react'
 import * as Label from '@radix-ui/react-label'
-import WarningIcon from '@/assets/icons/warning.svg'
 import clsx from 'clsx'
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react'
+import WarningIcon from '@/assets/icons/warning.svg'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onError' | 'onChange'> {
   value: string
@@ -15,10 +15,8 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onErro
   required?: boolean
   fieldClassName?: string
   inputClassName?: string
-  iconClassName?: string
   variant?: 'default' | 'rounded'
   onChange?: (value: string) => void
-  onError?: (error: string) => void
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -36,9 +34,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       variant = 'default',
       fieldClassName = '',
       inputClassName = '',
-      iconClassName = '',
       onChange,
-      onError,
       ...props
     },
     ref,
@@ -46,11 +42,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const [isFocused, setIsFocused] = useState(false)
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+      const inputValue = e.target.value
 
-      if (maxLength && value.length > maxLength) return
+      if (maxLength && inputValue.length > maxLength) return
 
-      onChange?.(value)
+      onChange?.(inputValue)
     }
 
     return (

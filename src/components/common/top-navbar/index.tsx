@@ -1,4 +1,5 @@
 import { useRouter } from 'next/navigation'
+import { ReactElement } from 'react'
 import IconButton, { IconButtonProps } from './IconButton'
 import BackIcon from '@/assets/icons/arrow_left.svg'
 
@@ -14,7 +15,7 @@ const TopNavBar = ({
   actionButtons = [],
   hasBackButton = false,
   onBackButtonClick,
-}: TopNavBarProps) => {
+}: TopNavBarProps): ReactElement => {
   const router = useRouter()
   const handleBackClick = () => {
     if (onBackButtonClick) {
