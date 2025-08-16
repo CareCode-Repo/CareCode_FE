@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import '@/styles/globals.css'
 import { ReactNode } from 'react'
 import PromotionPanel from '@/components/organism/PromotionPanel'
+import QueryProvider from '@/queries/QueryProvider'
 
 export const metadata: Metadata = {
   title: '맘편한',
@@ -25,17 +26,19 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`font-pretendard antialiased min-h-dvh`}>
-        <div className="flex min-h-dvh">
-          {/* 데스크톱 프로모션 패널 */}
-          <div className="hidden sm:block sm:flex-1/3">
-            <PromotionPanel />
-          </div>
+        <QueryProvider>
+          <div className="flex min-h-dvh">
+            {/* 데스크톱 프로모션 패널 */}
+            <div className="hidden sm:block sm:flex-1/3">
+              <PromotionPanel />
+            </div>
 
-          {/* 메인 콘텐츠 영역 */}
-          <main className="flex-1 sm:flex-2/3">
-            <div className="h-dvh max-w-sm mx-auto overflow-y-auto">{children}</div>
-          </main>
-        </div>
+            {/* 메인 콘텐츠 영역 */}
+            <main className="flex-1 sm:flex-2/3">
+              <div className="h-dvh max-w-sm mx-auto overflow-y-auto">{children}</div>
+            </main>
+          </div>
+        </QueryProvider>
       </body>
     </html>
   )
