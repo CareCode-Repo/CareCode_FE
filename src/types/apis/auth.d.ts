@@ -78,17 +78,22 @@ export const PostRegisterResponseSchema = registerResponseSchema
 export type PostRegisterResponse = zod.infer<typeof PostRegisterResponseSchema>
 
 // /auth/refresh
+export const PostRefreshTokenBodySchema = zod.object({
+  refreshToken: zod.string(),
+})
+export type PostRefreshTokenBody = zod.infer<typeof PostRefreshTokenBodySchema>
 export const PostRefreshTokenResponseSchema = zod.object({
   success: zod.boolean(),
   accessToken: zod.string(),
+  refreshToken: zod.string(),
   tokenType: zod.string(),
   expiresIn: zod.number(),
+  userId: zod.string(),
 })
 export type PostRefreshTokenResponse = zod.infer<typeof PostRefreshTokenResponseSchema>
 
 // /auth/logout
 export const PostLogoutResponseSchema = zod.object({
-  success: zod.boolean(),
   message: zod.string(),
 })
 export type PostLogoutResponse = zod.infer<typeof PostLogoutResponseSchema>
