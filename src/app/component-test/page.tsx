@@ -19,6 +19,7 @@ import Switch from '@/components/common/Switch'
 import ToggleButton from '@/components/common/ToggleButton'
 import ToggleChip from '@/components/common/ToggleChip'
 import Input from '@/components/common/input'
+import Loading from '@/components/common/loading'
 import { Menubox } from '@/components/common/menubox'
 import TabBar from '@/components/common/tab-bar'
 import TopNavBar from '@/components/common/top-navbar'
@@ -38,6 +39,7 @@ import PolicyCard from '@/components/features/policy/PolicyCard'
 export default function ComponentTest(): ReactElement {
   const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
   const handleClose = () => setIsOpen(false)
 
   const handleChange = (newValue: string) => setValue(newValue)
@@ -80,6 +82,14 @@ export default function ComponentTest(): ReactElement {
   return (
     <div className="flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+
+      {/* Loading 컴포넌트 테스트 */}
+      <div className="mb-4">
+        <Button color="green" size="large" onClick={() => setShowLoading(!showLoading)}>
+          {showLoading ? 'Hide Loading' : 'Show Loading'}
+        </Button>
+        {showLoading && <Loading content={`회원가입 처리중입니다 \n 잠시만 기다려주세요`} />}
+      </div>
       {/* 인풋 컴포넌트 테스트 */}
       <Input
         value={value}
