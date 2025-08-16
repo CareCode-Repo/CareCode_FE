@@ -9,11 +9,11 @@ import {
   getNotificationByIdPathSchema,
   getNotificationByIdResponseSchema,
   PutNotificationToReadPath,
-  putNotificationToReadResponse,
   putNotificationToReadPathSchema,
   putNotificationToReadResponseSchema,
-  getNotificationPreferencesResponse,
+  GetNotificationPreferencesResponse,
   getNotificationPreferencesResponseSchema,
+  PutNotificationToReadResponse,
 } from '@/types/apis/notification'
 
 export const getNotificationList = async (
@@ -34,13 +34,13 @@ export const getNotificationById = async (
 
 export const putNotificationToRead = async (
   path: PutNotificationToReadPath,
-): Promise<putNotificationToReadResponse> => {
+): Promise<PutNotificationToReadResponse> => {
   const parsedPath = putNotificationToReadPathSchema.parse(path)
   const res = await CareCode.put(`/notifications/${parsedPath.notificationId}/read`)
   return putNotificationToReadResponseSchema.parse(res.data)
 }
 
-export const getNotificationPreferences = async (): Promise<getNotificationPreferencesResponse> => {
+export const getNotificationPreferences = async (): Promise<GetNotificationPreferencesResponse> => {
   const res = await CareCode.get('/notification/preferences')
   return getNotificationPreferencesResponseSchema.parse(res.data)
 }

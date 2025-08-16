@@ -31,7 +31,7 @@ export const notificationListItemSchema = z.object({
   actionUrl: z.string().optional(),
   createdAt: z.string(),
 })
-export type notificationListItem = z.infer<typeof notificationListItemSchema>
+export type NotificationListItem = z.infer<typeof notificationListItemSchema>
 
 // /notifications
 export const getNotificationsQuerySchema = z.object({
@@ -63,7 +63,7 @@ export const putNotificationToReadResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
 })
-export type putNotificationToReadResponse = z.infer<typeof putNotificationToReadResponseSchema>
+export type PutNotificationToReadResponse = z.infer<typeof putNotificationToReadResponseSchema>
 
 export const notificationPreferencesSchema = z.object({
   emailNotification: z.boolean(),
@@ -80,7 +80,7 @@ export const getNotificationPreferencesResponseSchema = z.object({
   success: z.boolean(),
   preferences: notificationPreferencesSchema,
 })
-export type getNotificationPreferencesResponse = z.infer<
+export type GetNotificationPreferencesResponse = z.infer<
   typeof getNotificationPreferencesResponseSchema
 >
 
