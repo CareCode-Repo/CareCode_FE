@@ -1,99 +1,96 @@
-import { z as zod } from 'zod'
+import { z } from 'zod'
 
 // login 공통
-const LoginSuccessSchema = zod.object({
-  success: zod.literal(true),
-  message: zod.string(),
-  accessToken: zod.string(),
-  refreshToken: zod.string(),
-  tokenType: zod.string(),
-  expiresIn: zod.number(),
-  userId: zod.string(),
-  email: zod.string().email(),
-  role: zod.enum(['PARENT', 'CHILD']),
+const loginSuccessSchema = z.object({
+  success: z.literal(true),
+  message: z.string(),
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+  expiresIn: z.number(),
+  userId: z.string(),
+  email: z.string().email(),
+  role: z.enum(['PARENT', 'CHILD']),
 })
-const LoginFailSchema = zod.object({
-  success: zod.literal(false),
-  message: zod.string(),
-  errorCode: zod.string(),
+const loginFailSchema = z.object({
+  success: z.literal(false),
+  message: z.string(),
+  errorCode: z.string(),
 })
 
 // /auth/login
-export const PostLoginBodySchema = zod.object({
-  email: zod.string().email().min(1),
-  password: zod.string().min(1),
+export const postLoginBodySchema = z.object({
+  email: z.string().email().min(1),
+  password: z.string().min(1),
 })
-export type PostLoginBody = zod.infer<typeof PostLoginBodySchema>
-export const PostLoginResponseSchema = zod.union([LoginSuccessSchema, LoginFailSchema])
-export type PostLoginResponse = zod.infer<typeof PostLoginResponseSchema>
+export type PostLoginBody = z.infer<typeof postLoginBodySchema>
+export const postLoginResponseSchema = z.union([loginSuccessSchema, loginFailSchema])
+export type PostLoginResponse = z.infer<typeof postLoginResponseSchema>
 
-export const KakaoProfileSchema = zod.object({
-  kakaoId: zod.string(),
-  nickname: zod.string(),
-  profileImageUrl: zod.string().url(),
+export const kakaoProfileSchema = z.object({
+  kakaoId: z.string(),
+  nickname: z.string(),
+  profileImageUrl: z.string().url(),
 })
 
 // /auth/kakao/login
-const KakaoLoginSuccessSchema = LoginSuccessSchema
-const KakaoLoginFailSchema = LoginFailSchema.extend({
-  kakaoProfile: KakaoProfileSchema,
+const kakaoLoginSuccessSchema = loginSuccessSchema
+const kakaoLoginFailSchema = loginFailSchema.extend({
+  kakaoProfile: kakaoProfileSchema,
 })
 
-export const PostKakaoLoginBodySchema = zod.object({
-  kakaoAccessToken: zod.string(),
+export const postKakaoLoginBodySchema = z.object({
+  kakaoAccessToken: z.string(),
 })
-export type PostKakaoLoginBody = zod.infer<typeof PostKakaoLoginBodySchema>
+export type PostKakaoLoginBody = z.infer<typeof postKakaoLoginBodySchema>
 
-export const PostKakaoLoginResponseSchema = zod.union([
-  KakaoLoginSuccessSchema,
-  KakaoLoginFailSchema,
-])
-export type PostKakaoLoginResponse = zod.infer<typeof PostKakaoLoginResponseSchema>
+export const postKakaoLoginResponseSchema = z.union([kakaoLoginSuccessSchema, kakaoLoginFailSchema])
+export type PostKakaoLoginResponse = z.infer<typeof postKakaoLoginResponseSchema>
 
 // register 공통
-const registerBodySchema = zod.object({
-  kakaoAccessToken: zod.string(),
-  email: zod.string().email(),
-  phoneNumber: zod.string(),
-  birthDate: zod.string().regex(/^\d{4}-\d{2}-\d{2}$/, '날짜 형식은 YYYY-MM-DD여야 합니다'),
-  gender: zod.enum(['MALE', 'FEMALE']),
-  address: zod.string().optional(),
+const registerBodySchema = z.object({
+  kakaoAccessToken: z.string(),
+  email: z.string().email(),
+  phoneNumber: z.string(),
+  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '날짜 형식은 YYYY-MM-DD여야 합니다'),
+  gender: z.enum(['MALE', 'FEMALE']),
+  address: z.string().optional(),
 })
-const registerResponseSchema = zod.object({
-  success: zod.boolean(),
-  message: zod.string(),
-  userId: zod.string(),
+const registerResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  userId: z.string(),
 })
 
 // /auth/kakao/register
-export const PostKakaoRegisterBodySchema = registerBodySchema
-export type PostKakaoRegisterBody = zod.infer<typeof PostKakaoRegisterBodySchema>
-export const PostKakaoRegisterResponseSchema = registerResponseSchema
-export type PostKakaoRegisterResponse = zod.infer<typeof PostKakaoRegisterResponseSchema>
+export const postKakaoRegisterBodySchema = registerBodySchema
+export type PostKakaoRegisterBody = z.infer<typeof postKakaoRegisterBodySchema>
+export const postKakaoRegisterResponseSchema = registerResponseSchema
+export type PostKakaoRegisterResponse = z.infer<typeof postKakaoRegisterResponseSchema>
 
 // /auth/register
-export const PostRegisterBodySchema = registerBodySchema
-export type PostRegisterBody = zod.infer<typeof PostRegisterBodySchema>
-export const PostRegisterResponseSchema = registerResponseSchema
-export type PostRegisterResponse = zod.infer<typeof PostRegisterResponseSchema>
+export const postRegisterBodySchema = registerBodySchema
+export type PostRegisterBody = z.infer<typeof postRegisterBodySchema>
+export const postRegisterResponseSchema = registerResponseSchema
+export type PostRegisterResponse = z.infer<typeof postRegisterResponseSchema>
 
 // /auth/refresh
-export const PostRefreshTokenBodySchema = zod.object({
-  refreshToken: zod.string(),
+export const postRefreshTokenBodySchema = z.object({
+  refreshToken: z.string(),
 })
-export type PostRefreshTokenBody = zod.infer<typeof PostRefreshTokenBodySchema>
-export const PostRefreshTokenResponseSchema = zod.object({
-  success: zod.boolean(),
-  accessToken: zod.string(),
-  refreshToken: zod.string(),
-  tokenType: zod.string(),
-  expiresIn: zod.number(),
-  userId: zod.string(),
+export type PostRefreshTokenBody = z.infer<typeof postRefreshTokenBodySchema>
+export const postRefreshTokenResponseSchema = z.object({
+  success: z.boolean(),
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  tokenType: z.string(),
+  expiresIn: z.number(),
+  userId: z.string(),
 })
-export type PostRefreshTokenResponse = zod.infer<typeof PostRefreshTokenResponseSchema>
+export type PostRefreshTokenResponse = z.infer<typeof postRefreshTokenResponseSchema>
 
 // /auth/logout
-export const PostLogoutResponseSchema = zod.object({
-  message: zod.string(),
+export const postLogoutResponseSchema = z.object({
+  message: z.string(),
 })
-export type PostLogoutResponse = zod.infer<typeof PostLogoutResponseSchema>
+export type PostLogoutResponse = z.infer<typeof postLogoutResponseSchema>

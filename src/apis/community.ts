@@ -1,3 +1,4 @@
+import { CareCode } from './interceptor'
 import {
   GetCommunityPostByIdPath,
   getCommunityPostByIdPathSchema,
@@ -18,7 +19,6 @@ import {
   PostCommunityPostResponse,
   postCommunityPostResponseSchema,
 } from '@/types/apis/community'
-import { CareCode } from './interceptor'
 
 export const getCommunityPosts = async (
   query: GetCommunityPostsQuery,

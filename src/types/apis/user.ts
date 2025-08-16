@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 // 유저 스키마
-export const UserSchema = z.object({
+export const userSchema = z.object({
   userId: z.string(),
   email: z.string().email(),
   name: z.string(),
@@ -13,28 +13,29 @@ export const UserSchema = z.object({
   role: z.enum(['PARENT', 'CHILD']).optional(),
   isActive: z.boolean(),
   emailVerified: z.boolean(),
-  lastLoginAt: z.date(), // 2024-01-15T10:30:00
-  createdAt: z.date(), // 2024-01-15T10:30:00
+  lastLoginAt: z.string().optional(), // 2024-01-15T10:30:00
+  createdAt: z.string().optional(), // 2024-01-15T10:30:00
+  updatedAt: z.string().optional(),
 })
-export type User = z.infer<typeof UserSchema>
+export type User = z.infer<typeof userSchema>
 
 // /auth/me
-export const GetUserInfoResponseSchema = z.object({
+export const getUserInfoResponseSchema = z.object({
   success: z.boolean(),
-  user: UserSchema,
+  user: userSchema,
 })
-export type GetUserInfoResponse = z.infer<typeof GetUserInfoResponseSchema>
+export type GetUserInfoResponse = z.infer<typeof getUserInfoResponseSchema>
 
 // /users/profile
-export const PutUserInfoBodySchema = z.object({
+export const putUserInfoBodySchema = z.object({
   name: z.string().optional(),
   phoneNumber: z.string().optional(),
   address: z.string().optional(),
   profileImageUrl: z.string().url(),
 })
-export type PutUserInfoBody = z.infer<typeof PutUserInfoBodySchema>
-export const PutUserInfoResponseSchema = z.object({
+export type PutUserInfoBody = z.infer<typeof putUserInfoBodySchema>
+export const putUserInfoResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
 })
-export type PutUserInfoResponse = z.infer<typeof PutUserInfoResponseSchema>
+export type PutUserInfoResponse = z.infer<typeof putUserInfoResponseSchema>

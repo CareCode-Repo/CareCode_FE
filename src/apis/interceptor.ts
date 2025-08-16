@@ -1,6 +1,6 @@
-import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { getAccessToken, refreshAccessToken, clearAccessToken, getRefreshToken } from './auth'
+import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 
 const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인
 

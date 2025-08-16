@@ -1,55 +1,54 @@
 import {
-  PostKakaoLoginBody,
-  PostKakaoLoginBodySchema,
-  PostKakaoLoginResponseSchema,
-  PostKakaoRegisterBody,
-  PostKakaoRegisterBodySchema,
-  PostKakaoRegisterResponseSchema,
   PostLoginBody,
-  PostLoginBodySchema,
-  PostLoginResponseSchema,
-  PostRefreshTokenBody,
-  PostRefreshTokenBodySchema,
-  PostRefreshTokenResponse,
-  PostRefreshTokenResponseSchema,
+  PostLoginResponse,
+  PostKakaoLoginBody,
+  PostKakaoLoginResponse,
   PostRegisterBody,
-  PostRegisterBodySchema,
-  PostRegisterResponseSchema,
+  PostRegisterResponse,
+  PostKakaoRegisterBody,
+  PostRefreshTokenBody,
+  PostRefreshTokenResponse,
+  postKakaoLoginBodySchema,
+  postKakaoLoginResponseSchema,
+  postKakaoRegisterBodySchema,
+  postKakaoRegisterResponseSchema,
+  postLoginBodySchema,
+  postLoginResponseSchema,
+  postRefreshTokenBodySchema,
+  postRefreshTokenResponseSchema,
+  postRegisterBodySchema,
+  postRegisterResponseSchema,
 } from '@/types/apis/auth'
 import { CareCode } from './interceptor'
 
 // /auth/login
-export const postLogin = async (body: PostLoginBody) => {
-  const parsedBody = PostLoginBodySchema.parse(body)
+export const postLogin = async (body: PostLoginBody): Promise<PostLoginResponse> => {
+  const parsedBody = postLoginBodySchema.parse(body)
   const res = await CareCode.post('/auth/login', parsedBody)
-  return PostLoginResponseSchema.parse(res.data)
+  return postLoginResponseSchema.parse(res.data)
 }
 
 // /auth/kakao/login
-export const postKakaoLogin = async (body: PostKakaoLoginBody) => {
-  const parsedBody = PostKakaoLoginBodySchema.parse(body)
+export const postKakaoLogin = async (body: PostKakaoLoginBody): Promise<PostKakaoLoginResponse> => {
+  const parsedBody = postKakaoLoginBodySchema.parse(body)
   const res = await CareCode.post('/auth/kakao/login', parsedBody)
-  return PostKakaoLoginResponseSchema.parse(res.data)
+  return postKakaoLoginResponseSchema.parse(res.data)
 }
 
 // /auth/register
-export const PostRegister = async (body: PostRegisterBody) => {
-  const parsedBody = PostRegisterBodySchema.parse(body)
+export const PostRegister = async (body: PostRegisterBody): Promise<PostRegisterResponse> => {
+  const parsedBody = postRegisterBodySchema.parse(body)
   const res = await CareCode.post('/auth/register', parsedBody)
-  return PostRegisterResponseSchema.parse(res.data)
+  return postRegisterResponseSchema.parse(res.data)
 }
 
 // /auth/kakao/register
-export const PostKakaoRegister = async (body: PostKakaoRegisterBody) => {
-  const parsedBody = PostKakaoRegisterBodySchema.parse(body)
+export const PostKakaoRegister = async (
+  body: PostKakaoRegisterBody,
+): Promise<PostRegisterResponse> => {
+  const parsedBody = postKakaoRegisterBodySchema.parse(body)
   const res = await CareCode.post('/auth/kakao/register', parsedBody)
-  return PostKakaoRegisterResponseSchema.parse(res.data)
-}
-
-// /auth/logout
-export const PostLogout = async () => {
-  const res = await CareCode.post('/auth/logout')
-  return PostLoginResponseSchema.parse(res.data)
+  return postKakaoRegisterResponseSchema.parse(res.data)
 }
 
 // JWT 관리
@@ -57,7 +56,11 @@ let accessToken: string | null = null
 let refreshToken: string | null = null
 let refreshTimer: NodeJS.Timeout | null = null
 
-export function setAccessToken(newAccessToken: string, newRefreshToken: string, expiresIn: number) {
+export function setAccessToken(
+  newAccessToken: string,
+  newRefreshToken: string,
+  expiresIn: number,
+): void {
   accessToken = newAccessToken
   refreshToken = newRefreshToken
 
@@ -80,14 +83,14 @@ export function setAccessToken(newAccessToken: string, newRefreshToken: string, 
   }, refreshTime)
 }
 
-export function getAccessToken() {
+export function getAccessToken(): string | null {
   return accessToken
 }
-export function getRefreshToken() {
+export function getRefreshToken(): string | null {
   return refreshToken
 }
 
-export function clearAccessToken() {
+export function clearAccessToken(): void {
   accessToken = null
   refreshToken = null
   if (refreshTimer) clearTimeout(refreshTimer)
@@ -97,9 +100,9 @@ export function clearAccessToken() {
 export async function refreshAccessToken(
   body: PostRefreshTokenBody,
 ): Promise<PostRefreshTokenResponse> {
-  const parsedBody = PostRefreshTokenBodySchema.parse(body)
+  const parsedBody = postRefreshTokenBodySchema.parse(body)
   const res = await CareCode.post('/auth/refresh', parsedBody)
-  const parsed = PostRefreshTokenResponseSchema.parse(res.data)
+  const parsed = postRefreshTokenResponseSchema.parse(res.data)
 
   setAccessToken(parsed.accessToken, parsed.refreshToken, parsed.expiresIn)
   return parsed

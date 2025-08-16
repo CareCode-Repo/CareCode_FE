@@ -18,7 +18,7 @@ type HttpMethod = keyof typeof COLORS // "GET" | "POST" | "PUT" | "DELETE" | "RE
  */
 export const printRequestConsole = (config: { [key: string]: any }): void => {
   const method = config.method?.toUpperCase() as HttpMethod | undefined
-  const methodColor = method ? COLORS[method] ?? COLORS.RESET : COLORS.RESET
+  const methodColor = method ? (COLORS[method] ?? COLORS.RESET) : COLORS.RESET
 
   console.log(`
     ${methodColor}====== [HTTP REQUEST] ======${COLORS.RESET}

@@ -26,7 +26,7 @@ const facilitySchema = z.object({
 export type Facility = z.infer<typeof facilitySchema>
 
 // /facilities
-export const GetFacilitiesQuerySchema = z.object({
+export const getFacilitiesQuerySchema = z.object({
   page: z.number().min(0).optional(),
   size: z.number().min(1).max(100).optional().default(20),
   location: z.string().optional(),
@@ -35,8 +35,8 @@ export const GetFacilitiesQuerySchema = z.object({
   longitude: z.number().optional(),
   radius: z.number().optional(),
 })
-export type GetFacilitiesQuery = z.infer<typeof GetFacilitiesQuerySchema>
-export const GetFacilitiesResponseSchema = z.object({
+export type GetFacilitiesQuery = z.infer<typeof getFacilitiesQuerySchema>
+export const getFacilitiesResponseSchema = z.object({
   success: z.boolean(),
   content: z.array(facilitySchema),
   page: z.number(),
@@ -46,14 +46,14 @@ export const GetFacilitiesResponseSchema = z.object({
   first: z.boolean().optional(),
   last: z.boolean().optional(),
 })
-export type GetFacilitiesResponse = z.infer<typeof GetFacilitiesResponseSchema>
+export type GetFacilitiesResponse = z.infer<typeof getFacilitiesResponseSchema>
 
 // /facilities/{id}
 // 시설 상세정보 조회
-export const GetFacilityByIdPathSchema = z.object({
+export const getFacilityByIdPathSchema = z.object({
   id: z.number(),
 })
-export type GetFacilityByIdPath = z.infer<typeof GetFacilityByIdPathSchema>
+export type GetFacilityByIdPath = z.infer<typeof getFacilityByIdPathSchema>
 export const GetFacilityByIdResponseSchema = z.object({
   success: z.boolean(),
   facility: facilitySchema,
@@ -62,18 +62,18 @@ export type GetFacilityByIdResponse = z.infer<typeof GetFacilityByIdResponseSche
 
 // /facilities/{facilityId}/bookings
 // 시설 예약
-export const PostFacilityBookPathSchema = z.object({
+export const postFacilityBookPathSchema = z.object({
   facilityId: z.number(),
 })
-export type PostFacilityBookPath = z.infer<typeof PostFacilityBookPathSchema>
-export const PostFacilityBookBodySchema = z.object({
+export type PostFacilityBookPath = z.infer<typeof postFacilityBookPathSchema>
+export const postFacilityBookBodySchema = z.object({
   childName: z.string(),
   childAge: z.number(),
   requestedDate: z.string(),
   notes: z.string().optional(),
 })
-export type PostFacilityBookBody = z.infer<typeof PostFacilityBookBodySchema>
-export const PostFacilityBookResponseSchema = z.object({
+export type PostFacilityBookBody = z.infer<typeof postFacilityBookBodySchema>
+export const postFacilityBookResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   booking: z.object({
@@ -88,22 +88,22 @@ export const PostFacilityBookResponseSchema = z.object({
     createAt: z.string(),
   }),
 })
-export type PostFacilityBookResponse = z.infer<typeof PostFacilityBookResponseSchema>
+export type PostFacilityBookResponse = z.infer<typeof postFacilityBookResponseSchema>
 
 // /facilities/type/{facilityType}
 // 시설 타입별 필터링
-export const GetFacilitiesByTypePathSchema = z.object({
+export const getFacilitiesByTypePathSchema = z.object({
   facilityType: z.enum(FacilityType),
 })
-export type GetFacilitiesByTypePath = z.infer<typeof GetFacilitiesByTypePathSchema>
-export const GetFacilitiesByTypeResponseSchema = z.object({
+export type GetFacilitiesByTypePath = z.infer<typeof getFacilitiesByTypePathSchema>
+export const getFacilitiesByTypeResponseSchema = z.object({
   contents: z.array(facilitySchema),
 })
-export type GetFacilitiesByTypeResponse = z.infer<typeof GetFacilitiesByTypeResponseSchema>
+export type GetFacilitiesByTypeResponse = z.infer<typeof getFacilitiesByTypeResponseSchema>
 
 // /facilities/search
 // 시설 검색
-export const PostFacilitiesSearchBodySchema = z.object({
+export const postFacilitiesSearchBodySchema = z.object({
   keyword: z.string(),
   facilityType: z.enum(FacilityType).optional(),
   region: z.string().optional(),
@@ -120,23 +120,24 @@ export const PostFacilitiesSearchBodySchema = z.object({
   sortBy: z.string().optional(), // rating
   sortDirection: z.string().optional(), // ASC / DESC
 })
-export type PostFacilitiesSearchBody = z.infer<typeof PostFacilitiesSearchBodySchema>
-export const PostFacilitiesSearchResponse = z.object({
+export type PostFacilitiesSearchBody = z.infer<typeof postFacilitiesSearchBodySchema>
+export const postFacilitiesSearchResponseSchema = z.object({
   content: z.array(facilitySchema),
   page: z.number(),
   size: z.number().optional(),
   totalElements: z.number(),
   totalPages: z.number(),
 })
+export type PostFacilitiesSearchResponse = z.infer<typeof postFacilitiesSearchResponseSchema>
 
 // /facilities/location/{location}
 // 위치 기반 시설 검색
-export const GetFacilitiesByLocationPathSchema = z.object({
+export const getFacilitiesByLocationPathSchema = z.object({
   location: z.string(),
 })
-export type GetFacilitiesByLocationPath = z.infer<typeof GetFacilitiesByLocationPathSchema>
-export const GetFacilitesByLocationResponseSchema = z.array(facilitySchema)
-export type GetFacilitesByLocationResponse = z.infer<typeof GetFacilitesByLocationResponseSchema>
+export type GetFacilitiesByLocationPath = z.infer<typeof getFacilitiesByLocationPathSchema>
+export const getFacilitesByLocationResponseSchema = z.array(facilitySchema)
+export type GetFacilitesByLocationResponse = z.infer<typeof getFacilitesByLocationResponseSchema>
 
 // /facilities/{id}/rating
 // 시설 평점 매기기

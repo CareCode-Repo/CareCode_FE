@@ -20,7 +20,7 @@ export const getNotificationList = async (
   query: GetNotificationsQuery,
 ): Promise<GetNotificationsResponse> => {
   const parsedQuery = getNotificationsQuerySchema.parse(query)
-  const res = await CareCode.get('/notifications', { params: query })
+  const res = await CareCode.get('/notifications', { params: parsedQuery })
   return getNotificationsResponseSchema.parse(res.data)
 }
 
