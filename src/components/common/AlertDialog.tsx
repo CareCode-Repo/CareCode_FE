@@ -22,7 +22,7 @@ const AlertDialog = ({
     <RadixAlertDialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <RadixAlertDialog.Portal>
         <RadixAlertDialog.Overlay className="fixed inset-0 bg-black/65 z-10" />
-        <RadixAlertDialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4.5 pt-6 pb-4.5 rounded-xl w-[331px] z-20 border border-gray-300">
+        <RadixAlertDialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-4.5 pt-6 pb-4.5 rounded-xl w-[20.6875rem] z-20 border border-gray-300">
           <RadixAlertDialog.Title className="text-t1-semibold text-center text-gray-800 mb-2">
             {title}
           </RadixAlertDialog.Title>

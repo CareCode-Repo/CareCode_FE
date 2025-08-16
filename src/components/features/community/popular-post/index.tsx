@@ -23,7 +23,7 @@ const PopularPost = ({
   return (
     <div className="flex py-2 cursor-pointer hover:bg-gray-100" onClick={onClick}>
       <div className="flex-1 min-w-0 flex flex-col gap-1 text-gray-600">
-        <p className="text-t2-regular truncate">{content}</p>
+        <p className="text-b2-regular truncate">{content}</p>
         <span className="text-c1-regular">
           {createdDate} {createdTime}
         </span>
