@@ -83,6 +83,9 @@ export function setAccessToken(newAccessToken: string, newRefreshToken: string, 
 export function getAccessToken() {
   return accessToken
 }
+export function getRefreshToken() {
+  return refreshToken
+}
 
 export function clearAccessToken() {
   accessToken = null
