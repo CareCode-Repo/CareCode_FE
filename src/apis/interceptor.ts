@@ -1,6 +1,6 @@
 import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { getAccessToken, refreshAccessToken, clearAccessToken } from './auth'
+import { getAccessToken, refreshAccessToken, clearAccessToken, getRefreshToken } from './auth'
 
 const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인
 
@@ -29,9 +29,14 @@ CareCode.interceptors.response.use(
     if (isDevelopment) printErrorConsole(error)
     if (error.response?.status === 401) {
       try {
-        const newToken = await refreshAccessToken()
-        error.config.headers.Authorization = `Bearer ${newToken.accessToken}`
-        return CareCode(error.config)
+        const refreshToken = getRefreshToken()
+        if (refreshToken !== null) {
+          const newToken = await refreshAccessToken({ refreshToken })
+          error.config.headers.Authorization = `Bearer ${newToken.accessToken}`
+          return CareCode(error.config)
+        } else {
+          throw new Error('Refresh Token is NULL')
+        }
       } catch {
         clearAccessToken()
         window.location.href = '/login' // 로그인 화면으로 이동
