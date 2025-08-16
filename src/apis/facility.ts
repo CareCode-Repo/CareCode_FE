@@ -1,3 +1,4 @@
+import { CareCode } from './interceptor'
 import {
   GetFacilityByIdPath,
   GetFacilityByIdResponse,
@@ -20,7 +21,6 @@ import {
   postFacilityBookPathSchema,
   postFacilityBookResponseSchema,
 } from '@/types/apis/facility'
-import { CareCode } from './interceptor'
 
 // 시설 상세 정보 조회
 export const getFacilityById = async (

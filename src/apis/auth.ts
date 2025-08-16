@@ -1,3 +1,4 @@
+import { CareCode } from './interceptor'
 import {
   PostLoginBody,
   PostLoginResponse,
@@ -19,7 +20,6 @@ import {
   postRegisterBodySchema,
   postRegisterResponseSchema,
 } from '@/types/apis/auth'
-import { CareCode } from './interceptor'
 
 // /auth/login
 export const postLogin = async (body: PostLoginBody): Promise<PostLoginResponse> => {
