@@ -14,7 +14,7 @@ import {
   PostFacilityBookPath,
   PostFacilityBookPathSchema,
   PostFacilityBookResponseSchema,
-} from '@/types/apis/facilities'
+} from '@/types/apis/facility'
 import { CareCode } from './interceptor'
 
 // 시설 상세 정보 조회
