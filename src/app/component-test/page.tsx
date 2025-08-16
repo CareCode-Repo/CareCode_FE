@@ -1,6 +1,8 @@
 'use client'
 
-import { ReactElement, useState } from 'react'
+import SearchIcon from '@/assets/icons/search.svg'
+import PaperIcon from '@/assets/icons/paper_small.svg'
+import { ReactElement, use, useEffect, useState } from 'react'
 import SettingIcon from '@/assets/icons/setting.svg'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import BellIcon from '@/assets/icons/bell.svg'
@@ -31,10 +33,14 @@ import NotificationCard from '@/components/features/notification/NotificationCar
 import PolicyCard from '@/components/features/policy/PolicyCard'
 import IconButton from '@/components/common/top-navbar/IconButton'
 import TopNavBar from '@/components/common/top-navbar'
+import Input from '@/components/common/input'
 
 export default function ComponentTest(): ReactElement {
+  const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const handleClose = () => setIsOpen(false)
+
+  const handleChange = (newValue: string) => setValue(newValue)
 
   const mockComment = {
     author: '하늘이야빠',
@@ -53,7 +59,6 @@ export default function ComponentTest(): ReactElement {
       },
     ],
   }
-
   const mockMenuItems = [
     {
       id: '1',
@@ -75,19 +80,44 @@ export default function ComponentTest(): ReactElement {
   return (
     <div className="flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+      {/* 인풋 컴포넌트 테스트 */}
+      <Input
+        value={value}
+        label="주소"
+        required
+        onChange={handleChange}
+        placeholder="주소를 입력하세요"
+        maxLength={50}
+        rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+      />
+      <Input value={value} label="이메일" onChange={handleChange} />
+      <Input
+        value={value}
+        label="주소"
+        onChange={handleChange}
+        errorText="유효하지 않습니다."
+        placeholder="주소를 입력하세요"
+        showErrorText
+      />
+      <Input
+        value={value}
+        onChange={handleChange}
+        variant="rounded"
+        rightIcon={<PaperIcon className="size-6 fill-gray-600 cursor-pointer" />}
+      />
       {/* 탑네브바 테스트 */}
       <TopNavBar
         title="회원가입"
         hasBackButton
         actionButtons={[{ icon: SettingIcon }, { icon: BellIcon, showBadge: true }]}
       />
+      <TopNavBar title="회원가입" hasBackButton />
       <div>
         <IconButton icon={SettingIcon} />
         <IconButton icon={BellIcon} />
         <IconButton icon={HamburgerIcon} />
         <IconButton icon={BellIcon} showBadge />
       </div>
-      <TopNavBar />
       {/* 탭바 테스트 */}
       <TabBar />
       <div className="flex flex-col p-5 gap-2">
