@@ -28,9 +28,9 @@ export const TabItem = ({
     <Tabs.Trigger
       value={value}
       onClick={handleClick}
-      className="outline-none flex-1 flex flex-col justify-center items-center gap-1 bg-white border-none cursor-pointer py-2"
+      className="flex-1 flex flex-col justify-center items-center gap-1 cursor-pointer"
     >
-      <Icon className={clsx('size-6.5', selected ? 'fill-green-500' : 'fill-gray-700')} />
+      <Icon className={clsx('size-8', selected ? 'fill-green-500' : 'fill-gray-700')} />
       <span className={clsx('text-c1-regular', selected ? 'text-green-600' : 'text-gray-700')}>
         {title}
       </span>
