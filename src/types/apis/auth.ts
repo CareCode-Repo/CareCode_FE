@@ -61,13 +61,13 @@ const registerBodySchema = zod.object({
 })
 const registerResponseSchema = zod.object({
   success: zod.boolean(),
-  message: string(),
-  userId: string(),
+  message: zod.string(),
+  userId: zod.string(),
 })
 
 // /auth/kakao/register
 export const PostKakaoRegisterBodySchema = registerBodySchema
-export type PostKakaoRegisterBody = zod.infer<typeof PostKakaoRegisterBody>
+export type PostKakaoRegisterBody = zod.infer<typeof PostKakaoRegisterBodySchema>
 export const PostKakaoRegisterResponseSchema = registerResponseSchema
 export type PostKakaoRegisterResponse = zod.infer<typeof PostKakaoRegisterResponseSchema>
 
