@@ -1,9 +1,8 @@
-import { useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
+import { BackButton } from '../BackButton'
 import IconButton, { IconButtonProps } from './IconButton'
-import BackIcon from '@/assets/icons/arrow_left.svg'
 
-interface TopNavBarProps {
+export interface TopNavBarProps {
   title?: string
   actionButtons?: IconButtonProps[]
   hasBackButton?: boolean
@@ -16,21 +15,10 @@ const TopNavBar = ({
   hasBackButton = false,
   onBackButtonClick,
 }: TopNavBarProps): ReactElement => {
-  const router = useRouter()
-  const handleBackClick = () => {
-    if (onBackButtonClick) {
-      onBackButtonClick() // 커스텀 동작이 있으면 그것을 실행
-    } else {
-      router.back() // 없으면 기본 뒤로가기
-    }
-  }
-
   return (
     <div className="flex items-center py-4 px-5 bg-white">
       {/* back */}
-      {hasBackButton && (
-        <IconButton icon={BackIcon} iconClassName="fill-black size-6" onClick={handleBackClick} />
-      )}
+      {hasBackButton && <BackButton onBackButtonClick={onBackButtonClick} />}
       {/* title */}
       <div className="grow h-8 pl-2.5 text-h3-bold text-black content-center">{title}</div>
       {/* action buttons */}

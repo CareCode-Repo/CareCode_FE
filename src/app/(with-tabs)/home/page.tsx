@@ -1,21 +1,24 @@
 'use client'
+
+import { useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
 import BellIcon from '@/assets/icons/bell.svg'
 import SearchIcon from '@/assets/icons/search.svg'
+import Layout from '@/components/common/Layout'
 import MainSection from '@/components/common/MainSection'
 import Separator from '@/components/common/Separator'
 import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
-import TopNavBar from '@/components/common/top-navbar'
 import ChatSection from '@/components/features/chat/ChatSection'
 import PopularPost from '@/components/features/community/popular-post'
 import PolicyCard from '@/components/features/policy/PolicyCard'
 // import { useGetPolicyList } from '@/queries/policy'
 
 const Home = (): ReactElement => {
+  const router = useRouter()
+  const handleNotificationClick = () => router.push('/notification')
   // TODO: API 연동 시 아래 주석 해제하고 더미 데이터 제거
   // const { data: policies, isLoading, error } = useGetPolicyList()
-
   // 임시 더미 데이터 (API 연동 후 제거)
   const dummyPolicies = [
     {
@@ -72,9 +75,12 @@ const Home = (): ReactElement => {
   ]
 
   return (
-    <div className="flex flex-col h-full">
-      <TopNavBar title="홈" actionButtons={[{ icon: BellIcon }]} />
-      <div className="px-4.5 grow overflow-y-scroll flex flex-col bg-gray-50">
+    <Layout
+      hasTopNav
+      title="홈"
+      actionButtons={[{ icon: BellIcon, onClick: handleNotificationClick }]}
+    >
+      <div className="px-4.5">
         <Spacer className="h-5 shrink-0" />
         <Input
           value=""
@@ -160,7 +166,7 @@ const Home = (): ReactElement => {
         </div>
         <Spacer className="h-5" />
       </div>
-    </div>
+    </Layout>
   )
 }
 

@@ -1,3 +1,5 @@
+'use client'
+
 import * as Label from '@radix-ui/react-label'
 import clsx from 'clsx'
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react'
