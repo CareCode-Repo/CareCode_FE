@@ -12,6 +12,7 @@ export const CareCode: AxiosInstance = axios.create({
 })
 
 // 요청 시 Authorization 헤더 적용
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
   if (isDevelopment) printRequestConsole(config)
   const token = getAccessToken()
@@ -21,6 +22,7 @@ CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
 
 // 401 발생 시 refresh + 재시도
 CareCode.interceptors.response.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (res: AxiosResponse<any, any>) => {
     printResponseConsole(res)
     return res
