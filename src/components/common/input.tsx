@@ -1,8 +1,8 @@
 'use client'
 
-import * as Label from '@radix-ui/react-label'
 import clsx from 'clsx'
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react'
+import RadixLabel from './Label'
 import WarningIcon from '@/assets/icons/warning.svg'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onError' | 'onChange'> {
@@ -42,6 +42,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false)
+    const inputId = `input-${Math.random().toString(36).substr(2, 9)}`
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value
@@ -54,10 +55,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx('flex flex-col')}>
         {label && (
-          <Label.Root className="text-t1-semibold text-black mb-3.5">
+          <RadixLabel required={required} htmlFor={inputId}>
             {label}
-            {required && <span className="text-b2-medium text-red align-super ml-0.5">*</span>}
-          </Label.Root>
+          </RadixLabel>
         )}
 
         {/* Field */}
@@ -81,6 +81,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {/* 실제입력값 */}
           <input
             ref={ref}
+            id={inputId}
             type={type}
             value={value}
             maxLength={maxLength}
@@ -115,6 +116,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   },
 )
 
-export default Input
-
 Input.displayName = 'Input'
+
+export default Input
