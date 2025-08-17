@@ -13,6 +13,7 @@ import WarningIcon from '@/assets/icons/warning.svg'
 import AlertDialog from '@/components/common/AlertDialog'
 import Button from '@/components/common/Button'
 import Chip from '@/components/common/Chip'
+import Error from '@/components/common/Error'
 import MainSection from '@/components/common/MainSection'
 import Separator from '@/components/common/Separator'
 import Switch from '@/components/common/Switch'
@@ -40,6 +41,7 @@ export default function ComponentTest(): ReactElement {
   const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [showLoading, setShowLoading] = useState(false)
+  const [showError, setShowError] = useState(false)
   const handleClose = () => setIsOpen(false)
 
   const handleChange = (newValue: string) => setValue(newValue)
@@ -78,11 +80,15 @@ export default function ComponentTest(): ReactElement {
       onClick: () => console.log('3'),
     },
   ]
+  if (showError) return <Error onRetry={() => setShowError(false)} />
 
   return (
     <div className="flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
-
+      {/* Error 컴포넌트 테스트 */}
+      <Button color="red" onClick={() => setShowError(!showError)}>
+        Error 발생
+      </Button>
       {/* Loading 컴포넌트 테스트 */}
       <div className="mb-4">
         <Button color="green" size="large" onClick={() => setShowLoading(!showLoading)}>
