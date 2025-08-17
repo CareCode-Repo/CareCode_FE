@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react'
+import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useId, useState } from 'react'
 import RadixLabel from './Label'
 import WarningIcon from '@/assets/icons/warning.svg'
 
@@ -42,7 +42,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     const [isFocused, setIsFocused] = useState(false)
-    const inputId = `input-${Math.random().toString(36).substr(2, 9)}`
+    const inputId = useId()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value
