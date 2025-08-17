@@ -29,14 +29,14 @@ export default function RootLayout({
         <QueryProvider>
           <div className="flex min-h-dvh">
             {/* 데스크톱 프로모션 패널 */}
-            <div className="hidden sm:block sm:flex-1/3">
+            <aside className="hidden sm:block sm:flex-1/3">
               <PromotionPanel />
-            </div>
+            </aside>
 
-            {/* 메인 콘텐츠 영역 */}
-            <main className="flex-1 sm:flex-2/3">
+            {/* 앱 콘텐츠 영역 */}
+            <div className="flex-1 sm:flex-2/3">
               <div className="h-dvh max-w-sm mx-auto overflow-y-auto">{children}</div>
-            </main>
+            </div>
           </div>
         </QueryProvider>
       </body>
