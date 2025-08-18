@@ -7,6 +7,13 @@ export const postAuthorSchema = z.object({
 })
 export type PostAuthor = z.infer<typeof postAuthorSchema>
 
+export const postCommentSchema = z.object({
+  userId: z.string(),
+  name: z.string(),
+  content: z.string(),
+})
+export type PostComment = z.infer<typeof postCommentSchema>
+
 export const postSchema = z.object({
   id: z.number(),
   title: z.string(),
@@ -17,10 +24,12 @@ export const postSchema = z.object({
   viewCount: z.number(),
   likeCount: z.number(),
   commentCount: z.number(),
+  comments: z.array(postCommentSchema).optional(),
   isAnonymous: z.boolean(),
   createdAt: z.string(),
   updatedAt: z.string(),
 })
+export type Post = z.infer<typeof postSchema>
 
 export const postListItemSchema = z.object({
   id: z.number(),

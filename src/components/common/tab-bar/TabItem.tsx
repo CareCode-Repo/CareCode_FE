@@ -28,7 +28,7 @@ export const TabItem = ({
     <Tabs.Trigger
       value={value}
       onClick={handleClick}
-      className="flex-1 flex flex-col justify-center items-center gap-1 cursor-pointer"
+      className="flex flex-1 cursor-pointer flex-col items-center justify-center gap-1"
     >
       <Icon className={clsx('size-8', selected ? 'fill-green-500' : 'fill-gray-700')} />
       <span className={clsx('text-c1-regular', selected ? 'text-green-600' : 'text-gray-700')}>

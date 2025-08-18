@@ -35,16 +35,13 @@ export const kakaoProfileSchema = z.object({
 
 // /auth/kakao/login
 const kakaoLoginSuccessSchema = loginSuccessSchema
-const kakaoLoginFailSchema = loginFailSchema.extend({
-  kakaoProfile: kakaoProfileSchema,
-})
 
 export const postKakaoLoginBodySchema = z.object({
   kakaoAccessToken: z.string(),
 })
 export type PostKakaoLoginBody = z.infer<typeof postKakaoLoginBodySchema>
 
-export const postKakaoLoginResponseSchema = z.union([kakaoLoginSuccessSchema, kakaoLoginFailSchema])
+export const postKakaoLoginResponseSchema = kakaoLoginSuccessSchema
 export type PostKakaoLoginResponse = z.infer<typeof postKakaoLoginResponseSchema>
 
 // register 공통

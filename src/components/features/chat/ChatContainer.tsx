@@ -16,7 +16,7 @@ const ChatContainer = memo(({ messages }: ChatContainerProps) => {
   }, [messages.length])
 
   return (
-    <div className="flex-1 overflow-y-scroll flex flex-col gap-4 py-4 scrollbar-hide">
+    <div className="scrollbar-hide flex flex-1 flex-col gap-4 overflow-y-scroll py-4">
       {/* 메시지 리스트 */}
       {messages.map((message) => (
         <motion.div

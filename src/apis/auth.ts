@@ -51,52 +51,71 @@ export const PostKakaoRegister = async (
   return postKakaoRegisterResponseSchema.parse(res.data)
 }
 
-// JWT 관리
-let accessToken: string | null = null
-let refreshToken: string | null = null
 let refreshTimer: NodeJS.Timeout | null = null
 
-export function setAccessToken(
-  newAccessToken: string,
-  newRefreshToken: string,
+// 토큰 관리
+export function setTokens(
+  accessToken: string,
+  refreshToken: string,
+  userId: string,
   expiresIn: number,
 ): void {
-  accessToken = newAccessToken
-  refreshToken = newRefreshToken
+  if (typeof window === 'undefined') return
 
+  // sessionStorage: accessToken + userId
+  sessionStorage.setItem('accessToken', accessToken)
+  sessionStorage.setItem('userId', userId)
+
+  // localStorage: refreshToken
+  localStorage.setItem('refreshToken', refreshToken)
+
+  // 이전 타이머 제거
   if (refreshTimer) clearTimeout(refreshTimer)
 
-  // expiresIn(ms) 기준으로 30초 전 갱신
+  // 자동 갱신: expiresIn(ms) 기준 30초 전
   const refreshTime = expiresIn - 30_000
-  refreshTimer = setTimeout(async () => {
-    try {
-      if (refreshToken !== null) {
-        await refreshAccessToken({ refreshToken })
-      } else {
-        throw new Error('Refresh Token is NULL')
-      }
-    } catch (err) {
-      console.error('자동 토큰 갱신 실패', err)
-      clearAccessToken()
-      window.location.href = '/login'
-    }
-  }, refreshTime)
+  refreshTimer = setTimeout(() => autoRefreshToken(), refreshTime)
 }
 
 export function getAccessToken(): string | null {
-  return accessToken
+  if (typeof window === 'undefined') return null
+  return sessionStorage.getItem('accessToken')
 }
 export function getRefreshToken(): string | null {
-  return refreshToken
+  if (typeof window === 'undefined') return null
+  return localStorage.getItem('refreshToken')
+}
+export function getUserId(): string | null {
+  if (typeof window === 'undefined') return null
+  return sessionStorage.getItem('userId')
 }
 
-export function clearAccessToken(): void {
-  accessToken = null
-  refreshToken = null
+export function clearTokens(): void {
+  if (typeof window === 'undefined') return
+  sessionStorage.removeItem('accessToken')
+  sessionStorage.removeItem('userId')
+  localStorage.removeItem('refreshToken')
+
   if (refreshTimer) clearTimeout(refreshTimer)
 }
 
-// refresh API 호출 + 토큰 갱신
+async function autoRefreshToken() {
+  const token = getRefreshToken()
+  if (!token) {
+    clearTokens()
+    window.location.href = '/login'
+    return
+  }
+
+  try {
+    await refreshAccessToken({ refreshToken: token })
+  } catch (err) {
+    console.error('자동 토큰 갱신 실패', err)
+    clearTokens()
+    window.location.href = '/login'
+  }
+}
+
 export async function refreshAccessToken(
   body: PostRefreshTokenBody,
 ): Promise<PostRefreshTokenResponse> {
@@ -104,6 +123,7 @@ export async function refreshAccessToken(
   const res = await CareCode.post('/auth/refresh', parsedBody)
   const parsed = postRefreshTokenResponseSchema.parse(res.data)
 
-  setAccessToken(parsed.accessToken, parsed.refreshToken, parsed.expiresIn)
+  // sessionStorage/localStorage에 반영
+  setTokens(parsed.accessToken, parsed.refreshToken, parsed.userId, parsed.expiresIn)
   return parsed
 }

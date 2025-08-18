@@ -21,7 +21,7 @@ const IconButton = ({
     <button onClick={onClick} className={clsx('inline-block', className)}>
       <div className="relative">
         <Icon className={iconClassName || 'size-8 fill-black'} />
-        {showBadge && <div className="absolute top-0.5 right-0.5 size-3 bg-red-500 rounded-full" />}
+        {showBadge && <div className="absolute top-0.5 right-0.5 size-3 rounded-full bg-red-500" />}
       </div>
     </button>
   )

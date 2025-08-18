@@ -11,10 +11,10 @@ const ChatBubble = memo(({ type = 'user', className, children }: ChatBubbleProps
   return (
     <div
       className={clsx(
-        'text-b2-regular text-black p-3 max-w-xs rounded-t-lg break-words',
+        'text-b2-regular max-w-xs rounded-t-lg p-3 break-words text-black',
         {
-          'bg-green-100 rounded-bl-lg': type === 'user',
-          'border border-gray-300 bg-white rounded-br-lg': type === 'assistant',
+          'rounded-bl-lg bg-green-100': type === 'user',
+          'rounded-br-lg border border-gray-300 bg-white': type === 'assistant',
         },
         className,
       )}

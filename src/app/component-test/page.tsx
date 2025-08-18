@@ -30,7 +30,6 @@ import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
 import ActionButton from '@/components/features/community/ActionButton'
 import Comment from '@/components/features/community/Comment'
-import CommunityPost from '@/components/features/community/CommunityPost'
 import PopularPost from '@/components/features/community/popular-post'
 import FacilityCard from '@/components/features/facility/facility-card'
 import MenuList from '@/components/features/mypage/MenuList'
@@ -84,7 +83,7 @@ export default function ComponentTest(): ReactElement {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+      <h1 className="mb-4 text-2xl font-bold">Component Test Page</h1>
       {/* Error 컴포넌트 테스트 */}
       <Button color="red" onClick={() => setShowError(!showError)}>
         Error 발생
@@ -104,7 +103,7 @@ export default function ComponentTest(): ReactElement {
         onChange={handleChange}
         placeholder="주소를 입력하세요"
         maxLength={50}
-        rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+        rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
       />
       <Input value={value} label="이메일" onChange={handleChange} />
       <Input
@@ -119,7 +118,7 @@ export default function ComponentTest(): ReactElement {
         value={value}
         onChange={handleChange}
         variant="rounded"
-        rightIcon={<PaperIcon className="size-6 fill-gray-600 cursor-pointer" />}
+        rightIcon={<PaperIcon className="size-6 cursor-pointer fill-gray-600" />}
       />
       {/* 탑네브바 테스트 */}
       <TopNavBar
@@ -136,7 +135,7 @@ export default function ComponentTest(): ReactElement {
       </div>
       {/* 탭바 테스트 */}
       <TabBar />
-      <div className="flex flex-col p-5 gap-2">
+      <div className="flex flex-col gap-2 p-5">
         <ChatSection />
         <div>
           {/* button 테스트 */}
@@ -144,7 +143,7 @@ export default function ComponentTest(): ReactElement {
             Green Full Button
           </Button>
           {/* svg 아이콘 테스트 */}
-          <WarningIcon className="w-6 h-6 fill-red" />
+          <WarningIcon className="fill-red h-6 w-6" />
           {/* alert 다이얼로그 테스트 */}
           <Button color="green" size="large" onClick={() => setIsOpen(true)}>
             버튼
@@ -167,7 +166,7 @@ export default function ComponentTest(): ReactElement {
           />
           {/* 드롭다운메뉴 테스트 */}
           <Menubox
-            triggerButton={<KebabIcon className="w-6 h-6 cursor-pointer fill-black" />}
+            triggerButton={<KebabIcon className="h-6 w-6 cursor-pointer fill-black" />}
             items={[
               {
                 content: '수정',
@@ -271,12 +270,6 @@ export default function ComponentTest(): ReactElement {
           />
         </div>
         <div>
-          <CommunityPost
-            title="게시글 제목"
-            content="이것은 커뮤니티 게시글의 내용입니다. 여러 줄로 작성할 수 있습니다. 이것은 커뮤니티 게시글의 내용입니다. 여러 줄로 작성할 수 있습니다."
-            author="작성자 이름"
-            timeAgo="3시간 전"
-          />
           <div className="flex gap-4.5">
             <ActionButton type="like" count={10} onClick={() => console.log('북마크 클릭됨')} />
             <ActionButton type="comment" count={10} onClick={() => console.log('북마크 클릭됨')} />
@@ -289,7 +282,7 @@ export default function ComponentTest(): ReactElement {
       <MenuList title="메뉴분류" items={mockMenuItems} />
       <div className="flex flex-col p-4">
         <MainSection title="최근 정책">
-          <div className="px-4 flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
+          <div className="scrollbar-hide flex gap-3 overflow-x-auto px-4 [&>*]:w-64 [&>*]:flex-shrink-0">
             <PolicyCard
               type="상시접수"
               tags={['건강검진', '서비스지원']}
@@ -313,7 +306,7 @@ export default function ComponentTest(): ReactElement {
           </div>
         </MainSection>
         <MainSection title="인기 게시글">
-          <div className="px-4 flex flex-col">
+          <div className="flex flex-col px-4">
             <PopularPost
               content="이것은 인기 게시글의 내용입니다."
               likeCount={10}

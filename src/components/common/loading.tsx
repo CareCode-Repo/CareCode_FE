@@ -26,7 +26,7 @@ const Loading = ({ content = '로딩 중' }: LoadingProps): ReactElement => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       role="dialog"
       aria-live="polite"
       aria-label={content}
@@ -37,7 +37,7 @@ const Loading = ({ content = '로딩 중' }: LoadingProps): ReactElement => {
           {[0, 1, 2].map((index) => (
             <motion.div
               key={index}
-              className="size-2.5 bg-white rounded-full will-change-transform"
+              className="size-2.5 rounded-full bg-white will-change-transform"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.8, 1, 0.8],
@@ -51,7 +51,7 @@ const Loading = ({ content = '로딩 중' }: LoadingProps): ReactElement => {
             />
           ))}
         </div>
-        <p className="text-white text-h3-bold whitespace-pre-line text-center">{content}</p>
+        <p className="text-h3-bold text-center whitespace-pre-line text-white">{content}</p>
       </div>
     </div>
   )

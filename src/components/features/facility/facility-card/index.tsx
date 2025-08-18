@@ -43,7 +43,7 @@ const FacilityCard = ({
   return (
     <div
       role="button"
-      className="w-[18rem] flex items-center justify-between p-4.5 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors"
+      className="flex w-[18rem] cursor-pointer items-center justify-between rounded-lg bg-gray-100 p-4.5 transition-colors hover:bg-gray-200"
       onClick={onClick}
     >
       <div className="flex flex-col">

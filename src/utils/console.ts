@@ -16,6 +16,7 @@ type HttpMethod = keyof typeof COLORS // "GET" | "POST" | "PUT" | "DELETE" | "RE
 /**
  * HTTP 요청 정보를 콘솔에 출력하는 함수
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const printRequestConsole = (config: { [key: string]: any }): void => {
   const method = config.method?.toUpperCase() as HttpMethod | undefined
   const methodColor = method ? (COLORS[method] ?? COLORS.RESET) : COLORS.RESET
@@ -33,6 +34,7 @@ export const printRequestConsole = (config: { [key: string]: any }): void => {
 /**
  * HTTP 응답 정보를 콘솔에 출력하는 함수
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const printResponseConsole = (res: { [key: string]: any }): void => {
   const status = res.status
   let statusColor = COLORS.RESET
@@ -59,6 +61,7 @@ export const printResponseConsole = (res: { [key: string]: any }): void => {
 /**
  * HTTP 요청 또는 응답에서 발생한 오류를 콘솔에 출력하는 함수
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const printErrorConsole = (error: { [key: string]: any }): void => {
   if (error?.response) {
     const status = error.response.status

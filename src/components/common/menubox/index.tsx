@@ -22,7 +22,7 @@ export const Menubox = ({
       <DropdownMenu.Trigger asChild>{triggerButton}</DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="bg-white border border-gray-300 rounded-md shadow-md p-1.5 min-w-32 z-50"
+          className="z-50 min-w-32 rounded-md border border-gray-300 bg-white p-1.5 shadow-md"
           side="bottom"
           sideOffset={sideOffset}
           align={align}

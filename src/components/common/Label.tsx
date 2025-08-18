@@ -13,11 +13,11 @@ const Label = forwardRef<ComponentRef<typeof RadixLabel.Root>, LabelProps>(
     return (
       <RadixLabel.Root
         ref={ref}
-        className={clsx('text-t1-semibold text-black mb-3.5', className)}
+        className={clsx('text-t1-semibold mb-3.5 text-black', className)}
         {...props}
       >
         {children}
-        {required && <span className="text-b2-medium text-red align-super ml-0.5">*</span>}
+        {required && <span className="text-b2-medium text-red ml-0.5 align-super">*</span>}
       </RadixLabel.Root>
     )
   },

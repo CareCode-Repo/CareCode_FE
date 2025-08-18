@@ -18,14 +18,14 @@ const NotificationCard = ({
 }: NotificationCardProps): ReactElement => {
   return (
     <div
-      className={clsx('flex flex-col gap-3 px-3.5 py-3 bg-white rounded-lg border', {
+      className={clsx('flex flex-col gap-3 rounded-lg border bg-white px-3.5 py-3', {
         'border-green-600': !isRead,
         'border-gray-400': isRead,
       })}
       onClick={onClick}
     >
       {/* Header */}
-      <div className="flex items-center justify-between text-c1-regular">
+      <div className="text-c1-regular flex items-center justify-between">
         <span className="text-gray-800">{timeAgo}</span>
         <span className={clsx(isRead ? 'text-black-500' : 'text-red')}>
           {isRead ? '읽음' : '읽지 않음'}

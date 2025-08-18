@@ -59,7 +59,7 @@ const PolicyCard = ({
       </div>
       <Spacer className="h-2.5" />
       <h3 className="text-b1-medium text-black">{title}</h3>
-      <p className="text-c1-regular text-gray-700 truncate">{description}</p>
+      <p className="text-c1-regular truncate text-gray-700">{description}</p>
       <Spacer className="h-3.5" />
       <dl className="flex flex-col gap-0.5">
         <DescriptionItem title="지역" content={region} />

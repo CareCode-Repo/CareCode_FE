@@ -42,7 +42,7 @@ const ChatInput = ({
         <PaperIcon
           className={`size-6 cursor-pointer transition-colors ${
             disabled || !value.trim()
-              ? 'fill-gray-400 cursor-not-allowed'
+              ? 'cursor-not-allowed fill-gray-400'
               : 'fill-gray-600 hover:fill-green-600'
           }`}
           onClick={handleSendClick}

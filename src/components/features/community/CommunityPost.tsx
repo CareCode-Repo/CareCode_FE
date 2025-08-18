@@ -1,26 +1,40 @@
-import { ReactElement } from 'react'
+'use client'
+import { useRouter } from 'next/navigation'
+import { JSX } from 'react'
+import TimeAgo from './TimeAgo'
 import Spacer from '@/components/common/Spacer'
+import { PostListItem } from '@/types/apis/community'
 
 interface CommunityPostProps {
-  title: string
-  content: string
-  author: string
-  timeAgo: string
+  post: PostListItem
 }
 
-const CommunityPost = ({ title, content, author, timeAgo }: CommunityPostProps): ReactElement => {
+const CommunityPost = ({ post }: CommunityPostProps): JSX.Element => {
+  const router = useRouter()
+  const handlePostClick = () => {
+    router.push(`/community/${post.id}`)
+  }
+
   return (
-    <div className="flex flex-col gap-2.5 px-6 py-3 bg-white">
-      <h3 className="text-t2-regular text-black">{title}</h3>
-      <p className="text-b1-regular text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap">
-        {content}
+    <button
+      onClick={handlePostClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handlePostClick()
+        }
+      }}
+      className="flex w-full flex-col items-start justify-center gap-2.5 bg-white px-6 py-3"
+    >
+      <h3 className="text-t2-regular text-black">{post.title}</h3>
+      <p className="text-b1-regular overflow-hidden text-ellipsis whitespace-nowrap text-gray-500">
+        {post.content}
       </p>
-      <div className="flex items-center gap-2.5 text-c1-regular text-gray-500">
-        <span>{author}</span>
+      <div className="text-c1-regular flex items-center gap-2.5 text-gray-500">
+        <span>{post.author.name}</span>
         <Spacer className="h-2 w-px bg-gray-200" />
-        <span>{timeAgo}</span>
+        <TimeAgo date={post.createdAt} />
       </div>
-    </div>
+    </button>
   )
 }
 
