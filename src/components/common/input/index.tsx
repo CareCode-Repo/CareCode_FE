@@ -2,7 +2,8 @@
 
 import clsx from 'clsx'
 import { ChangeEvent, forwardRef, InputHTMLAttributes, ReactElement, useId, useState } from 'react'
-import RadixLabel from './Label'
+
+import RadixLabel from '../Label'
 import WarningIcon from '@/assets/icons/warning.svg'
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onError' | 'onChange'> {
@@ -53,7 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     }
 
     return (
-      <div className={clsx('flex flex-col')}>
+      <div className={clsx('flex w-full flex-col')}>
         {label && (
           <RadixLabel required={required} htmlFor={inputId}>
             {label}
@@ -63,11 +64,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {/* Field */}
         <div
           className={clsx(
-            'flex border items-center bg-white',
+            'flex items-center border bg-white',
             // variant별 스타일
             {
-              'rounded-md py-2 px-3': variant === 'default',
-              'rounded-3xl py-2.5 px-4.5': variant === 'rounded',
+              'rounded-md px-3 py-2': variant === 'default',
+              'rounded-3xl px-4.5 py-2.5': variant === 'rounded',
             },
             // 상태별 스타일
             {
@@ -87,7 +88,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             maxLength={maxLength}
             placeholder={placeholder}
             className={clsx(
-              ' text-black focus:outline-none grow placeholder:text-gray-400 focus:caret-green-600',
+              'grow text-black placeholder:text-gray-400 focus:caret-green-600 focus:outline-none',
               errorText && 'placeholder:text-red',
               // variant별 스타일
               {
@@ -102,12 +103,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {/* 아이콘 */}
-          {rightIcon && <span>{rightIcon}</span>}
+          {rightIcon && <span className="flex items-center">{rightIcon}</span>}
         </div>
         {/* 에러메시지 */}
         {errorText && showErrorText && (
-          <div className="flex gap-1 items-center text-red text-b1-regular mt-2.5" role="alert">
-            <WarningIcon className="size-5 fill-red" />
+          <div className="text-red text-b1-regular mt-2.5 flex items-center gap-1" role="alert">
+            <WarningIcon className="fill-red size-5" />
             <p>{errorText}</p>
           </div>
         )}
