@@ -10,7 +10,7 @@ const NewPostFAB = (): JSX.Element => {
   return (
     <button
       onClick={onPress}
-      className="inline-flex pl-[1.13rem] pr-[0.94rem] py-3 justify-center items-center gap-1 rounded-3xl border-green-600 border bg-gray-800 absolute bottom-[5.75rem] right-[1.125rem] z-3"
+      className="fixed right-[1.125rem] bottom-[5.75rem] z-3 inline-flex items-center justify-center gap-1 rounded-3xl border border-green-600 bg-gray-800 py-3 pr-[0.94rem] pl-[1.13rem]"
     >
       <div className="text-b1-medium text-gray-50">글 쓰기</div>
       <PencilIcon className="size-4 fill-gray-50" />
