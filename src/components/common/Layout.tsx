@@ -7,10 +7,10 @@ export const Layout = (props: LayoutProps): ReactElement => {
   const { hasTopNav, children, contentClassName } = props
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {hasTopNav && <TopNavBar {...props} />}
 
-      <main className={clsx('grow overflow-y-scroll flex flex-col bg-gray-50', contentClassName)}>
+      <main className={clsx('flex grow flex-col overflow-y-scroll bg-gray-50', contentClassName)}>
         {children}
       </main>
     </div>

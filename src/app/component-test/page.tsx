@@ -83,8 +83,7 @@ export default function ComponentTest(): ReactElement {
 
   return (
     <div className="flex flex-col">
-
-      <h1 className="text-2xl font-bold mb-4">Component Test Page</h1>
+      <h1 className="mb-4 text-2xl font-bold">Component Test Page</h1>
       {/* Error 컴포넌트 테스트 */}
       <Button color="red" onClick={() => setShowError(!showError)}>
         Error 발생
@@ -104,7 +103,7 @@ export default function ComponentTest(): ReactElement {
         onChange={handleChange}
         placeholder="주소를 입력하세요"
         maxLength={50}
-        rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+        rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
       />
       <Input value={value} label="이메일" onChange={handleChange} />
       <Input
@@ -119,7 +118,7 @@ export default function ComponentTest(): ReactElement {
         value={value}
         onChange={handleChange}
         variant="rounded"
-        rightIcon={<PaperIcon className="size-6 fill-gray-600 cursor-pointer" />}
+        rightIcon={<PaperIcon className="size-6 cursor-pointer fill-gray-600" />}
       />
       {/* 탑네브바 테스트 */}
       <TopNavBar
@@ -134,7 +133,6 @@ export default function ComponentTest(): ReactElement {
         <IconButton icon={HamburgerIcon} />
         <IconButton icon={BellIcon} showBadge />
       </div>
-
       {/* 탭바 테스트 */}
       <TabBar />
       <div className="flex flex-col gap-2 p-5">

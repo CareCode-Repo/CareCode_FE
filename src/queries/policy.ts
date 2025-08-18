@@ -1,3 +1,4 @@
+import { createQueryKeys } from '@lukemorales/query-key-factory'
 import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { getPolicyList } from '@/apis/policy'
 import { GetPolicyListQuery, GetPolicyListResponse } from '@/types/apis/policy'

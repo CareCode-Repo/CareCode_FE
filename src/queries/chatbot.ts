@@ -1,5 +1,4 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-
 import { useMutation, useQuery, UseQueryResult, UseMutationResult } from '@tanstack/react-query'
 import { getChatMessages, getChatSessions, postChatMessage } from '@/apis/chatbot'
 import {
@@ -57,4 +56,3 @@ export const useGetChatSessions = (
     enabled: enabled && !!query?.userId,
   })
 }
-

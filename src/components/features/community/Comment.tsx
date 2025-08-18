@@ -22,7 +22,7 @@ const Comment = ({ comment, isReply = false, className }: CommentProps): ReactEl
       <div className={clsx('flex gap-1')}>
         {/* 답글 표시 아이콘 */}
         {isReply && <ArrowDownRightIcon className="size-6 fill-gray-600" />}
-        <div className="flex flex-col gap-3 p-3.5 grow bg-gray-100 rounded-xl">
+        <div className="flex grow flex-col gap-3 rounded-xl bg-gray-100 p-3.5">
           {/* 작성자 */}
           <span className="text-c1-regular text-black">{comment.author}</span>
           {/*  내용 */}

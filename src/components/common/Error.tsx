@@ -13,10 +13,10 @@ const Error = ({
   onRetry,
 }: ErrorProps): ReactElement => {
   return (
-    <div className="absolute inset-0 z-50 bg-gray-50 flex flex-col">
-      <div className="flex flex-col grow gap-9 items-center justify-center">
+    <div className="absolute inset-0 z-50 flex flex-col bg-gray-50">
+      <div className="flex grow flex-col items-center justify-center gap-9">
         <Character className="size-40" />
-        <p className="text-h3-bold text-black whitespace-pre-line text-center">{content}</p>
+        <p className="text-h3-bold text-center whitespace-pre-line text-black">{content}</p>
       </div>
       {onRetry && (
         <div className="p-6">

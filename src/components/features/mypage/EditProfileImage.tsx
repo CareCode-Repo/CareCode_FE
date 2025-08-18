@@ -29,14 +29,14 @@ const EditProfileImage = ({ imageUrl, onImageChange }: EditProfileImageProps): R
   }
 
   return (
-    <div className="shrink-0 mx-auto size-30 rounded-full relative bg-gray-300 border border-gray-300">
+    <div className="relative mx-auto size-30 shrink-0 rounded-full border border-gray-300 bg-gray-300">
       {imageUrl && (
         <Image
           src={imageUrl}
           width={120}
           height={120}
           alt="profile-image"
-          className="w-full h-full object-cover rounded-full"
+          className="h-full w-full rounded-full object-cover"
         />
       )}
       <input
@@ -49,7 +49,7 @@ const EditProfileImage = ({ imageUrl, onImageChange }: EditProfileImageProps): R
       <IconButton
         icon={CameraIcon}
         iconClassName="size-6 fill-gray-700"
-        className="absolute p-1 rounded-full right-0 bottom-0 border border-gray-50 bg-white"
+        className="absolute right-0 bottom-0 rounded-full border border-gray-50 bg-white p-1"
         onClick={handleImagePickerClick}
       />
     </div>

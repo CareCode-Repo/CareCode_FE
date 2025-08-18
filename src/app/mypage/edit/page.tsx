@@ -6,6 +6,7 @@ import Label from '@/components/common/Label'
 import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
 import ToggleButton from '@/components/common/ToggleButton'
+
 import Input from '@/components/common/input'
 import EditProfileImage from '@/components/features/mypage/EditProfileImage'
 
@@ -101,7 +102,7 @@ const ProfileEditPage = (): ReactElement => {
 
   return (
     <Layout hasTopNav title="프로필 수정" hasBackButton>
-      <div className="p-6 flex flex-col gap-10 grow overflow-y-auto">
+      <div className="flex grow flex-col gap-10 overflow-y-auto p-6">
         <EditProfileImage imageUrl={profileImage} onImageChange={handleImageChange} />
         <Input label="이름" required value={''} />
         <div className="flex flex-col">
@@ -119,14 +120,14 @@ const ProfileEditPage = (): ReactElement => {
             value={address}
             placeholder="공사 위치를 입력해주세요"
             onClick={handleAddressSearch}
-            rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+            rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
           />
           <Spacer className="h-2.5" />
 
           {/* 우편번호 검색 iframe 영역 */}
           {showPostcode && (
             <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
+              <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-medium">주소 검색</span>
                 <button
                   onClick={() => setShowPostcode(false)}
@@ -137,7 +138,7 @@ const ProfileEditPage = (): ReactElement => {
               </div>
               <div
                 id="postcode-container"
-                className="w-full h-96 border border-gray-300 rounded-md overflow-hidden"
+                className="h-96 w-full overflow-hidden rounded-md border border-gray-300"
               />
             </div>
           )}

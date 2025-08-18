@@ -25,8 +25,7 @@ export default function RootLayout({
 }>): ReactNode {
   return (
     <html lang="ko">
-
-      <body className={`font-pretendard antialiased min-h-dvh`}>
+      <body className={`font-pretendard min-h-dvh antialiased`}>
         <QueryProvider>
           <div className="flex min-h-dvh">
             {/* 데스크톱 프로모션 패널 */}
@@ -35,12 +34,11 @@ export default function RootLayout({
             </aside>
 
             {/* 앱 콘텐츠 영역 */}
-            <div className="flex-1 sm:flex-2/3">
-              <div className="h-dvh max-w-sm mx-auto overflow-y-auto">{children}</div>
+            <div className="flex-1 bg-amber-50 sm:flex-2/3">
+              <div className="mx-auto h-dvh max-w-sm overflow-y-auto">{children}</div>
             </div>
           </div>
         </QueryProvider>
-
       </body>
     </html>
   )

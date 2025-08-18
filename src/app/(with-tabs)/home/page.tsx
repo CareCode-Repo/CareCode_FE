@@ -85,13 +85,13 @@ const Home = (): ReactElement => {
         <Input
           value=""
           placeholder="무엇을 찾고 계신가요?"
-          rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+          rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
         />
         <Spacer className="h-5" />
         <div className="flex flex-col gap-4">
           <ChatSection />
           <MainSection title="최근 정책">
-            <div className="px-4 pb-4 flex gap-3 overflow-x-auto scrollbar-hide [&>*]:w-64 [&>*]:flex-shrink-0">
+            <div className="scrollbar-hide flex gap-3 overflow-x-auto px-4 pb-4 [&>*]:w-64 [&>*]:flex-shrink-0">
               {/* TODO: API 연동 시 아래 주석 해제
               {isLoading ? (
                 <div className="w-64 h-40 bg-gray-200 animate-pulse rounded-lg" />
@@ -129,7 +129,7 @@ const Home = (): ReactElement => {
             </div>
           </MainSection>
           <MainSection title="인기 게시글">
-            <div className="px-4 pb-4 flex flex-col">
+            <div className="flex flex-col px-4 pb-4">
               <PopularPost
                 content="이것은 인기 게시글의 내용입니다."
                 likeCount={10}
