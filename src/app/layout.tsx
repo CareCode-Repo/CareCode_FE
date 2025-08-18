@@ -32,7 +32,7 @@ export default function RootLayout({
           </div>
 
           {/* 메인 콘텐츠 영역 */}
-          <main className="flex-1 sm:flex-2/3">
+          <main className="flex-1 sm:flex-2/3 bg-green-50">
             <div className="h-dvh max-w-sm mx-auto overflow-y-auto">{children}</div>
           </main>
         </div>

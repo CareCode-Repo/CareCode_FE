@@ -29,6 +29,7 @@ export const postSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
 })
+export type Post = z.infer<typeof postSchema>
 
 export const postListItemSchema = z.object({
   id: z.number(),
