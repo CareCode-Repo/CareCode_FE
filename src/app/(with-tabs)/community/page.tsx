@@ -56,44 +56,46 @@ const Community = (): JSX.Element => {
   }, [loadMore])
 
   return (
-    <div className="h-screen bg-white">
-      <header
-        id="topNavigator"
-        className="sticky top-0 z-1 flex items-center justify-between bg-white py-3.5 pr-[0.9375rem] pl-5"
-      >
-        <div className="text-h3-bold text-black">커뮤니티</div>
-        <button>
-          <BellIcon className="size-8 fill-black" />
-        </button>
-      </header>
-
-      <div id="searchBar" className="flex items-center p-[1.125rem]">
-        <div className="flex w-full items-center justify-between gap-2 rounded-[0.375rem] border-[1px] border-gray-400 bg-white px-2 py-3">
-          <input
-            type="text"
-            placeholder="검색어를 입력하세요"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSearch()
-            }}
-            className="w-full border-none bg-transparent outline-none"
-          />
-          <button onClick={handleSearch}>
-            <SearchIcon className="size-6 fill-gray-400" />
-          </button>
-        </div>
-      </div>
-      <div className="flex flex-col divide-y divide-gray-200">
-        {posts.map((post, index) => (
-          <CommunityPost key={index} post={post} />
-        ))}
-
-        <div
-          ref={loader}
-          className="text-c1-regular flex items-center justify-center bg-white py-3 text-gray-500"
+    <div className="relative flex h-full flex-col bg-white">
+      <div className="scrollbar-hide grow overflow-y-scroll">
+        <header
+          id="topNavigator"
+          className="sticky top-0 z-1 flex items-center justify-between bg-white py-3.5 pr-[0.9375rem] pl-5"
         >
-          {posts.length < dummyCommunityPosts.length ? 'Loading...' : '마지막 게시글입니다.'}
+          <div className="text-h3-bold text-black">커뮤니티</div>
+          <button>
+            <BellIcon className="size-8 fill-black" />
+          </button>
+        </header>
+
+        <div id="searchBar" className="flex items-center p-[1.125rem]">
+          <div className="flex w-full items-center justify-between gap-2 rounded-[0.375rem] border-[1px] border-gray-400 bg-white px-2 py-3">
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearch()
+              }}
+              className="w-full border-none bg-transparent outline-none"
+            />
+            <button onClick={handleSearch}>
+              <SearchIcon className="size-6 fill-gray-400" />
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col divide-y divide-gray-200">
+          {posts.map((post, index) => (
+            <CommunityPost key={index} post={post} />
+          ))}
+
+          <div
+            ref={loader}
+            className="text-c1-regular flex items-center justify-center bg-white py-3 text-gray-500"
+          >
+            {posts.length < dummyCommunityPosts.length ? 'Loading...' : '마지막 게시글입니다.'}
+          </div>
         </div>
       </div>
 
