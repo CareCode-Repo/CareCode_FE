@@ -7,9 +7,9 @@ interface DescriptionItemProps {
 
 const DescriptionItem = ({ title, content }: DescriptionItemProps): ReactElement => {
   return (
-    <div className="flex items-start gap-2 text-c1-regular">
-      <dt className="text-gray-700 whitespace-nowrap flex-shrink-0">{title}</dt>
-      <dd className="text-black truncate min-w-0">{content}</dd>
+    <div className="text-c1-regular flex items-start gap-2">
+      <dt className="flex-shrink-0 whitespace-nowrap text-gray-700">{title}</dt>
+      <dd className="min-w-0 truncate text-black">{content}</dd>
     </div>
   )
 }

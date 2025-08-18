@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { ReactElement } from 'react'
 import { BackButton } from '../BackButton'
 import IconButton, { IconButtonProps } from './IconButton'
@@ -7,6 +8,7 @@ export interface TopNavBarProps {
   actionButtons?: IconButtonProps[]
   hasBackButton?: boolean
   onBackButtonClick?: () => void
+  isSticky?: boolean
 }
 
 const TopNavBar = ({
@@ -14,9 +16,10 @@ const TopNavBar = ({
   actionButtons = [],
   hasBackButton = false,
   onBackButtonClick,
+  isSticky = false,
 }: TopNavBarProps): ReactElement => {
   return (
-    <div className="flex items-center bg-white px-5 py-4">
+    <div className={clsx('flex items-center bg-white px-5 py-4', isSticky && 'sticky top-0')}>
       {/* back */}
       {hasBackButton && <BackButton onBackButtonClick={onBackButtonClick} />}
       {/* title */}

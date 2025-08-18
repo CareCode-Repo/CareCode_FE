@@ -31,7 +31,7 @@ const NotificationPage = (): ReactElement => {
           ))}
         </ul>
       ) : (
-        <div className="text-b1-regular text-center text-gray-700 pt-22">알림이 없습니다.</div>
+        <div className="text-b1-regular pt-22 text-center text-gray-700">알림이 없습니다.</div>
       )}
     </Layout>
   )

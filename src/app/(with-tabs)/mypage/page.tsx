@@ -14,14 +14,14 @@ const MyPage = (): ReactElement => {
   const handleEditButtonClick = () => router.push('/mypage/edit')
   return (
     <Layout hasTopNav title="홈" actionButtons={[{ icon: BellIcon }]}>
-      <div className="flex gap-3.5 p-3.5 items-center border border-gray-300 rounded-lg bg-white m-4.5">
-        <div className="bg-gray-300 rounded-full p-3 flex items-center justify-center">
+      <div className="m-4.5 flex items-center gap-3.5 rounded-lg border border-gray-300 bg-white p-3.5">
+        <div className="flex items-center justify-center rounded-full bg-gray-300 p-3">
           <CameraIcon className="size-9 fill-black" />
         </div>
-        <div className="flex flex-col gap-1.5 grow">
+        <div className="flex grow flex-col gap-1.5">
           <span className="text-b1-semibold text-gray-800">홍길동</span>
           <div className="flex gap-1.5">
-            <div className="center bg-yellow p-0.5 rounded-xs">
+            <div className="center bg-yellow rounded-xs p-0.5">
               <KakaoIcon className="size-2.5" />
             </div>
             <span className="text-c1-regular text-gray-700">0000@naver.com</span>

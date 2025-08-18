@@ -34,10 +34,10 @@ const Chat = (): ReactElement => {
   )
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex h-full flex-col bg-gray-50">
       <TopNavBar title="챗봇 상담" hasBackButton actionButtons={[{ icon: HamburgerIcon }]} />
 
-      <div className="flex-1 flex flex-col px-5 pb-5 overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden px-5 pb-5">
         <ChatContainer messages={messages} />
         <div className="flex flex-col gap-3">
           {/* 추천 메시지 리스트 */}

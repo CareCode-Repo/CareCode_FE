@@ -34,7 +34,7 @@ export default function RootLayout({
             </aside>
 
             {/* 앱 콘텐츠 영역 */}
-            <div className="flex-1 sm:flex-2/3">
+            <div className="flex-1 bg-amber-50 sm:flex-2/3">
               <div className="mx-auto h-dvh max-w-sm overflow-y-auto">{children}</div>
             </div>
           </div>

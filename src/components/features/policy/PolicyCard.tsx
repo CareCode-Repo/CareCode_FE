@@ -46,7 +46,7 @@ const PolicyCard = ({
     <div
       role="button"
       className={clsx(
-        'w-[18rem] flex flex-col pl-3.5 pr-3.5 pt-3.5 pb-[1.125rem] bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors',
+        'flex w-[18rem] cursor-pointer flex-col rounded-lg bg-gray-100 pt-3.5 pr-3.5 pb-[1.125rem] pl-3.5 transition-colors hover:bg-gray-200',
         className,
       )}
       onClick={onClick}
@@ -59,7 +59,7 @@ const PolicyCard = ({
       </div>
       <Spacer className="h-2.5" />
       <h3 className="text-b1-medium text-black">{title}</h3>
-      <p className="text-c1-regular text-gray-700 truncate">{description}</p>
+      <p className="text-c1-regular truncate text-gray-700">{description}</p>
       <Spacer className="h-3.5" />
       <dl className="flex flex-col gap-0.5">
         <DescriptionItem title="지역" content={region} />

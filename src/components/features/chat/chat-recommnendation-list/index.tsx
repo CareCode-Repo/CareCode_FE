@@ -14,7 +14,7 @@ const ChatRecommendationList = memo(
     )
 
     return (
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide ">
+      <div className="scrollbar-hide flex gap-2 overflow-x-auto">
         {recommendations.map((text, index) => (
           <RecommendationChip key={`${text}-${index}`} onClick={handleClick(text)}>
             {text}

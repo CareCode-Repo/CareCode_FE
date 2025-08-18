@@ -38,8 +38,8 @@ const Chip = memo(function Chip({
       className={clsx(
         'inline-flex items-center gap-1 font-medium',
         {
-          'px-2 text-b2-medium': size === 'sm',
-          'pl-3 py-0.5 text-b1-medium': size === 'md',
+          'text-b2-medium px-2': size === 'sm',
+          'text-b1-medium py-0.5 pl-3': size === 'md',
           'pr-3': size === 'md' && !deletable,
           'pr-2': size === 'md' && deletable,
         },
@@ -64,7 +64,7 @@ const Chip = memo(function Chip({
       {deletable && (
         <button type="button" onClick={onDelete} aria-label="삭제">
           <CloseIcon
-            className={clsx('w-4 h-4', {
+            className={clsx('h-4 w-4', {
               'fill-gray-700': color === 'white' || color === 'transparent',
               'fill-gray-50': color !== 'white' && color !== 'transparent',
             })}

@@ -18,7 +18,7 @@ const MenuItem = ({
   return (
     <DropdownMenu.Item
       className={clsx(
-        'text-b1-regular flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-gray-100 cursor-pointer focus:outline-none focus:bg-gray-100',
+        'text-b1-regular flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
         variant === 'destructive' && 'text-red',
       )}
       onSelect={onSelect}
@@ -26,7 +26,7 @@ const MenuItem = ({
       {Icon && (
         <Icon
           className={clsx(
-            'w-4 h-4',
+            'h-4 w-4',
             variant === 'destructive' && 'fill-red',
             variant === 'default' && 'fill-black',
           )}

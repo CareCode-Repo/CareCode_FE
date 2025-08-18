@@ -12,7 +12,7 @@ const ToggleChip = forwardRef<ComponentRef<typeof Toggle.Root>, ToggleChipProps>
       <Toggle.Root
         ref={ref}
         className={clsx(
-          'py-0.5 px-3 bg-gray-50 border border-gray-400 rounded-3xl text-gray-700 text-b1-medium transition-colors',
+          'text-b1-medium rounded-3xl border border-gray-400 bg-gray-50 px-3 py-0.5 text-gray-700 transition-colors',
           'data-[state=on]:border-green-900 data-[state=on]:bg-gray-50 data-[state=on]:text-green-900',
           className,
         )}

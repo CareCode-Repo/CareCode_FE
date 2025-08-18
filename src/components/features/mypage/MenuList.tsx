@@ -19,13 +19,13 @@ const MenuList = ({ title, items, className }: MenuListProps): ReactElement => {
       {/* 메뉴 제목 */}
       <h2 className="text-h3-bold">{title}</h2>
       {/* 메뉴 아이템들 */}
-      <div className="flex flex-col text-b1-regular">
+      <div className="text-b1-regular flex flex-col">
         {items.map((item) => (
           <button
             key={item.id}
             type="button"
             onClick={item.onClick}
-            className="text-left py-2 hover:bg-gray-100 transition-colors"
+            className="py-2 text-left transition-colors hover:bg-gray-100"
           >
             {item.title}
           </button>

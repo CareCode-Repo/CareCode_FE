@@ -52,16 +52,16 @@ const ChatSection = (): ReactElement => {
 
   return (
     <div
-      className="flex flex-col border border-gray-100 rounded-lg overflow-hidden cursor-pointer"
+      className="flex cursor-pointer flex-col overflow-hidden rounded-lg border border-gray-100"
       onClick={handleClick}
     >
-      <div className="p-3.5 flex gap-1.5 items-center">
+      <div className="flex items-center gap-1.5 p-3.5">
         <h1 className="text-t2-semibold">상담하러 가기</h1>
         <RightArrowIcon className="size-4.5 fill-black" />
       </div>
-      <div className="h-44 bg-green-100 relative overflow-hidden">
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <CharacterIcon className="absolute bottom-0 top-10 left-4.5 w-56 z-10" />
+      <div className="relative h-44 overflow-hidden bg-green-100">
+        <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+        <CharacterIcon className="absolute top-10 bottom-0 left-4.5 z-10 w-56" />
       </div>
     </div>
   )

@@ -3,8 +3,8 @@ import TabBar from '@/components/common/tab-bar'
 
 const WithTabsLayout = ({ children }: { children: ReactNode }): ReactElement => {
   return (
-    <div className="flex flex-col h-full">
-      <div className="grow overflow-y-scroll scrollbar-hide">{children}</div>
+    <div className="flex h-full flex-col">
+      <div className="scrollbar-hide grow overflow-y-scroll">{children}</div>
       <TabBar />
     </div>
   )
