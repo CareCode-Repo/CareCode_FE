@@ -1,11 +1,11 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, memo } from 'react'
 
 interface RecommendationChipProps {
   onClick?: () => void
   children?: ReactNode
 }
 
-const RecommendationChip = ({ onClick, children }: RecommendationChipProps): ReactElement => {
+const RecommendationChip = memo(({ onClick, children }: RecommendationChipProps): ReactElement => {
   return (
     <button
       onClick={onClick}
@@ -14,6 +14,8 @@ const RecommendationChip = ({ onClick, children }: RecommendationChipProps): Rea
       {children}
     </button>
   )
-}
+})
+
+RecommendationChip.displayName = 'RecommendationChip'
 
 export default RecommendationChip

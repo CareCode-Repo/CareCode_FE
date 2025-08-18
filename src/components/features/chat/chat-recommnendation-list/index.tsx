@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, memo, useCallback } from 'react'
 import RecommendationChip from './RecommendationChip'
 
 interface ChatRecommendationListProps {
@@ -6,19 +6,25 @@ interface ChatRecommendationListProps {
   onRecommendationClick: (text: string) => void
 }
 
-const ChatRecommendationList = ({
-  recommendations,
-  onRecommendationClick,
-}: ChatRecommendationListProps): ReactElement => {
-  return (
-    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-      {recommendations.map((text, index) => (
-        <RecommendationChip key={`${text}-${index}`} onClick={() => onRecommendationClick(text)}>
-          {text}
-        </RecommendationChip>
-      ))}
-    </div>
-  )
-}
+const ChatRecommendationList = memo(
+  ({ recommendations, onRecommendationClick }: ChatRecommendationListProps): ReactElement => {
+    const handleClick = useCallback(
+      (text: string) => () => onRecommendationClick(text),
+      [onRecommendationClick],
+    )
+
+    return (
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide ">
+        {recommendations.map((text, index) => (
+          <RecommendationChip key={`${text}-${index}`} onClick={handleClick(text)}>
+            {text}
+          </RecommendationChip>
+        ))}
+      </div>
+    )
+  },
+)
+
+ChatRecommendationList.displayName = 'ChatRecommendationList'
 
 export default ChatRecommendationList

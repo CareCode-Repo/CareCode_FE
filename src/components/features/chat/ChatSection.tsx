@@ -1,3 +1,5 @@
+'use client'
+
 import { ReactElement, useEffect, useRef } from 'react'
 import RightArrowIcon from '@/assets/icons/arrow_with_circle_small.svg'
 import CharacterIcon from '@/assets/icons/characters/hi.svg'

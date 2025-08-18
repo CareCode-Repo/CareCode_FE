@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, memo } from 'react'
 
 interface ChatBubbleProps {
   type?: 'user' | 'assistant'
@@ -7,7 +7,7 @@ interface ChatBubbleProps {
   children: ReactNode
 }
 
-const ChatBubble = ({ type = 'user', className, children }: ChatBubbleProps): ReactElement => {
+const ChatBubble = memo(({ type = 'user', className, children }: ChatBubbleProps): ReactElement => {
   return (
     <div
       className={clsx(
@@ -22,6 +22,8 @@ const ChatBubble = ({ type = 'user', className, children }: ChatBubbleProps): Re
       {children}
     </div>
   )
-}
+})
+
+ChatBubble.displayName = 'ChatBubble'
 
 export default ChatBubble
