@@ -1,19 +1,18 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { JSX, useState } from 'react'
+import { postDetailDummy } from '../dataDummy'
 import Separator from '@/components/common/Separator'
 import BackButton from '@/components/features/community/BackButton'
 import { Post } from '@/types/apis/community'
 
-const PostAdd = (): JSX.Element => {
-  const [title, setTitle] = useState<Post['title']>('')
-  const [content, setContent] = useState<Post['content']>('')
+const CommunityPostEdit = (): JSX.Element => {
+  const [title, setTitle] = useState<Post['title']>(postDetailDummy.title)
+  const [content, setContent] = useState<Post['content']>(postDetailDummy.content)
   const router = useRouter()
 
-  const handleAddButton = () => {
-    console.log('Add Post Button Pressed')
-    // 로직 호출
-    // 성공 시
+  const handleEditButton = () => {
+    console.log('Edit Confirm Button Pressed')
     router.back()
   }
   return (
@@ -35,21 +34,20 @@ const PostAdd = (): JSX.Element => {
         />
         <Separator className="w-full shrink-0" />
         <textarea
-          placeholder={`육아 친구들과 자유롭게 얘기해보세요.
-#출산 #육아용품`}
+          placeholder="내용을 입력해주세요"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="text-b1-regular scrollbar-hide w-full flex-1 resize-none rounded-lg border border-gray-500 p-3 whitespace-pre-wrap !outline-none focus:border-gray-800"
+          className="text-b1-regular scrollbar-hide w-full flex-1 resize-none rounded-lg border border-gray-500 p-3 !outline-none focus:border-gray-800"
         />
         <button
-          onClick={handleAddButton}
+          onClick={handleEditButton}
           className="text-t1-semibold flex w-full items-center justify-center rounded-xl bg-green-600 py-[1.125rem] text-center text-gray-100"
         >
-          등록하기
+          수정하기
         </button>
       </div>
     </div>
   )
 }
 
-export default PostAdd
+export default CommunityPostEdit
