@@ -11,11 +11,20 @@ import Input from '@/components/common/input'
 import EditProfileImage from '@/components/features/mypage/EditProfileImage'
 
 // Daum Postcode API 타입 정의
+interface DaumPostcodeData {
+  userSelectedType: string
+  roadAddress: string
+  jibunAddress: string
+  bname: string
+  buildingName: string
+  apartment: string
+}
+
 declare global {
   interface Window {
     daum: {
       Postcode: new (options: {
-        oncomplete: (data: any) => void
+        oncomplete: (data: DaumPostcodeData) => void
         width?: string
         height?: string
       }) => {
@@ -51,7 +60,7 @@ const ProfileEditPage = (): ReactElement => {
     setShowPostcode(true)
   }
 
-  const handleComplete = (data: any) => {
+  const handleComplete = (data: DaumPostcodeData) => {
     let addr = '' // 주소 변수
     let extraAddr = '' // 참고항목 변수
 

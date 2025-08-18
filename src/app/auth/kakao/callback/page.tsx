@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, useEffect, Suspense } from 'react'
 import { setTokens } from '@/apis/auth'
 import Loading from '@/components/common/loading'
 import { usePostKakaoAuth } from '@/queries/auth'
 
-const KakaoCallbackPage = (): ReactElement | null => {
+const KakaoCallbackContent = (): ReactElement | null => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { mutate: postKakaoAuth, isPending } = usePostKakaoAuth()
@@ -58,6 +58,14 @@ const KakaoCallbackPage = (): ReactElement | null => {
   }
 
   return null
+}
+
+const KakaoCallbackPage = (): ReactElement => {
+  return (
+    <Suspense fallback={<Loading content="카카오 로그인 중..." />}>
+      <KakaoCallbackContent />
+    </Suspense>
+  )
 }
 
 export default KakaoCallbackPage

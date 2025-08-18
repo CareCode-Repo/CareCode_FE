@@ -1,4 +1,3 @@
-import { on } from 'events'
 import clsx from 'clsx'
 import { memo, SyntheticEvent } from 'react'
 import CloseIcon from '@/assets/icons/close_mid.svg'
