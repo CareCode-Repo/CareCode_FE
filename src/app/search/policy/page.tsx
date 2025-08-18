@@ -106,7 +106,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
           value={inputValue}
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
-          rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+          rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
         />
       </form>
       <Spacer className="h-9 shrink-0" />
@@ -118,7 +118,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
         </div>
       </div>
       <Spacer className="h-3 shrink-0" />
-      <div className="h-full flex flex-col gap-2 grow overflow-y-scroll [&>*]:shrink-0 scrollbar-hide">
+      <div className="scrollbar-hide flex h-full grow flex-col gap-2 overflow-y-scroll [&>*]:shrink-0">
         {dummyPolicies.map((policy) => (
           <PolicyCard
             key={policy.id}

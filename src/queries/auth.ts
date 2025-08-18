@@ -1,0 +1,43 @@
+import { createQueryKeys } from '@lukemorales/query-key-factory'
+import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query'
+import { getKakaoAuthUrl, postKakaoAuth } from '@/apis/auth'
+import {
+  GetKakaoAuthUrlResponse,
+  PostKakaoAuthBody,
+  PostKakaoAuthResponse,
+} from '@/types/apis/auth'
+
+export const authQueries = createQueryKeys('auth', {
+  kakaoAuthUrl: (redirectUri?: string) => ({
+    queryKey: ['kakaoAuthUrl', redirectUri],
+    queryFn: () => getKakaoAuthUrl(redirectUri),
+  }),
+})
+
+export const useGetKakaoAuthUrl = (
+  redirectUri?: string,
+): UseQueryResult<GetKakaoAuthUrlResponse, Error> => {
+  return useQuery({
+    ...authQueries.kakaoAuthUrl(redirectUri),
+  })
+}
+
+export const useGetKakaoAuthUrlMutation = (): UseMutationResult<
+  GetKakaoAuthUrlResponse,
+  Error,
+  string | undefined
+> => {
+  return useMutation({
+    mutationFn: (redirectUri?: string) => getKakaoAuthUrl(redirectUri),
+  })
+}
+
+export const usePostKakaoAuth = (): UseMutationResult<
+  PostKakaoAuthResponse,
+  Error,
+  PostKakaoAuthBody
+> => {
+  return useMutation({
+    mutationFn: postKakaoAuth,
+  })
+}

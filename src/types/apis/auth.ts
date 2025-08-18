@@ -91,3 +91,39 @@ export const postLogoutResponseSchema = z.object({
   message: z.string(),
 })
 export type PostLogoutResponse = z.infer<typeof postLogoutResponseSchema>
+
+// GET /oauth2/kakao/auth-url
+export const getKakaoAuthUrlResponseSchema = z.object({
+  success: z.boolean(),
+  redirectUri: z.string(),
+  authUrl: z.string().url(),
+  clientId: z.string(),
+})
+export type GetKakaoAuthUrlResponse = z.infer<typeof getKakaoAuthUrlResponseSchema>
+
+// POST /api/auth/kakao/auth
+export const postKakaoAuthBodySchema = z.object({
+  code: z.string(),
+})
+export type PostKakaoAuthBody = z.infer<typeof postKakaoAuthBodySchema>
+const kakaoAuthSuccessSchema = z.object({
+  success: z.literal(true),
+  message: z.string(),
+  accessToken: z.string(),
+  tokenType: z.string(),
+  expiresIn: z.number(),
+  isNewUser: z.boolean(),
+  user: z.object({
+    userId: z.string(),
+    email: z.string(),
+    role: z.enum(['PARENT', 'CHILD']),
+    name: z.string(),
+  }),
+})
+const kakaoAuthFailSchema = z.object({
+  success: z.literal(false),
+  message: z.string(),
+  errorCode: z.string().optional(),
+})
+export const postKakaoAuthResponseSchema = z.union([kakaoAuthSuccessSchema, kakaoAuthFailSchema])
+export type PostKakaoAuthResponse = z.infer<typeof postKakaoAuthResponseSchema>

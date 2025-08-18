@@ -46,7 +46,7 @@ const PolicyCard = ({
     <div
       role="button"
       className={clsx(
-        'flex flex-col pl-3.5 pr-3.5 pt-3.5 pb-[1.125rem] bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors',
+        'flex cursor-pointer flex-col rounded-lg bg-gray-100 pt-3.5 pr-3.5 pb-[1.125rem] pl-3.5 transition-colors hover:bg-gray-200',
         className,
       )}
       onClick={onClick}

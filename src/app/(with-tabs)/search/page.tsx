@@ -33,13 +33,13 @@ const Search = (): ReactElement => {
           value={inputValue}
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
-          rightIcon={<SearchIcon className="size-6 fill-gray-400 cursor-pointer" />}
+          rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
         />
       </form>
       <Spacer className="h-9 shrink-0" />
       {recentSearches.length > 0 && (
         <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <span className="text-b1-semibold text-gray-800">최근 검색어</span>
             <button
               className="text-b1-regular text-gray-700 hover:text-gray-800"
@@ -48,7 +48,7 @@ const Search = (): ReactElement => {
               전체삭제
             </button>
           </div>
-          <div className="flex gap-2.5 overflow-x-scroll [&>*]:shrink-0 scrollbar-hide">
+          <div className="scrollbar-hide flex gap-2.5 overflow-x-scroll [&>*]:shrink-0">
             {recentSearches.map((recentSearchValue) => (
               <Chip
                 key={recentSearchValue}
