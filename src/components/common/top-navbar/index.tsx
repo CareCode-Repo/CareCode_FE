@@ -16,11 +16,11 @@ const TopNavBar = ({
   onBackButtonClick,
 }: TopNavBarProps): ReactElement => {
   return (
-    <div className="flex items-center py-4 px-5 bg-white">
+    <div className="flex items-center bg-white px-5 py-4">
       {/* back */}
       {hasBackButton && <BackButton onBackButtonClick={onBackButtonClick} />}
       {/* title */}
-      <div className="grow h-8 pl-2.5 text-h3-bold text-black content-center">{title}</div>
+      <div className="text-h3-bold h-8 grow content-center pl-2.5 text-black">{title}</div>
       {/* action buttons */}
       <div className="flex items-center gap-2.5">
         {actionButtons.map((button, index) => (
