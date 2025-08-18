@@ -22,6 +22,16 @@ export const useGetKakaoAuthUrl = (
   })
 }
 
+export const useGetKakaoAuthUrlMutation = (): UseMutationResult<
+  GetKakaoAuthUrlResponse,
+  Error,
+  string | undefined
+> => {
+  return useMutation({
+    mutationFn: (redirectUri?: string) => getKakaoAuthUrl(redirectUri),
+  })
+}
+
 export const usePostKakaoAuth = (): UseMutationResult<
   PostKakaoAuthResponse,
   Error,
