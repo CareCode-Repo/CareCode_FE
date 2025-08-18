@@ -19,6 +19,12 @@ import {
   postRefreshTokenResponseSchema,
   postRegisterBodySchema,
   postRegisterResponseSchema,
+  getKakaoAuthUrlResponseSchema,
+  GetKakaoAuthUrlResponse,
+  postKakaoAuthBodySchema,
+  PostKakaoAuthBody,
+  postKakaoAuthResponseSchema,
+  PostKakaoAuthResponse,
 } from '@/types/apis/auth'
 
 // /auth/login
@@ -126,4 +132,28 @@ export async function refreshAccessToken(
   // sessionStorage/localStorage에 반영
   setTokens(parsed.accessToken, parsed.refreshToken, parsed.userId, parsed.expiresIn)
   return parsed
+}
+
+// GET /oauth2/kakao/auth-url - 카카오 인증 URL 요청
+export const getKakaoAuthUrl = async (redirectUri?: string): Promise<GetKakaoAuthUrlResponse> => {
+  const params = redirectUri ? { redirectUri } : {}
+  const res = await CareCode.get('/oauth2/kakao/auth-url', { params })
+  return getKakaoAuthUrlResponseSchema.parse(res.data)
+}
+
+// /api/auth/kakao/auth
+export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoAuthResponse> => {
+  const parsedBody = postKakaoAuthBodySchema.parse(body)
+  try {
+    const res = await CareCode.post('/api/auth/kakao/auth', null, {
+      params: { code: parsedBody.code },
+    })
+    if (res.status === 204) {
+      return postKakaoAuthResponseSchema.parse(res.data)
+    } else {
+      throw new Error('Unexpected response status: ' + res.status)
+    }
+  } catch (error) {
+    throw error
+  }
 }
