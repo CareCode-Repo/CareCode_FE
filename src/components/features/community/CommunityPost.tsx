@@ -23,13 +23,13 @@ const CommunityPost = ({ post }: CommunityPostProps): JSX.Element => {
           handlePostClick()
         }
       }}
-      className="flex w-full justify-center items-start  flex-col gap-2.5 px-6 py-3 bg-white"
+      className="flex w-full flex-col items-start justify-center gap-2.5 bg-white px-6 py-3"
     >
       <h3 className="text-t2-regular text-black">{post.title}</h3>
-      <p className="text-b1-regular text-gray-500 overflow-hidden text-ellipsis whitespace-nowrap">
+      <p className="text-b1-regular overflow-hidden text-ellipsis whitespace-nowrap text-gray-500">
         {post.content}
       </p>
-      <div className="flex items-center gap-2.5 text-c1-regular text-gray-500">
+      <div className="text-c1-regular flex items-center gap-2.5 text-gray-500">
         <span>{post.author.name}</span>
         <Spacer className="h-2 w-px bg-gray-200" />
         <TimeAgo date={post.createdAt} />

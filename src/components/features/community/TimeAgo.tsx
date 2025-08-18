@@ -2,13 +2,13 @@
 
 import { formatDistanceToNow } from 'date-fns'
 import { ko } from 'date-fns/locale'
-import { useEffect, useState } from 'react'
+import { JSX, useEffect, useState } from 'react'
 
 interface TimeAgoProps {
   date: string
 }
 
-const TimeAgo = ({ date }: TimeAgoProps) => {
+const TimeAgo = ({ date }: TimeAgoProps): JSX.Element => {
   const [timeAgo, setTimeAgo] = useState('') // 초기값 비워두기
 
   useEffect(() => {
