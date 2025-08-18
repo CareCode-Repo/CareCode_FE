@@ -1,20 +1,30 @@
 'use client'
 
 import { ReactElement, useState } from 'react'
+import BellIcon from '@/assets/icons/bell.svg'
 import KebabIcon from '@/assets/icons/edit.svg'
+import HamburgerIcon from '@/assets/icons/hamburger.svg'
+import PaperIcon from '@/assets/icons/paper_small.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
+import SearchIcon from '@/assets/icons/search.svg'
+import SettingIcon from '@/assets/icons/setting.svg'
 import TrachIcon from '@/assets/icons/trash.svg'
 import WarningIcon from '@/assets/icons/warning.svg'
 import AlertDialog from '@/components/common/AlertDialog'
 import Button from '@/components/common/Button'
 import Chip from '@/components/common/Chip'
+import Error from '@/components/common/Error'
 import MainSection from '@/components/common/MainSection'
 import Separator from '@/components/common/Separator'
 import Switch from '@/components/common/Switch'
 import ToggleButton from '@/components/common/ToggleButton'
 import ToggleChip from '@/components/common/ToggleChip'
+import Input from '@/components/common/input'
+import Loading from '@/components/common/loading'
 import { Menubox } from '@/components/common/menubox'
 import TabBar from '@/components/common/tab-bar'
+import TopNavBar from '@/components/common/top-navbar'
+import IconButton from '@/components/common/top-navbar/IconButton'
 import ChatSection from '@/components/features/chat/ChatSection'
 import ChatMessage from '@/components/features/chat/chat-message'
 import ChatRecommendationList from '@/components/features/chat/chat-recommnendation-list'
@@ -27,8 +37,13 @@ import NotificationCard from '@/components/features/notification/NotificationCar
 import PolicyCard from '@/components/features/policy/PolicyCard'
 
 export default function ComponentTest(): ReactElement {
+  const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
+  const [showError, setShowError] = useState(false)
   const handleClose = () => setIsOpen(false)
+
+  const handleChange = (newValue: string) => setValue(newValue)
 
   const mockComment = {
     author: '하늘이야빠',
@@ -47,7 +62,6 @@ export default function ComponentTest(): ReactElement {
       },
     ],
   }
-
   const mockMenuItems = [
     {
       id: '1',
@@ -65,10 +79,60 @@ export default function ComponentTest(): ReactElement {
       onClick: () => console.log('3'),
     },
   ]
+  if (showError) return <Error onRetry={() => setShowError(false)} />
 
   return (
     <div className="flex flex-col">
       <h1 className="mb-4 text-2xl font-bold">Component Test Page</h1>
+      {/* Error 컴포넌트 테스트 */}
+      <Button color="red" onClick={() => setShowError(!showError)}>
+        Error 발생
+      </Button>
+      {/* Loading 컴포넌트 테스트 */}
+      <div className="mb-4">
+        <Button color="green" size="large" onClick={() => setShowLoading(!showLoading)}>
+          {showLoading ? 'Hide Loading' : 'Show Loading'}
+        </Button>
+        {showLoading && <Loading content={`회원가입 처리중입니다 \n 잠시만 기다려주세요`} />}
+      </div>
+      {/* 인풋 컴포넌트 테스트 */}
+      <Input
+        value={value}
+        label="주소"
+        required
+        onChange={handleChange}
+        placeholder="주소를 입력하세요"
+        maxLength={50}
+        rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
+      />
+      <Input value={value} label="이메일" onChange={handleChange} />
+      <Input
+        value={value}
+        label="주소"
+        onChange={handleChange}
+        errorText="유효하지 않습니다."
+        placeholder="주소를 입력하세요"
+        showErrorText
+      />
+      <Input
+        value={value}
+        onChange={handleChange}
+        variant="rounded"
+        rightIcon={<PaperIcon className="size-6 cursor-pointer fill-gray-600" />}
+      />
+      {/* 탑네브바 테스트 */}
+      <TopNavBar
+        title="회원가입"
+        hasBackButton
+        actionButtons={[{ icon: SettingIcon }, { icon: BellIcon, showBadge: true }]}
+      />
+      <TopNavBar title="회원가입" hasBackButton />
+      <div>
+        <IconButton icon={SettingIcon} />
+        <IconButton icon={BellIcon} />
+        <IconButton icon={HamburgerIcon} />
+        <IconButton icon={BellIcon} showBadge />
+      </div>
       {/* 탭바 테스트 */}
       <TabBar />
       <div className="flex flex-col gap-2 p-5">
