@@ -1,5 +1,6 @@
+import { on } from 'events'
 import clsx from 'clsx'
-import { memo } from 'react'
+import { memo, SyntheticEvent } from 'react'
 import CloseIcon from '@/assets/icons/close_mid.svg'
 
 interface BaseChipProps {
@@ -8,11 +9,13 @@ interface BaseChipProps {
   color?: 'green' | 'purple' | 'blue' | 'red' | 'yellow' | 'black' | 'white' | 'transparent'
   className?: string
   children: React.ReactNode
+  onClick?: () => void
 }
 
 interface DeletableChipProps extends BaseChipProps {
   size: 'md'
   deletable: true
+
   onDelete: () => void
 }
 
@@ -29,12 +32,18 @@ const Chip = memo(function Chip({
   shape = 'square',
   color = 'green',
   deletable = false,
+  onClick,
   onDelete,
   className,
   children,
 }: ChipProps) {
+  const handleDelete = (e: SyntheticEvent) => {
+    e.stopPropagation()
+    onDelete?.()
+  }
   return (
     <div
+      onClick={onClick}
       className={clsx(
         'inline-flex items-center gap-1 font-medium',
         {
@@ -57,12 +66,13 @@ const Chip = memo(function Chip({
           'bg-gray-50 text-gray-700': color === 'white',
           'bg-transparent text-gray-700': color === 'transparent',
         },
+        onClick && 'cursor-pointer',
         className,
       )}
     >
       {children}
       {deletable && (
-        <button type="button" onClick={onDelete} aria-label="삭제">
+        <button type="button" onClick={handleDelete} aria-label="삭제">
           <CloseIcon
             className={clsx('w-4 h-4', {
               'fill-gray-700': color === 'white' || color === 'transparent',
