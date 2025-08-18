@@ -1,17 +1,18 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
-import { getAccessToken, refreshAccessToken, clearAccessToken, getRefreshToken } from './auth'
+import { getAccessToken, refreshAccessToken, getRefreshToken, clearTokens } from './auth'
 import { printErrorConsole, printRequestConsole, printResponseConsole } from '@/utils/console'
 
 const isDevelopment = process.env.NODE_ENV === 'development' // 개발 단계인지 확인
 
 export const CareCode: AxiosInstance = axios.create({
-  baseURL: process.env.API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   timeout: 30_000,
   headers: { Accept: '*/*' },
   withCredentials: true, // refreshToken은 HttpOnly 쿠키
 })
 
 // 요청 시 Authorization 헤더 적용
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
   if (isDevelopment) printRequestConsole(config)
   const token = getAccessToken()
@@ -21,6 +22,7 @@ CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
 
 // 401 발생 시 refresh + 재시도
 CareCode.interceptors.response.use(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (res: AxiosResponse<any, any>) => {
     printResponseConsole(res)
     return res
@@ -38,7 +40,7 @@ CareCode.interceptors.response.use(
           throw new Error('Refresh Token is NULL')
         }
       } catch {
-        clearAccessToken()
+        clearTokens()
         window.location.href = '/login' // 로그인 화면으로 이동
       }
     }

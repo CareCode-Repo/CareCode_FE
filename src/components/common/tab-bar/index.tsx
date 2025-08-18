@@ -52,7 +52,7 @@ const TabBar = ({ defaultIndex = 0, onChange, className }: TabBarProps): ReactEl
       value={currentValue}
       onValueChange={handleValueChange}
       className={clsx(
-        'w-full rounded-t-2xl bg-white shadow-[0_-2px_8px_0_rgba(0,0,0,0.1)] px-6 py-3',
+        'z-10 w-full rounded-t-2xl bg-white px-6 py-3 shadow-[0_-2px_8px_0_rgba(0,0,0,0.1)]',
         className,
       )}
     >

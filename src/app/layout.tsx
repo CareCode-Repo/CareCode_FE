@@ -25,6 +25,7 @@ export default function RootLayout({
 }>): ReactNode {
   return (
     <html lang="ko">
+
       <body className={`font-pretendard antialiased min-h-dvh`}>
         <QueryProvider>
           <div className="flex min-h-dvh">
@@ -39,6 +40,7 @@ export default function RootLayout({
             </div>
           </div>
         </QueryProvider>
+
       </body>
     </html>
   )

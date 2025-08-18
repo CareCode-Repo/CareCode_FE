@@ -26,7 +26,7 @@ const ActionButton = ({ type, count = 0, onClick, className }: ActionButtonProps
 
   return (
     <button
-      className={clsx('flex items-center gap-1 text-c1-regular text-gray-700', className)}
+      className={clsx('text-c1-regular flex items-center gap-1 text-gray-700', className)}
       onClick={onClick}
     >
       <Icon className="size-4.5 fill-gray-600" />
