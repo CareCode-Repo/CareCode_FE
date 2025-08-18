@@ -23,7 +23,7 @@ export default function Home(): JSX.Element {
     <div>
       <h1>Main</h1>
       <Button color="green" onClick={handleKakaoLogin} disabled={isPending}>
-        {isPending ? '로그인 중...' : '카카오로 로그인하기'}
+        {isPending ? '연결 중...' : '카카오로 로그인하기'}
       </Button>
       {error && <Error content="잠시 후 다시 시도해주세요." />}
       <KakaoLoginButton />
