@@ -10,14 +10,16 @@ export const postChatMessageBodySchema = z.object({
 })
 export type PostChatMessageBody = z.infer<typeof postChatMessageBodySchema>
 export const postChatMessageResponseSchema = z.object({
-  success: z.boolean(),
-  responseId: z.string(),
-  answer: z.string(),
+  messageId: z.number(),
+  response: z.string(),
+  intentType: z.string(),
   confidence: z.number(),
-  suggestion: z.array(z.string()),
-  relatedTopics: z.array(z.string()),
   sessionId: z.string(),
-  createdAt: z.string(),
+  timestamp: z.string(),
+  // suggestion: z.array(z.string()),
+  // relatedTopics: z.array(z.string()),
+  // sessionId: z.string(),
+  // createdAt: z.string(),
 })
 export type PostChatMessageResponse = z.infer<typeof postChatMessageResponseSchema>
 
@@ -47,6 +49,28 @@ export const getChatMessagesResponseSchema = z.object({
 })
 export type GetChatMessagesResponse = z.infer<typeof getChatMessagesResponseSchema>
 
+// /chatbot/history 해당 세션의 챗봇 메세지 기록 조회
+export const getChatHistoryQuerySchema = z.object({
+  userId: z.string(),
+  sessionId: z.string().optional(),
+  page: z.number().optional(),
+  size: z.number().optional(),
+})
+export type GetChatHistoryQuery = z.infer<typeof getChatHistoryQuerySchema>
+export const getChatHistoryResponseSchema = z.object({
+  messageId: z.number(),
+  message: z.string(),
+  response: z.string(),
+  messageType: z.string(),
+  intentType: z.string(),
+  confidence: z.number(),
+  sessionId: z.string(),
+  isHelpful: z.boolean(),
+  createdAt: z.string(),
+})
+export const GetChatHistoryResponseSchema = z.array(getChatHistoryResponseSchema)
+export type GetChatHistoryResponse = z.infer<typeof getChatHistoryResponseSchema>
+
 // /chatbot/sessions 챗봇 대화 리스트 가져오기
 export const getChatSessionsQuerySchema = z.object({
   userId: z.string(),
@@ -54,14 +78,22 @@ export const getChatSessionsQuerySchema = z.object({
   size: z.number().optional(),
 })
 export type GetChatSessionsQuery = z.infer<typeof getChatSessionsQuerySchema>
-export const getChatSessionsResponseSchema = z.object({
+export const sessionResponseSchema = z.object({
   sessionId: z.string(),
-  userId: z.string(),
   title: z.string(),
   description: z.string(),
   status: z.string(),
   messageCount: z.number(),
   lastActivityAt: z.string(),
-  createAt: z.string(),
+  createdAt: z.string(),
+  // sessionId: z.string(),
+  // userId: z.string(),
+  // title: z.string(),
+  // description: z.string(),
+  // status: z.string(),
+  // messageCount: z.number(),
+  // lastActivityAt: z.string(),
+  // createAt: z.string(),
 })
+export const getChatSessionsResponseSchema = z.array(sessionResponseSchema)
 export type GetChatSessionsResponse = z.infer<typeof getChatSessionsResponseSchema>
