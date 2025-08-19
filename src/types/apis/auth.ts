@@ -110,6 +110,7 @@ const kakaoAuthSuccessSchema = z.object({
   success: z.literal(true),
   message: z.string(),
   accessToken: z.string(),
+  // refreshToken: z.string(),
   tokenType: z.string(),
   expiresIn: z.number(),
   isNewUser: z.boolean(),

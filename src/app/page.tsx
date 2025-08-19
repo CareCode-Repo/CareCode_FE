@@ -2,7 +2,7 @@
 import { JSX } from 'react'
 import Button from '@/components/common/Button'
 import Error from '@/components/common/Error'
-import KakaoLoginButton from '@/components/features/login/KakaoLoginButton'
+// import KakaoLoginButton from '@/components/features/login/KakaoLoginButton'
 import { useGetKakaoAuthUrlMutation } from '@/queries/auth'
 
 export default function Home(): JSX.Element {
@@ -26,7 +26,7 @@ export default function Home(): JSX.Element {
         {isPending ? '연결 중...' : '카카오로 로그인하기'}
       </Button>
       {error && <Error content="잠시 후 다시 시도해주세요." />}
-      <KakaoLoginButton />
+      {/* <KakaoLoginButton /> */}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ReactElement, useEffect, Suspense } from 'react'
+import { ReactElement, useEffect, useRef, Suspense } from 'react'
 import { setTokens } from '@/apis/auth'
 import Loading from '@/components/common/loading'
 import { usePostKakaoAuth } from '@/queries/auth'
@@ -10,6 +10,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { mutate: postKakaoAuth, isPending } = usePostKakaoAuth()
+  const processedRef = useRef<string | null>(null)
 
   useEffect(() => {
     const code = searchParams.get('code')
@@ -19,6 +20,14 @@ const KakaoCallbackContent = (): ReactElement | null => {
       router.push('/')
       return
     }
+
+    // 이미 처리된 코드인지 확인하여 중복 API 호출 방지
+    if (processedRef.current === code) {
+      return
+    }
+
+    // 코드 처리 시작 표시
+    processedRef.current = code
 
     postKakaoAuth(
       { code },
@@ -34,6 +43,9 @@ const KakaoCallbackContent = (): ReactElement | null => {
               data.expiresIn,
             )
 
+            // URL에서 code 파라미터 제거
+            window.history.replaceState({}, '', window.location.pathname)
+
             // 신규 사용자면 회원가입 페이지로, 기존 사용자면 홈으로
             if (data.isNewUser) {
               router.push('/signup')
@@ -42,11 +54,19 @@ const KakaoCallbackContent = (): ReactElement | null => {
             }
           } else {
             console.error('Authentication failed:', data.message)
+            processedRef.current = null // 실패 시 재시도 가능하도록 초기화
             router.push('/')
           }
         },
         onError: (error) => {
           console.error('Kakao authentication error:', error)
+
+          // authorization code 관련 에러인 경우 재시도하지 않음
+          // const isAuthCodeError = (error as any)?.response?.data?.message?.includes('authorization code')
+          // if (!isAuthCodeError) {
+          //   processedRef.current = null // 다른 에러의 경우 재시도 가능하도록 초기화
+          // }
+
           router.push('/')
         },
       },
