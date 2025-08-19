@@ -4,7 +4,7 @@ import { useRecentSearches } from './useRecentSearches'
 
 interface UseSearchPolicyReturn {
   inputValue: string
-  performSearch: (value: string) => void
+  search: (value?: string) => void
   handleInputChange: (value: string) => void
 }
 
@@ -20,18 +20,21 @@ export const useSearchPolicy = (initialKeyword: string = ''): UseSearchPolicyRet
   const handleInputChange = useCallback((value: string) => {
     setInputValue(value)
   }, [])
-  const performSearch = useCallback(
-    (value: string) => {
-      setInputValue(value)
-      addSearch(value)
-      router.push(`/search/policy?keyword=${encodeURIComponent(value)}`)
+  const search = useCallback(
+    (value?: string) => {
+      const searchTerm = (value ?? inputValue).trim()
+      if (!searchTerm) return
+
+      setInputValue(searchTerm)
+      addSearch(searchTerm)
+      router.push(`/search/policy?keyword=${encodeURIComponent(searchTerm)}`)
     },
-    [addSearch, router],
+    [addSearch, router, inputValue],
   )
 
   return {
     inputValue,
-    performSearch,
+    search,
     handleInputChange,
   }
 }
