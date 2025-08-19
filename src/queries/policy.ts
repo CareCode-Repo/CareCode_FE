@@ -1,16 +1,25 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
-import { getPolicyList, getLatestPolicies } from '@/apis/policy'
+import {
+  useQuery,
+  UseQueryResult,
+  useInfiniteQuery,
+  UseInfiniteQueryResult,
+  InfiniteData,
+} from '@tanstack/react-query'
+import { getPolicyList, getLatestPolicies, searchPolicies } from '@/apis/policy'
 import {
   GetPolicyListQuery,
   GetPolicyListResponse,
   GetLatestPoliciesResponse,
+  PolicySearchRequestDto,
+  PolicySearchResponseDto,
 } from '@/types/apis/policy'
 
 export const policyQueryKeys = createQueryKeys('policy', {
   list: (query?: GetPolicyListQuery) => [query],
   detail: (id: number) => [id],
   latest: () => ['latest'],
+  search: (searchParams: Omit<PolicySearchRequestDto, 'page' | 'size'>) => [searchParams],
 })
 
 export const useGetPolicyList = (
@@ -27,5 +36,23 @@ export const useGetLatestPolicies = (): UseQueryResult<GetLatestPoliciesResponse
   return useQuery({
     queryKey: policyQueryKeys.latest().queryKey,
     queryFn: () => getLatestPolicies(),
+  })
+}
+
+export const useSearchPolicies = (
+  searchParams: Omit<PolicySearchRequestDto, 'page' | 'size'>,
+): UseInfiniteQueryResult<InfiniteData<PolicySearchResponseDto>, Error> => {
+  return useInfiniteQuery({
+    queryKey: policyQueryKeys.search(searchParams).queryKey,
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }: { pageParam: number }) =>
+      await searchPolicies({
+        ...searchParams,
+        page: pageParam,
+        size: 10,
+      }),
+    getNextPageParam: (lastPage: PolicySearchResponseDto) =>
+      lastPage.hasNext ? lastPage.currentPage + 1 : undefined,
+    enabled: !!searchParams.keyword,
   })
 }
