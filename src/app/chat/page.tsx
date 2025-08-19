@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'motion/react'
 import { ReactElement, useCallback, useState } from 'react'
-import HamburgerIcon from '@/assets/icons/hamburger.svg'
+// import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import TopNavBar from '@/components/common/top-navbar'
 import ChatContainer from '@/components/features/chat/ChatContainer'
 import ChatInput from '@/components/features/chat/ChatInput'
@@ -35,7 +35,11 @@ const Chat = (): ReactElement => {
 
   return (
     <div className="flex h-full flex-col bg-gray-50">
-      <TopNavBar title="챗봇 상담" hasBackButton actionButtons={[{ icon: HamburgerIcon }]} />
+      <TopNavBar
+        title="챗봇 상담"
+        hasBackButton
+        // actionButtons={[{ icon: HamburgerIcon }]}
+      />
 
       <div className="flex flex-1 flex-col overflow-hidden px-5 pb-5">
         <ChatContainer messages={messages} />
