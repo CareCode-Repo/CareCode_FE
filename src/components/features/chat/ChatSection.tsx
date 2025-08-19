@@ -1,12 +1,14 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { ReactElement, useEffect, useRef } from 'react'
 import RightArrowIcon from '@/assets/icons/arrow_with_circle_small.svg'
 import CharacterIcon from '@/assets/icons/characters/hi.svg'
 
 const ChatSection = (): ReactElement => {
+  const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const handleClick = () => console.log('Chat section clicked')
+  const handleClick = () => router.push('/chat')
 
   useEffect(() => {
     const canvas = canvasRef.current
