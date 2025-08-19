@@ -144,16 +144,8 @@ export const getKakaoAuthUrl = async (redirectUri?: string): Promise<GetKakaoAut
 // /api/auth/kakao/auth
 export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoAuthResponse> => {
   const parsedBody = postKakaoAuthBodySchema.parse(body)
-  try {
-    const res = await CareCode.post('/api/auth/kakao/auth', null, {
-      params: { code: parsedBody.code },
-    })
-    if (res.status === 204) {
-      return postKakaoAuthResponseSchema.parse(res.data)
-    } else {
-      throw new Error('Unexpected response status: ' + res.status)
-    }
-  } catch (error) {
-    throw error
-  }
+  const res = await CareCode.post('/api/auth/kakao/auth', null, {
+    params: { code: parsedBody.code },
+  })
+  return postKakaoAuthResponseSchema.parse(res.data)
 }
