@@ -84,3 +84,28 @@ export type GetPolicyByIdResponse = z.infer<typeof getPolicyByIdResponseSchema>
 // /policies/latest
 export const getLatestPoliciesResponseSchema = z.array(policySchema)
 export type GetLatestPoliciesResponse = z.infer<typeof getLatestPoliciesResponseSchema>
+
+// /policies/search
+export const policySearchRequestSchema = z.object({
+  keyword: z.string().max(100).optional(),
+  category: z.enum(['EDUCATION', 'HEALTH', 'FINANCIAL', 'SUPPORT', 'OTHER']).optional(),
+  location: z.string().max(100).optional(),
+  minAge: z.number().min(0).max(18).optional(),
+  maxAge: z.number().min(0).max(18).optional(),
+  page: z.number().min(0).optional(),
+  size: z.number().min(1).max(100).optional(),
+  sortBy: z.enum(['title', 'category', 'location', 'createdAt']).optional(),
+  sortDirection: z.enum(['ASC', 'DESC']).optional(),
+})
+export type PolicySearchRequestDto = z.infer<typeof policySearchRequestSchema>
+
+export const policySearchResponseSchema = z.object({
+  policies: z.array(policySchema),
+  totalElements: z.number(),
+  totalPages: z.number(),
+  currentPage: z.number(),
+  pageSize: z.number(),
+  hasNext: z.boolean(),
+  hasPrevious: z.boolean(),
+})
+export type PolicySearchResponseDto = z.infer<typeof policySearchResponseSchema>
