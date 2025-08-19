@@ -19,7 +19,7 @@ interface PolicySearchPageProps {
 
 const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement => {
   const { keyword } = use(searchParams)
-  const { inputValue, handleInputChange, performSearch } = useSearchPolicy(keyword || '')
+  const { inputValue, handleInputChange, search } = useSearchPolicy(keyword || '')
 
   const searchQuery = useSearchPolicies({
     keyword: keyword || '',
@@ -29,8 +29,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (inputValue.length === 0) return
-    performSearch(inputValue)
+    search()
   }
 
   const allPolicies = data?.pages.flatMap((page) => page.policies) || []
@@ -47,7 +46,13 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
           value={inputValue}
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
-          rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
+          rightIcon={
+            <SearchIcon
+              className="size-6 cursor-pointer fill-gray-400"
+              onClick={search}
+              aria-label="검색"
+            />
+          }
         />
       </form>
       <Spacer className="h-9 shrink-0" />

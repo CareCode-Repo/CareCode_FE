@@ -1,4 +1,3 @@
-// hooks/useRecentSearches.ts
 import { useEffect, useState, useCallback } from 'react'
 
 const STORAGE_KEY = 'recentSearches'
