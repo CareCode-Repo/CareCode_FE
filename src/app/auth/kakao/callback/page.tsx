@@ -14,10 +14,11 @@ const KakaoCallbackContent = (): ReactElement | null => {
 
   useEffect(() => {
     const code = searchParams.get('code')
+    console.log('Kakao authorization code:', code)
 
     if (!code) {
       console.error('No authorization code found')
-      router.push('/')
+      // router.push('/')
       return
     }
 
@@ -37,7 +38,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
             setTokens(data.accessToken, data.refreshToken, data.user.userId, data.expiresIn)
 
             // URL에서 code 파라미터 제거
-            window.history.replaceState({}, '', window.location.pathname)
+            // window.history.replaceState({}, '', window.location.pathname)
 
             // 회원가입이 완료되지 않은 경우 회원가입 페이지로
             if (data.isNewUser) {
@@ -48,7 +49,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           } else {
             console.error('Authentication failed:', data.message)
             processedRef.current = null // 실패 시 재시도 가능하도록 초기화
-            router.push('/')
+            // router.push('/')
           }
         },
         onError: (error) => {
@@ -60,7 +61,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           //   processedRef.current = null // 다른 에러의 경우 재시도 가능하도록 초기화
           // }
 
-          router.push('/')
+          // router.push('/')
         },
       },
     )
