@@ -8,41 +8,55 @@ export const postAuthorSchema = z.object({
 export type PostAuthor = z.infer<typeof postAuthorSchema>
 
 export const postCommentSchema = z.object({
-  userId: z.string(),
-  name: z.string(),
+  commentId: z.number(),
   content: z.string(),
+  authorName: z.string(),
+  authorId: z.string(),
+  createdAt: z.string(),
+  likeCount: z.number(),
+  isLiked: z.boolean(),
+  parentCommentId: z.number().nullable(),
+  replies: z.array(z.string()).default([]),
 })
 export type PostComment = z.infer<typeof postCommentSchema>
 
 export const postSchema = z.object({
-  id: z.number(),
+  postId: z.number(),
   title: z.string(),
   content: z.string(),
   category: z.string(),
-  author: postAuthorSchema,
-  tags: z.array(z.string()),
+  authorName: z.string(),
+  authorId: z.string(),
+  isAnonymous: z.boolean(),
+
+  createdAt: z.string(),
   viewCount: z.number(),
   likeCount: z.number(),
   commentCount: z.number(),
+  tags: z.array(z.string()).nullable().default([]),
+  isLiked: z.boolean().optional(),
+  isBookmarked: z.boolean().optional(),
+
   comments: z.array(postCommentSchema).optional(),
-  isAnonymous: z.boolean(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  relatedPosts: z.array(z.string()).nullable().default([]),
 })
 export type Post = z.infer<typeof postSchema>
 
 export const postListItemSchema = z.object({
-  id: z.number(),
+  postId: z.number(),
   title: z.string(),
   content: z.string(),
   category: z.string(),
-  author: postAuthorSchema,
-  tags: z.array(z.string()),
+  authorName: z.string(),
+  authorId: z.string(),
+  isAnonymous: z.boolean(),
+  createdAt: z.string(),
   viewCount: z.number(),
   likeCount: z.number(),
   commentCount: z.number(),
-  isAnonymous: z.boolean(),
-  createdAt: z.string(),
+  tags: z.array(z.string()),
+  isLiked: z.boolean().optional(),
+  isBookmarked: z.boolean().optional(),
 })
 export type PostListItem = z.infer<typeof postListItemSchema>
 
@@ -55,12 +69,15 @@ export const getCommunityPostsQuerySchema = z.object({
 })
 export type GetCommunityPostsQuery = z.infer<typeof getCommunityPostsQuerySchema>
 export const getCommunityPostsResponseSchema = z.object({
-  success: z.boolean(),
   content: z.array(postListItemSchema),
   page: z.number(),
   size: z.number(),
   totalElements: z.number(),
   totalPages: z.number(),
+  first: z.boolean(),
+  last: z.boolean(),
+  hasNext: z.boolean(),
+  hasPrevious: z.boolean(),
 })
 export type GetCommunityPostsResponse = z.infer<typeof getCommunityPostsResponseSchema>
 
@@ -73,11 +90,7 @@ export const postCommunityPostBodySchema = z.object({
   isAnonymous: z.boolean().default(false),
 })
 export type PostCommunityPostBody = z.infer<typeof postCommunityPostBodySchema>
-export const postCommunityPostResponseSchema = z.object({
-  success: z.boolean(),
-  message: z.string(),
-  postId: z.number(),
-})
+export const postCommunityPostResponseSchema = postSchema
 export type PostCommunityPostResponse = z.infer<typeof postCommunityPostResponseSchema>
 
 // /community/posts/{postId} 게시글 상세 조회
@@ -99,8 +112,28 @@ export const postCommunityCommentBodySchema = z.object({
 })
 export type PostCommunityCommentBody = z.infer<typeof postCommunityCommentBodySchema>
 export const postCommunityCommentResponseSchema = z.object({
-  success: z.boolean(),
-  message: z.string(),
   commentId: z.number(),
+  content: z.string(),
+  authorName: z.string(),
+  authorId: z.string(),
+  createdAt: z.string(),
+  likeCount: z.number(),
+  isLiked: z.boolean(),
+  parentCommentId: z.number().nullable(),
+  replies: z.array(z.string()).default([]),
 })
 export type PostCommunityCommentResponse = z.infer<typeof postCommunityCommentResponseSchema>
+
+export const putCommunityPostPathSchema = z.object({
+  postId: z.number(),
+})
+export type PutCommunityPostPath = z.infer<typeof putCommunityPostPathSchema>
+export const putCommunityPostBodySchema = postSchema
+export type PutCommunityPostBody = z.infer<typeof putCommunityPostBodySchema>
+export const putCommunityPostResponseSchema = postSchema
+export type PutCommunityPostResponse = z.infer<typeof putCommunityPostResponseSchema>
+
+export const deleteCommunityPostPathSchema = z.object({
+  postId: z.number(),
+})
+export type DeleteCommunityPostPath = z.infer<typeof deleteCommunityPostPathSchema>
