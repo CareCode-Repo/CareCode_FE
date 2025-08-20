@@ -27,6 +27,7 @@ export const printRequestConsole = (config: { [key: string]: any }): void => {
     - URL    : ${config.baseURL}${config.url}
     - Data   : ${JSON.stringify(config.data, null, 2)}
     - Params : ${JSON.stringify(config.params, null, 2)}
+    - Header :  ${config.headers.Authorization}
     =================================
   `)
 }
