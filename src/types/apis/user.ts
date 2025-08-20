@@ -13,6 +13,7 @@ export const userSchema = z.object({
   role: z.enum(['PARENT', 'CHILD']).optional(),
   isActive: z.boolean(),
   emailVerified: z.boolean(),
+  registrationCompleted: z.boolean(),
   lastLoginAt: z.string().optional(), // 2024-01-15T10:30:00
   createdAt: z.string().optional(), // 2024-01-15T10:30:00
   updatedAt: z.string().optional(),

@@ -163,6 +163,7 @@ const kakaoAuthSuccessSchema = z.object({
     email: z.string(),
     role: z.enum(['PARENT', 'CHILD']),
     name: z.string(),
+    registrationCompleted: z.boolean().optional(),
   }),
 })
 const kakaoAuthFailSchema = z.object({
