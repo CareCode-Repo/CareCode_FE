@@ -26,10 +26,10 @@ const QueryProvider = ({ children }: { children: ReactNode }): ReactElement => {
             gcTime: 5 * 60 * 1000, // 5분 후 가비지 컬렉션
           },
           mutations: {
-            retry: 1,
-            onError: (error: Error) => {
-              console.error('Mutation error:', error)
-            },
+            // retry: 1,
+            // onError: (error: Error) => {
+            //   console.error('Mutation error:', error)
+            // },
           },
         },
       }),
