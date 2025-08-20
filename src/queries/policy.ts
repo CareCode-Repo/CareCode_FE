@@ -6,13 +6,14 @@ import {
   UseInfiniteQueryResult,
   InfiniteData,
 } from '@tanstack/react-query'
-import { getPolicyList, getLatestPolicies, searchPolicies } from '@/apis/policy'
+import { getPolicyList, getLatestPolicies, searchPolicies, getPolicyById } from '@/apis/policy'
 import {
   GetPolicyListQuery,
   GetPolicyListResponse,
   GetLatestPoliciesResponse,
   PolicySearchRequestDto,
   PolicySearchResponseDto,
+  GetPolicyByIdResponse,
 } from '@/types/apis/policy'
 
 export const policyQueryKeys = createQueryKeys('policy', {
@@ -29,6 +30,16 @@ export const useGetPolicyList = (
     queryKey: policyQueryKeys.list(query).queryKey,
     queryFn: () => getPolicyList(query || {}),
     enabled: true,
+  })
+}
+
+export const useGetPolicyById = (
+  policyId: number,
+): UseQueryResult<GetPolicyByIdResponse, Error> => {
+  return useQuery({
+    queryKey: policyQueryKeys.detail(policyId).queryKey,
+    queryFn: () => getPolicyById({ policyId }),
+    enabled: !!policyId,
   })
 }
 

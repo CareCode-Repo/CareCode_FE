@@ -7,7 +7,7 @@ import Chip from '@/components/common/Chip'
 import DescriptionItem from '@/components/common/DescriptionItem'
 import Spacer from '@/components/common/Spacer'
 import Tag from '@/components/common/Tag'
-import { PolicyCardProps } from '@/types/policy'
+import { PolicyCardProps, getChipColor } from '@/types/policy'
 
 const PolicyCard = ({
   id,
@@ -22,18 +22,6 @@ const PolicyCard = ({
   className,
 }: PolicyCardProps): ReactElement => {
   const router = useRouter()
-  const getChipColor = () => {
-    switch (type) {
-      case '상시접수':
-        return 'purple'
-      case '매월':
-        return 'blue'
-      case 'D-Day':
-        return 'green'
-      case '선착순':
-        return 'red'
-    }
-  }
   const handleClick = () => router.push(`/policy/${id}`)
   return (
     <div
@@ -45,7 +33,7 @@ const PolicyCard = ({
       onClick={handleClick}
     >
       <div className="flex items-center gap-2.5">
-        <Chip color={getChipColor()}>{(dday && `D-${dday}`) || type}</Chip>
+        <Chip color={getChipColor(type)}>{(dday && `D-${dday}`) || type}</Chip>
         {tags.map((tag) => (
           <Tag key={tag} tag={tag} />
         ))}
