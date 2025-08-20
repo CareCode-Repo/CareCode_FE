@@ -36,7 +36,7 @@ const PolicyDetailPage = ({ params }: { params: Promise<{ id: string }> }): Reac
   const tags = [policy.category]
   return (
     <Layout hasBackButton hasTopNav title="정책 상세">
-      <div className="flex grow flex-col overflow-y-scroll">
+      <div className="hide-scrollbar scrollbar-hide flex grow flex-col overflow-y-scroll">
         <div className="flex flex-col gap-5 p-6">
           <Chip shape="square" size="md" className="w-fit" color={getChipColor(policyType)}>
             {policyType}
@@ -79,11 +79,24 @@ const PolicyDetailPage = ({ params }: { params: Promise<{ id: string }> }): Reac
           <span className="text-b1-semibold text-gray-800">지원 내용 상세</span>
           <p>{policy.description}</p>
         </div>
+        <Separator />
+        <div className="flex flex-col gap-4 p-7.5">
+          <span className="text-b1-semibold text-gray-800">필수 서류</span>
+          <p className="text-b1-regular whitespace-pre-line text-gray-700">
+            {policy.requiredDocuments}
+          </p>
+        </div>
+        <Separator />
+        <div className="flex flex-col gap-4 p-7.5">
+          <span className="text-b1-semibold text-gray-800">연락처 정보</span>
+          <p className="text-b1-regular whitespace-pre-line text-gray-700">{policy.contactInfo}</p>
+        </div>
       </div>
 
       <div className="p-6">
         <Button
           color="green"
+          disabled={!policy.websiteUrl}
           onClick={() => policy.websiteUrl && window.open(policy.websiteUrl, '_blank')}
         >
           신청하기
