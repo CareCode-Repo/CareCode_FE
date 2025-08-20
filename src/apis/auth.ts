@@ -29,6 +29,10 @@ import {
   PostKakaoAuthBody,
   postKakaoAuthResponseSchema,
   PostKakaoAuthResponse,
+  kakaoRegistrationRequestSchema,
+  KakaoRegistrationRequest,
+  kakaoRegistrationResponseSchema,
+  KakaoRegistrationResponse,
 } from '@/types/apis/auth'
 
 // /auth/login
@@ -165,7 +169,7 @@ export const getKakaoAuthUrl = async (redirectUri?: string): Promise<GetKakaoAut
 export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoAuthResponse> => {
   const parsedBody = postKakaoAuthBodySchema.parse(body)
   try {
-    const res = await CareCode.post('/api/auth/kakao/auth', null, {
+    const res = await CareCode.post('/auth/kakao/login', null, {
       params: { code: parsedBody.code },
     })
 
@@ -196,4 +200,13 @@ export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoA
 
     throw error
   }
+}
+
+// POST /users/auth/users/kakao/complete-registration
+export const postKakaoCompleteRegistration = async (
+  body: KakaoRegistrationRequest,
+): Promise<KakaoRegistrationResponse> => {
+  const parsedBody = kakaoRegistrationRequestSchema.parse(body)
+  const res = await CareCode.post('/auth/kakao/complete-registration', parsedBody)
+  return kakaoRegistrationResponseSchema.parse(res.data)
 }

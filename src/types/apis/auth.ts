@@ -163,6 +163,7 @@ const kakaoAuthSuccessSchema = z.object({
     email: z.string(),
     role: z.enum(['PARENT', 'CHILD']),
     name: z.string(),
+    registrationCompleted: z.boolean().optional(),
   }),
 })
 const kakaoAuthFailSchema = z.object({
@@ -172,3 +173,37 @@ const kakaoAuthFailSchema = z.object({
 })
 export const postKakaoAuthResponseSchema = z.union([kakaoAuthSuccessSchema, kakaoAuthFailSchema])
 export type PostKakaoAuthResponse = z.infer<typeof postKakaoAuthResponseSchema>
+
+// POST /users/auth/users/kakao/complete-registration
+export const kakaoRegistrationRequestSchema = z.object({
+  name: z
+    .string()
+    .min(2, '닉네임은 2글자 이상이어야 합니다')
+    .max(10, '닉네임은 10글자 이하여야 합니다'),
+  role: z.enum(['ADMIN', 'CAREGIVER', 'GUEST', 'PARENT'], {
+    required_error: '역할을 선택해주세요',
+  }),
+})
+export type KakaoRegistrationRequest = z.infer<typeof kakaoRegistrationRequestSchema>
+
+export const kakaoRegistrationResponseSchema = z.object({
+  id: z.number(),
+  userId: z.string(),
+  email: z.string(),
+  password: z.string().nullable(),
+  name: z.string(),
+  phoneNumber: z.string().nullable(),
+  birthDate: z.string().nullable(),
+  gender: z.string().nullable(),
+  address: z.string().nullable(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  profileImageUrl: z.string().nullable(),
+  role: z.string(),
+  isActive: z.boolean(),
+  emailVerified: z.boolean(),
+  lastLoginAt: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+export type KakaoRegistrationResponse = z.infer<typeof kakaoRegistrationResponseSchema>

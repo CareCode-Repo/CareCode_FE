@@ -14,10 +14,11 @@ const KakaoCallbackContent = (): ReactElement | null => {
 
   useEffect(() => {
     const code = searchParams.get('code')
+    console.log('Kakao authorization code:', code)
 
     if (!code) {
       console.error('No authorization code found')
-      router.push('/')
+      // router.push('/')
       return
     }
 
@@ -34,14 +35,12 @@ const KakaoCallbackContent = (): ReactElement | null => {
       {
         onSuccess: (data) => {
           if (data.success) {
-            // 토큰 저장 (refreshToken은 백엔드에서 추후 추가 예정 -> 현재 안오고 있음.)
-            // 임시로 빈 문자열과 기본값 사용
             setTokens(data.accessToken, data.refreshToken, data.user.userId, data.expiresIn)
 
             // URL에서 code 파라미터 제거
-            window.history.replaceState({}, '', window.location.pathname)
+            // window.history.replaceState({}, '', window.location.pathname)
 
-            // 신규 사용자면 회원가입 페이지로, 기존 사용자면 홈으로
+            // 회원가입이 완료되지 않은 경우 회원가입 페이지로
             if (data.isNewUser) {
               router.push('/signup')
             } else {
@@ -50,7 +49,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           } else {
             console.error('Authentication failed:', data.message)
             processedRef.current = null // 실패 시 재시도 가능하도록 초기화
-            router.push('/')
+            // router.push('/')
           }
         },
         onError: (error) => {
@@ -62,7 +61,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           //   processedRef.current = null // 다른 에러의 경우 재시도 가능하도록 초기화
           // }
 
-          router.push('/')
+          // router.push('/')
         },
       },
     )

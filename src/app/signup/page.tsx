@@ -5,12 +5,12 @@ import { ReactElement } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
 import Button from '@/components/common/Button'
-import Label from '@/components/common/Label'
+// import Label from '@/components/common/Label'
 import Layout from '@/components/common/Layout'
-import ToggleButton from '@/components/common/ToggleButton'
+// import ToggleButton from '@/components/common/ToggleButton'
 import Input from '@/components/common/input'
-import { usePostSignup } from '@/queries/auth'
-import { PostSignupBody } from '@/types/apis/auth'
+import { usePostKakaoCompleteRegistration } from '@/queries/auth'
+import { KakaoRegistrationRequest } from '@/types/apis/auth'
 
 const SignUpPage = (): ReactElement => {
   const router = useRouter()
@@ -19,19 +19,17 @@ const SignUpPage = (): ReactElement => {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<PostSignupBody>({
+  } = useForm<KakaoRegistrationRequest>({
     mode: 'onChange',
     defaultValues: {
       name: '',
-      // email: '',
-      // password: '',
       role: 'PARENT',
     },
   })
 
-  const signupMutation = usePostSignup()
+  const signupMutation = usePostKakaoCompleteRegistration()
 
-  const onSubmit = async (data: PostSignupBody) => {
+  const onSubmit = async (data: KakaoRegistrationRequest) => {
     try {
       await signupMutation.mutateAsync(data)
 
@@ -94,7 +92,7 @@ const SignUpPage = (): ReactElement => {
             />
 
             {/* 역할 */}
-            <div className="flex flex-col gap-2">
+            {/* <div className="flex flex-col gap-2">
               <Label required>역할</Label>
               <Controller
                 name="role"
@@ -111,7 +109,7 @@ const SignUpPage = (): ReactElement => {
                       부모
                     </ToggleButton>
                     <ToggleButton
-                      pressed={field.value === 'CAREGIVER'}
+                      pressed={field.value === 'CHILD'}
                       onPressedChange={(pressed) => pressed && field.onChange('CAREGIVER')}
                     >
                       자녀
@@ -119,7 +117,7 @@ const SignUpPage = (): ReactElement => {
                   </div>
                 )}
               />
-            </div>
+            </div> */}
 
             {/* 임시 필수 필드들 */}
             {/* <div className="flex flex-col gap-4">

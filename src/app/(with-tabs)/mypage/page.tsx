@@ -12,6 +12,15 @@ import MenuList from '@/components/features/mypage/MenuList'
 const MyPage = (): ReactElement => {
   const router = useRouter()
   const handleEditButtonClick = () => router.push('/mypage/edit')
+  const handleLogout = () => {
+    // 로그아웃 로직 구현
+    // 토큰 삭제 등
+    router.push('/')
+  }
+  const handleWithdrawal = () => {
+    // 회원탈퇴 로직 api 호출, 토큰삭제 등?
+    console.log('회원탈퇴')
+  }
   return (
     <Layout hasTopNav title="홈" actionButtons={[{ icon: BellIcon }]}>
       <div className="m-4.5 flex items-center gap-3.5 rounded-lg border border-gray-300 bg-white p-3.5">
@@ -52,8 +61,8 @@ const MyPage = (): ReactElement => {
         className="bg-white"
         title="회원 관리"
         items={[
-          { id: '1', title: '로그아웃' },
-          { id: '2', title: '회원탈퇴' },
+          { id: '1', title: '로그아웃', onClick: handleLogout },
+          { id: '2', title: '회원탈퇴', onClick: handleWithdrawal },
         ]}
       />
     </Layout>
