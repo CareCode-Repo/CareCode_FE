@@ -44,7 +44,45 @@ export type PostKakaoLoginBody = z.infer<typeof postKakaoLoginBodySchema>
 export const postKakaoLoginResponseSchema = kakaoLoginSuccessSchema
 export type PostKakaoLoginResponse = z.infer<typeof postKakaoLoginResponseSchema>
 
-// register 공통
+// users
+const signupBodySchema = z.object({
+  name: z
+    .string()
+    .min(2, '닉네임은 2글자 이상이어야 합니다')
+    .max(10, '닉네임은 10글자 이하여야 합니다'),
+  role: z.enum(['ADMIN', 'CAREGIVER', 'GUEST', 'PARENT'], {
+    required_error: '역할을 선택해주세요',
+  }),
+  // 현재 API 요구사항 (향후 제거 예정)
+  // email: z.string().email('유효한 이메일 주소를 입력해주세요'),
+  // password: z.string().min(6, '비밀번호는 6글자 이상이어야 합니다'),
+  // phoneNumber: z.string().optional(),
+  // birthDate: z.string().optional(),
+  // gender: z.enum(['MALE', 'FEMALE']).optional(),
+  // address: z.string().optional(),
+})
+
+const signupResponseSchema = z.object({
+  id: z.number(),
+  userId: z.string(),
+  email: z.string(),
+  password: z.string().nullable(),
+  name: z.string(),
+  phoneNumber: z.string().nullable(),
+  birthDate: z.string().nullable(),
+  gender: z.string().nullable(),
+  address: z.string().nullable(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  profileImageUrl: z.string().nullable(),
+  role: z.string(),
+  isActive: z.boolean(),
+  emailVerified: z.boolean(),
+  lastLoginAt: z.string().nullable(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+})
+
 const registerBodySchema = z.object({
   kakaoAccessToken: z.string(),
   email: z.string().email(),
@@ -70,6 +108,12 @@ export const postRegisterBodySchema = registerBodySchema
 export type PostRegisterBody = z.infer<typeof postRegisterBodySchema>
 export const postRegisterResponseSchema = registerResponseSchema
 export type PostRegisterResponse = z.infer<typeof postRegisterResponseSchema>
+
+// /users
+export const postSignupBodySchema = signupBodySchema
+export type PostSignupBody = z.infer<typeof postSignupBodySchema>
+export const postSignupResponseSchema = signupResponseSchema
+export type PostSignupResponse = z.infer<typeof postSignupResponseSchema>
 
 // /auth/refresh
 export const postRefreshTokenBodySchema = z.object({
@@ -110,7 +154,7 @@ const kakaoAuthSuccessSchema = z.object({
   success: z.literal(true),
   message: z.string(),
   accessToken: z.string(),
-  // refreshToken: z.string(),
+  refreshToken: z.string(),
   tokenType: z.string(),
   expiresIn: z.number(),
   isNewUser: z.boolean(),

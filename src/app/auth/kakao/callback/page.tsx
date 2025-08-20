@@ -36,12 +36,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           if (data.success) {
             // 토큰 저장 (refreshToken은 백엔드에서 추후 추가 예정 -> 현재 안오고 있음.)
             // 임시로 빈 문자열과 기본값 사용
-            setTokens(
-              data.accessToken,
-              '', // refreshToken - 백엔드에서 추가될 예정
-              data.user.userId,
-              data.expiresIn,
-            )
+            setTokens(data.accessToken, data.refreshToken, data.user.userId, data.expiresIn)
 
             // URL에서 code 파라미터 제거
             window.history.replaceState({}, '', window.location.pathname)
