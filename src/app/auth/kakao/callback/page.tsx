@@ -18,7 +18,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
 
     if (!code) {
       console.error('No authorization code found')
-      // router.push('/')
+      router.push('/')
       return
     }
 
@@ -49,7 +49,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           } else {
             console.error('Authentication failed:', data.message)
             processedRef.current = null // 실패 시 재시도 가능하도록 초기화
-            // router.push('/')
+            router.push('/')
           }
         },
         onError: (error) => {
@@ -61,7 +61,7 @@ const KakaoCallbackContent = (): ReactElement | null => {
           //   processedRef.current = null // 다른 에러의 경우 재시도 가능하도록 초기화
           // }
 
-          // router.push('/')
+          router.push('/')
         },
       },
     )

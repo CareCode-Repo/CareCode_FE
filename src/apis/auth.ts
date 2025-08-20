@@ -179,25 +179,7 @@ export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoA
     } else {
       throw new Error('Unexpected response status: ' + res.status)
     }
-  } catch (error: any) {
-    // Kakao OAuth 관련 에러에 대한 향상된 처리
-    if (error?.response?.status === 400) {
-      const errorData = error.response.data
-
-      // Kakao OAuth 특정 에러 처리
-      if (errorData?.message?.includes('authorization code')) {
-        const enhancedError = new Error(
-          '카카오 인증 코드가 만료되었거나 이미 사용되었습니다. 다시 로그인해주세요.',
-        ) as any
-        enhancedError.name = 'KakaoAuthCodeError'
-        enhancedError.originalError = error
-        throw enhancedError
-      }
-
-      // 기타 400 에러
-      throw new Error(errorData?.message || '카카오 로그인 중 오류가 발생했습니다.')
-    }
-
+  } catch (error) {
     throw error
   }
 }
