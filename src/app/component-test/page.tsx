@@ -215,6 +215,7 @@ export default function ComponentTest(): ReactElement {
         </div>
         <div className="mt-4 flex flex-col gap-4">
           <PolicyCard
+            id={1}
             type="상시접수"
             tags={['건강검진', '서비스지원']}
             title="경기형 가족돌봄수당"
@@ -284,6 +285,7 @@ export default function ComponentTest(): ReactElement {
         <MainSection title="최근 정책">
           <div className="scrollbar-hide flex gap-3 overflow-x-auto px-4 [&>*]:w-64 [&>*]:flex-shrink-0">
             <PolicyCard
+              id={1}
               type="상시접수"
               tags={['건강검진', '서비스지원']}
               title={`정책 카드 1`}
@@ -294,6 +296,7 @@ export default function ComponentTest(): ReactElement {
               onClick={() => console.log(`정책 카드 1 클릭됨`)}
             />
             <PolicyCard
+              id={2}
               type="상시접수"
               tags={['건강검진', '서비스지원']}
               title={`정책 카드 1`}

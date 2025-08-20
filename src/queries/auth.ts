@@ -1,10 +1,12 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 import { useMutation, UseMutationResult, useQuery, UseQueryResult } from '@tanstack/react-query'
-import { getKakaoAuthUrl, postKakaoAuth } from '@/apis/auth'
+import { getKakaoAuthUrl, postKakaoAuth, postSignup } from '@/apis/auth'
 import {
   GetKakaoAuthUrlResponse,
   PostKakaoAuthBody,
   PostKakaoAuthResponse,
+  PostSignupBody,
+  PostSignupResponse,
 } from '@/types/apis/auth'
 
 export const authQueries = createQueryKeys('auth', {
@@ -39,5 +41,11 @@ export const usePostKakaoAuth = (): UseMutationResult<
 > => {
   return useMutation({
     mutationFn: postKakaoAuth,
+  })
+}
+
+export const usePostSignup = (): UseMutationResult<PostSignupResponse, Error, PostSignupBody> => {
+  return useMutation({
+    mutationFn: postSignup,
   })
 }

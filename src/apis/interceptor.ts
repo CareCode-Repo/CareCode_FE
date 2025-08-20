@@ -41,7 +41,7 @@ CareCode.interceptors.response.use(
         }
       } catch {
         clearTokens()
-        window.location.href = '/login' // 로그인 화면으로 이동
+        window.location.href = '/' // 로그인 화면으로 이동
       }
     }
     return Promise.reject(error)
