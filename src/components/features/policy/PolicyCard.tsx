@@ -1,24 +1,16 @@
+'use client'
 import clsx from 'clsx'
+import { useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
 
 import Chip from '@/components/common/Chip'
 import DescriptionItem from '@/components/common/DescriptionItem'
 import Spacer from '@/components/common/Spacer'
 import Tag from '@/components/common/Tag'
-import { PolicyType } from '@/types/policy'
-
-type PolicyCardProps = {
-  tags: string[]
-  title: string
-  description: string
-  region: string
-  targetAge: string
-  applicationPeriod: string
-  className?: string
-  onClick?: () => void
-} & ({ type: 'D-Day'; dday: number } | { type: Exclude<PolicyType, 'D-Day'>; dday?: never })
+import { PolicyCardProps } from '@/types/policy'
 
 const PolicyCard = ({
+  id,
   type,
   tags,
   title,
@@ -28,8 +20,8 @@ const PolicyCard = ({
   applicationPeriod,
   dday,
   className,
-  onClick,
 }: PolicyCardProps): ReactElement => {
+  const router = useRouter()
   const getChipColor = () => {
     switch (type) {
       case '상시접수':
@@ -42,6 +34,7 @@ const PolicyCard = ({
         return 'red'
     }
   }
+  const handleClick = () => router.push(`/policy/${id}`)
   return (
     <div
       role="button"
@@ -49,7 +42,7 @@ const PolicyCard = ({
         'flex cursor-pointer flex-col rounded-lg bg-gray-100 pt-3.5 pr-3.5 pb-[1.125rem] pl-3.5 transition-colors hover:bg-gray-200',
         className,
       )}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <div className="flex items-center gap-2.5">
         <Chip color={getChipColor()}>{(dday && `D-${dday}`) || type}</Chip>

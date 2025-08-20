@@ -11,6 +11,7 @@ export type PolicyCardProps = {
   region: string
   targetAge: string
   applicationPeriod: string
+  className?: string
   onClick?: () => void
 } & ({ type: 'D-Day'; dday: number } | { type: Exclude<PolicyType, 'D-Day'>; dday?: never })
 
