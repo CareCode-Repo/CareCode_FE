@@ -10,6 +10,10 @@ import {
   getCommunityPostsQuerySchema,
   GetCommunityPostsResponse,
   getCommunityPostsResponseSchema,
+  GetCommunitySearchQuery,
+  getCommunitySearchQuerySchema,
+  GetCommunitySearchResponse,
+  getCommunitySearchResponseSchema,
   PostCommunityCommentBody,
   postCommunityCommentBodySchema,
   PostCommunityCommentPath,
@@ -79,4 +83,15 @@ export const deleteCommunityPost = async (path: DeleteCommunityPostPath): Promis
   const parsedPath = deleteCommunityPostPathSchema.parse(path)
   const res = await CareCode.delete(`/community/posts/${parsedPath.postId}`)
   return res.data
+}
+
+export const getCommunitySearch = async (
+  query: GetCommunitySearchQuery,
+): Promise<GetCommunitySearchResponse> => {
+  const parsedQuery = getCommunitySearchQuerySchema.parse(query)
+
+  const res = await CareCode.get('/community/search', {
+    params: parsedQuery,
+  })
+  return getCommunitySearchResponseSchema.parse(res.data)
 }
