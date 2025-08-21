@@ -5,6 +5,8 @@ import {
   UseInfiniteQueryResult,
   useMutation,
   UseMutationResult,
+  useQuery,
+  UseQueryResult,
   useQueryClient,
   useSuspenseInfiniteQuery,
   UseSuspenseInfiniteQueryResult,
@@ -15,6 +17,7 @@ import {
   deleteCommunityPost,
   getCommunityPostById,
   getCommunityPosts,
+  getCommunityPopular,
   getCommunitySearch,
   postCommunityComment,
   postCommunityPost,
@@ -41,6 +44,10 @@ import {
 export const communityQueries = createQueryKeys('community', {
   list: () => ({
     queryKey: ['list'],
+  }),
+
+  popular: () => ({
+    queryKey: ['popular'],
   }),
 
   detail: (postId: GetCommunityPostByIdPath['postId']) => ({
@@ -154,6 +161,14 @@ export const useGetCommunitySearch = ({
     getNextPageParam: (lastPage: GetCommunitySearchResponse) =>
       lastPage.hasNext ? lastPage.page + 1 : undefined,
     initialPageParam: 0,
+    retry: false,
+  })
+}
+
+export const useGetCommunityPopular = (): UseQueryResult<GetCommunityPostsResponse, Error> => {
+  return useQuery({
+    queryKey: communityQueries.popular().queryKey,
+    queryFn: () => getCommunityPopular({ page: 0, size: 5 }),
     retry: false,
   })
 }
