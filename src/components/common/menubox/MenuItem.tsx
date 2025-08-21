@@ -7,6 +7,7 @@ interface MenuItemProps {
   icon?: ComponentType<SVGProps<SVGSVGElement>>
   variant?: 'default' | 'destructive'
   onSelect?: () => void
+  disabled?: boolean
 }
 
 const MenuItem = ({
@@ -14,6 +15,7 @@ const MenuItem = ({
   icon: Icon,
   variant = 'default',
   onSelect,
+  disabled = false,
 }: MenuItemProps): ReactElement => {
   return (
     <DropdownMenu.Item
@@ -22,6 +24,7 @@ const MenuItem = ({
         variant === 'destructive' && 'text-red',
       )}
       onSelect={onSelect}
+      disabled={disabled}
     >
       {Icon && (
         <Icon

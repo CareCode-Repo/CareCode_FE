@@ -1,19 +1,34 @@
 'use client'
-import { useRouter } from 'next/navigation'
+
+import { useParams, useRouter } from 'next/navigation'
 import { JSX, useState } from 'react'
-import { postDetailDummy } from '../dataDummy'
 import Separator from '@/components/common/Separator'
 import BackButton from '@/components/features/community/BackButton'
+import { useGetCommunityPostDetail, usePutCommunityPost } from '@/queries/community'
 import { Post } from '@/types/apis/community'
 
 const CommunityPostEdit = (): JSX.Element => {
-  const [title, setTitle] = useState<Post['title']>(postDetailDummy.title)
-  const [content, setContent] = useState<Post['content']>(postDetailDummy.content)
+  const params = useParams()
+  const postId = Number(params.id)
+  const { data: post } = useGetCommunityPostDetail({ postId })
+  const { mutate: editPost } = usePutCommunityPost({ postId })
+  const [title, setTitle] = useState<Post['title']>(post.title)
+  const [content, setContent] = useState<Post['content']>(post.content)
   const router = useRouter()
 
   const handleEditButton = () => {
     console.log('Edit Confirm Button Pressed')
-    router.back()
+    editPost(
+      { ...post, title, content },
+      {
+        onSuccess: () => {
+          router.back()
+        },
+        onError: (err) => {
+          console.error('게시글 수정 실패:', err)
+        },
+      },
+    )
   }
   return (
     <div className="relative flex h-screen flex-col bg-white text-black">

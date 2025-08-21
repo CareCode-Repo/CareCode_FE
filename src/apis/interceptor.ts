@@ -14,9 +14,9 @@ export const CareCode: AxiosInstance = axios.create({
 // 요청 시 Authorization 헤더 적용
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 CareCode.interceptors.request.use((config: InternalAxiosRequestConfig<any>) => {
-  if (isDevelopment) printRequestConsole(config)
   const token = getAccessToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
+  if (isDevelopment) printRequestConsole(config)
   return config
 })
 

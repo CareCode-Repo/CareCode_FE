@@ -168,6 +168,7 @@ export const getKakaoAuthUrl = async (redirectUri?: string): Promise<GetKakaoAut
 // /api/auth/kakao/auth
 export const postKakaoAuth = async (body: PostKakaoAuthBody): Promise<PostKakaoAuthResponse> => {
   const parsedBody = postKakaoAuthBodySchema.parse(body)
+
   try {
     const res = await CareCode.post('/auth/kakao/login', null, {
       params: { code: parsedBody.code },
