@@ -85,6 +85,17 @@ export const deleteCommunityPost = async (path: DeleteCommunityPostPath): Promis
   return res.data
 }
 
+export const getCommunityPopular = async (
+  query: GetCommunityPostsQuery,
+): Promise<GetCommunityPostsResponse> => {
+  const parsedQuery = getCommunityPostsQuerySchema.parse(query)
+
+  const res = await CareCode.get('/community/popular', {
+    params: parsedQuery,
+  })
+  return getCommunityPostsResponseSchema.parse(res.data)
+}
+
 export const getCommunitySearch = async (
   query: GetCommunitySearchQuery,
 ): Promise<GetCommunitySearchResponse> => {

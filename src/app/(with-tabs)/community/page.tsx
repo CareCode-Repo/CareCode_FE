@@ -70,7 +70,7 @@ const Community = (): JSX.Element => {
         >
           <TopNavBar
             title="커뮤니티"
-            actionButtons={[{ icon: BellIcon, showBadge: true }]}
+            actionButtons={[{ icon: BellIcon, showBadge: false }]}
             isSticky={true}
           />
         </motion.div>
