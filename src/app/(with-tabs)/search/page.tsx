@@ -13,12 +13,11 @@ import { useSearchPolicy } from '@/hooks/useSearchPolicy'
 const Search = (): ReactElement => {
   const { recentSearches, removeSearch, clearAllSearches } = useRecentSearches()
   const router = useRouter()
-  const { inputValue, handleInputChange, performSearch } = useSearchPolicy()
+  const { inputValue, handleInputChange, search } = useSearchPolicy()
   const handleNotificationClick = () => router.push('/notification')
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (inputValue.length === 0) return
-    performSearch(inputValue)
+    search()
   }
 
   return (
@@ -33,7 +32,13 @@ const Search = (): ReactElement => {
           value={inputValue}
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
-          rightIcon={<SearchIcon className="size-6 cursor-pointer fill-gray-400" />}
+          rightIcon={
+            <SearchIcon
+              className="size-6 cursor-pointer fill-gray-400"
+              onClick={search}
+              aria-label="검색"
+            />
+          }
         />
       </form>
       <Spacer className="h-9 shrink-0" />
@@ -57,7 +62,7 @@ const Search = (): ReactElement => {
                 shape="round"
                 deletable
                 onDelete={() => removeSearch(recentSearchValue)}
-                onClick={() => performSearch(recentSearchValue)}
+                onClick={() => search(recentSearchValue)}
               >
                 {recentSearchValue}
               </Chip>

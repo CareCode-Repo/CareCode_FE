@@ -4,25 +4,6 @@ import { useChatStore } from '@/stores/useChatStore'
 import { PostChatMessageBody, PostChatMessageResponse } from '@/types/apis/chatbot'
 import { ChatMessage, SendMessageOptions, UseChatMessagesReturn } from '@/types/chat'
 
-/**
- * API 교체 가이드
- *
- * 실제 API로 교체할 때 수정해야 할 부분:
- * 1. adaptApiResponseToMessage 함수 - API 응답 구조에 맞게 수정
- * 2. @/queries/chatbot의 usePostChatMessage 훅 - 실제 API 엔드포인트로 변경
- * 3. @/types/apis/chatbot 타입 정의 - 실제 API 스펙에 맞게 수정
- * 4. 에러 처리 로직 - 실제 API 에러 코드에 맞게 분기 처리
- */
-
-// TODO: API 교체 시 이 어댑터 함수만 수정하면 됩니다
-// API 응답을 내부 ChatMessage 타입으로 변환하는 어댑터
-const adaptApiResponseToMessage = (response: PostChatMessageResponse): Partial<ChatMessage> => {
-  return {
-    message: response.answer,
-    timestamp: response.createdAt,
-  }
-}
-
 export const useChatMessages = (): UseChatMessagesReturn => {
   const { messages, currentSessionId, addMessage, updateMessage, setSessionId } = useChatStore()
 
@@ -49,22 +30,25 @@ export const useChatMessages = (): UseChatMessagesReturn => {
         setSessionId(response.sessionId)
       }
 
-      // API 응답을 내부 타입으로 변환하여 사용 (API 교체 시 어댑터만 수정)
-      const messageUpdates = adaptApiResponseToMessage(response)
+      // API 응답을 내부 타입으로 변환하여 사용
+      // const messageUpdates = convertApiResponseToMessage(response)
+      const messageUpdates: Partial<ChatMessage> = {
+        message: response.response,
+        timestamp: response.timestamp,
+        isMyMessage: false,
+      }
       updateMessage(variables.loadingMessageId, messageUpdates)
     },
     [updateMessage, currentSessionId, setSessionId],
   )
 
-  // TODO: API 교체 시 실제 에러 코드에 맞게 분기 처리 수정
   const handleMutationError = useCallback(
     (error: Error, variables: SendMessageOptions & { loadingMessageId: string }) => {
       console.error('Chat error:', error)
 
-      // 에러 유형별 사용자 친화적 메시지 제공
+      // 에러 유형별 메시지 제공
       let errorMessage = '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
 
-      // TODO: 실제 API 에러 코드에 맞게 수정
       if (error.message.includes('Network')) {
         errorMessage = '네트워크 연결을 확인해주세요. 인터넷 연결이 불안정합니다.'
       } else if (error.message.includes('timeout')) {

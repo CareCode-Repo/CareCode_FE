@@ -1,22 +1,8 @@
 import { CareCode } from './interceptor'
-import {
-  GetUserInfoResponse,
-  getUserInfoResponseSchema,
-  PutUserInfoBody,
-  putUserInfoBodySchema,
-  PutUserInfoResponse,
-  putUserInfoResponseSchema,
-} from '@/types/apis/user'
+import { GetUserInfoResponse, getUserInfoResponseSchema } from '@/types/apis/user'
 
-// /auth/me
+// /api/user/profile
 export const getUserInfo = async (): Promise<GetUserInfoResponse> => {
-  const res = await CareCode.get('/auth/me')
+  const res = await CareCode.get('/api/user/profile')
   return getUserInfoResponseSchema.parse(res.data)
-}
-
-// /users/profile
-export const putUserInfo = async (body: PutUserInfoBody): Promise<PutUserInfoResponse> => {
-  const parsedBody = putUserInfoBodySchema.parse(body)
-  const res = await CareCode.put('/users/profile', parsedBody)
-  return putUserInfoResponseSchema.parse(res.data)
 }

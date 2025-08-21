@@ -2,28 +2,33 @@ import { z } from 'zod'
 
 // 유저 스키마
 export const userSchema = z.object({
+  id: z.number(),
   userId: z.string(),
   email: z.string().email(),
+  password: z.string().nullable(),
   name: z.string(),
-  phoneNumber: z.string(),
-  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '날짜 형식은 YYYY-MM-DD여야 합니다'), // YYYY-MM-DD 형식
-  gender: z.enum(['MALE', 'FEMALE']),
-  address: z.string(),
-  profileImageUrl: z.string(),
-  role: z.enum(['PARENT', 'CHILD']).optional(),
+  phoneNumber: z.string().nullable(),
+  birthDate: z.string().nullable(), // date format
+  gender: z.string().nullable(),
+  address: z.string().nullable(),
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  profileImageUrl: z.string().nullable(),
+  role: z.string(),
+  provider: z.string().nullable(),
+  providerId: z.string().nullable(),
   isActive: z.boolean(),
   emailVerified: z.boolean(),
-  lastLoginAt: z.string().optional(), // 2024-01-15T10:30:00
-  createdAt: z.string().optional(), // 2024-01-15T10:30:00
-  updatedAt: z.string().optional(),
+  registrationCompleted: z.boolean(),
+  deletedAt: z.string().nullable(), // date-time format
+  lastLoginAt: z.string().nullable(), // date-time format
+  createdAt: z.string().nullable(), // date-time format
+  updatedAt: z.string().nullable(), // date-time format
 })
 export type User = z.infer<typeof userSchema>
 
-// /auth/me
-export const getUserInfoResponseSchema = z.object({
-  success: z.boolean(),
-  user: userSchema,
-})
+// /api/user/profile
+export const getUserInfoResponseSchema = userSchema
 export type GetUserInfoResponse = z.infer<typeof getUserInfoResponseSchema>
 
 // /users/profile

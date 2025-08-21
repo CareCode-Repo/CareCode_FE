@@ -8,10 +8,26 @@ import PencilIcon from '@/assets/icons/pencil.svg'
 import Layout from '@/components/common/Layout'
 import IconButton from '@/components/common/top-navbar/IconButton'
 import MenuList from '@/components/features/mypage/MenuList'
+import { useUserProfile } from '@/queries/user'
 
-const MyPage = (): ReactElement => {
+const MyPage = (): ReactElement | null => {
   const router = useRouter()
+  const { data: user } = useUserProfile()
   const handleEditButtonClick = () => router.push('/mypage/edit')
+  const handleLogout = () => {
+    // 로그아웃 로직 구현
+    // 토큰 삭제 등
+    router.push('/')
+  }
+  const handleWithdrawal = () => {
+    // 회원탈퇴 로직 api 호출, 토큰삭제 등?
+    console.log('회원탈퇴')
+  }
+
+  if (!user) {
+    return null
+  }
+
   return (
     <Layout hasTopNav title="홈" actionButtons={[{ icon: BellIcon }]}>
       <div className="m-4.5 flex items-center gap-3.5 rounded-lg border border-gray-300 bg-white p-3.5">
@@ -19,12 +35,16 @@ const MyPage = (): ReactElement => {
           <CameraIcon className="size-9 fill-black" />
         </div>
         <div className="flex grow flex-col gap-1.5">
-          <span className="text-b1-semibold text-gray-800">홍길동</span>
+          <span className="text-b1-semibold text-gray-800">{user?.name || '사용자'}</span>
           <div className="flex gap-1.5">
-            <div className="center bg-yellow rounded-xs p-0.5">
-              <KakaoIcon className="size-2.5" />
-            </div>
-            <span className="text-c1-regular text-gray-700">0000@naver.com</span>
+            {user?.provider === 'kakao' && (
+              <div className="center bg-yellow rounded-xs p-0.5">
+                <KakaoIcon className="size-2.5" />
+              </div>
+            )}
+            <span className="text-c1-regular text-gray-700">
+              {user?.email || '이메일을 불러올 수 없습니다'}
+            </span>
           </div>
         </div>
         <IconButton
@@ -52,8 +72,8 @@ const MyPage = (): ReactElement => {
         className="bg-white"
         title="회원 관리"
         items={[
-          { id: '1', title: '로그아웃' },
-          { id: '2', title: '회원탈퇴' },
+          { id: '1', title: '로그아웃', onClick: handleLogout },
+          { id: '2', title: '회원탈퇴', onClick: handleWithdrawal },
         ]}
       />
     </Layout>
