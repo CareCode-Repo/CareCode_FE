@@ -137,3 +137,22 @@ export const deleteCommunityPostPathSchema = z.object({
   postId: z.number(),
 })
 export type DeleteCommunityPostPath = z.infer<typeof deleteCommunityPostPathSchema>
+
+export const getCommunitySearchQuerySchema = z.object({
+  keyword: z.string(),
+  page: z.number().default(0),
+  size: z.number().default(10),
+})
+export type GetCommunitySearchQuery = z.infer<typeof getCommunitySearchQuerySchema>
+export const getCommunitySearchResponseSchema = z.object({
+  content: z.array(postListItemSchema),
+  page: z.number(),
+  size: z.number(),
+  totalElements: z.number(),
+  totalPages: z.number(),
+  first: z.boolean(),
+  last: z.boolean(),
+  hasNext: z.boolean(),
+  hasPrevious: z.boolean(),
+})
+export type GetCommunitySearchResponse = z.infer<typeof getCommunitySearchResponseSchema>

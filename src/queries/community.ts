@@ -6,6 +6,8 @@ import {
   useMutation,
   UseMutationResult,
   useQueryClient,
+  useSuspenseInfiniteQuery,
+  UseSuspenseInfiniteQueryResult,
   useSuspenseQuery,
   UseSuspenseQueryResult,
 } from '@tanstack/react-query'
@@ -13,6 +15,7 @@ import {
   deleteCommunityPost,
   getCommunityPostById,
   getCommunityPosts,
+  getCommunitySearch,
   postCommunityComment,
   postCommunityPost,
   putCommunityPost,
@@ -23,6 +26,8 @@ import {
   GetCommunityPostByIdResponse,
   GetCommunityPostsQuery,
   GetCommunityPostsResponse,
+  GetCommunitySearchQuery,
+  GetCommunitySearchResponse,
   PostCommunityCommentBody,
   PostCommunityCommentPath,
   PostCommunityCommentResponse,
@@ -40,6 +45,10 @@ export const communityQueries = createQueryKeys('community', {
 
   detail: (postId: GetCommunityPostByIdPath['postId']) => ({
     queryKey: ['detail', { postId }],
+  }),
+
+  search: (keyword: GetCommunitySearchQuery['keyword'], size: GetCommunitySearchQuery['size']) => ({
+    queryKey: [{ keyword, size }],
   }),
 })
 
@@ -129,5 +138,22 @@ export const useDeleteCommunityPost = ({
         queryClient.removeQueries({ queryKey: communityQueries.detail(postId).queryKey })
       }, 1000)
     },
+  })
+}
+
+export const useGetCommunitySearch = ({
+  keyword,
+  size = 10,
+}: {
+  keyword: GetCommunitySearchQuery['keyword']
+  size: GetCommunitySearchQuery['size']
+}): UseSuspenseInfiniteQueryResult<InfiniteData<GetCommunitySearchResponse>, Error> => {
+  return useSuspenseInfiniteQuery({
+    queryKey: communityQueries.search(keyword, size).queryKey,
+    queryFn: ({ pageParam = 0 }) => getCommunitySearch({ keyword, page: pageParam, size }),
+    getNextPageParam: (lastPage: GetCommunitySearchResponse) =>
+      lastPage.hasNext ? lastPage.page + 1 : undefined,
+    initialPageParam: 0,
+    retry: false,
   })
 }
