@@ -1,36 +1,322 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CareCode FE (맘편한)
 
-## Getting Started
+부모와 자녀를 위한 육아 정보 플랫폼 "맘편한"의 프론트엔드입니다.
+CareCode 백엔드(Spring Boot)의 REST API를 소비하는 모바일 우선 웹 앱입니다.
 
-First, run the development server:
+## 기술 스택
+
+| 영역        | 사용 기술                                   |
+| ----------- | ------------------------------------------- |
+| 프레임워크  | Next.js 15 (App Router) · React 19          |
+| 상태·서버   | TanStack Query v5 · zustand                 |
+| 스타일      | Tailwind CSS v4 · Radix UI                  |
+| 폼·검증     | react-hook-form · zod                       |
+| HTTP        | axios (`src/apis/interceptor.ts`)           |
+
+## 시작하기
 
 ```bash
+npm ci
+cp .env.example .env.local   # NEXT_PUBLIC_API_URL 을 백엔드 주소로 설정
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 에서 확인할 수 있습니다.
+백엔드 CORS 허용 목록(`CORS_ALLOWED_ORIGINS`)에 이 주소가 포함돼 있어야 합니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 환경 변수
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| 이름                  | 설명                                                |
+| --------------------- | --------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL` | CareCode 백엔드 베이스 URL (예: `http://localhost:8080`) |
+| `NEXT_PUBLIC_FIREBASE_*` | 웹 푸시(FCM) 설정. 선택 — 비우면 푸시 기능 전체가 꺼집니다 |
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | 웹 푸시 인증서 공개 키. 위와 함께 있어야 동작합니다 |
 
-## Learn More
+## 디렉터리 구조
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── apis/         도메인별 HTTP 호출 + zod 응답 검증
+├── queries/      TanStack Query 훅 (query-key-factory 기반 키)
+├── types/apis/   서버 DTO 대응 zod 스키마 & 타입
+├── app/          App Router 라우트
+│   ├── (with-tabs)/     하단 탭이 있는 화면 (홈·커뮤니티·검색·마이페이지)
+│   └── (without-tabs)/  단독 화면 (아이 관리·시설·게시글 상세 등)
+├── components/
+│   ├── common/   디자인 시스템 단위 컴포넌트
+│   └── features/ 도메인 컴포넌트
+└── utils/        날짜·파일 등 순수 유틸
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### API 레이어 규칙
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `apis/*` 는 요청 body/param 을 zod 로 `parse` 한 뒤 보내고, 응답도 `parse` 해서 반환합니다.
+  서버 DTO 가 바뀌면 여기에서 즉시 드러납니다.
+- 서버가 `null` 을 줄 수 있는 필드는 `nullish()` 로 둡니다. 공공데이터 동기화 결과(시설 등)는
+  상당수 항목이 비어 있습니다.
+- `queries/*` 만 컴포넌트에서 import 합니다. 컴포넌트가 `apis/*` 를 직접 부르는 것은
+  조회수 집계처럼 캐시가 필요 없는 fire-and-forget 호출로 한정합니다.
 
-## Deploy on Vercel
+### 인증
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+토큰을 JS 로 읽을 수 있는 저장소에 두지 않는 것이 원칙입니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **액세스 토큰**: 모듈 메모리(`src/apis/auth.ts`)에만 둡니다. 저장소에 남기면 XSS 로 그대로 읽힙니다.
+- **리프레시 토큰**: 서버가 `HttpOnly` 쿠키로 심습니다(`Path=/auth`). 프런트는 값을 알지도, 다루지도 않습니다.
+- **새로고침**: 메모리가 비므로 `<SessionBootstrap>` 이 부팅 시 갱신을 한 번 시도해 세션을 복구합니다.
+  복구가 끝날 때까지 하위 화면 렌더를 미뤄 불필요한 401 을 막습니다.
+- **401 처리**: 인터셉터가 갱신 후 원 요청을 한 번만 재시도합니다. 동시 요청이 여러 개 401 을 받아도
+  갱신 호출은 하나로 묶입니다(single-flight).
+- **가드**: 로그인이 필요한 화면은 `<AuthGuard>` 로 감쌉니다. 토큰이 서버에서 보이지 않아
+  미들웨어로는 판별할 수 없기 때문입니다.
+
+> 백엔드는 쿠키가 없으면 요청 본문의 `refreshToken` 도 계속 받습니다.
+> 쿠키를 쓸 수 없는 클라이언트(모바일 네이티브 등)와 함께 동작해야 하기 때문입니다.
+
+### 동의 기반 접근 차단
+
+건강·의료 정보는 개인정보보호법상 민감정보라 서버가 `HEALTH_DATA` 동의 없이는 저장을 막고
+`403 { error: "CONSENT_REQUIRED", consentType, displayName, ... }` 를 내려줍니다.
+
+같은 403 이라도 권한 부족은 막다른 길이지만 동의 미완료는 동의만 하면 풀리므로 화면에서 구분합니다.
+`parseConsentRequired()`(`src/apis/errors.ts`) 로 판별하고 `<ConsentRequiredDialog>` 를 띄워
+그 자리에서 동의를 받은 뒤 **막혔던 동작을 자동으로 재시도**합니다. 설정 화면으로 보내면
+사용자가 입력하던 내용을 잃기 때문입니다.
+
+## 주요 기능
+
+**지원금 — 서비스의 핵심 가치**
+
+- 놓친 지원금: 자녀가 대상이었으나 지나간 지원금과 소급 신청 가능 여부, 남은 기간
+- 지역별 지원금 비교: 지역별 예상 수령액 순위와 현재 거주지 대비 차액
+- 맞춤 추천: 자녀 월령·거주지 기반 추천 (추천 근거를 함께 노출)
+- 정책 북마크
+
+> 신청 링크는 반드시 `getPolicyApplyUrl()` 이 만드는 `/policies/{id}/apply` 를 거칩니다.
+> 서버가 클릭을 집계한 뒤 실제 신청처로 리다이렉트하며, 이 전환율이 "지원금을 실제로
+> 찾아줬는지" 를 보여주는 유일한 지표입니다. `websiteUrl` 로 직접 연결하면 안 됩니다.
+
+**그 외**
+
+- 카카오 로그인 / 회원가입
+- 정책 조회·검색, AI 챗봇 상담
+- 커뮤니티: 글 작성·수정·삭제, 댓글, 좋아요·북마크, 신고
+- 아이 관리: 등록 시 표준 예방접종 일정 자동 생성, 접종 완료 처리, WHO 기준 성장 곡선
+- 건강 기록: 검진·투약·증상 기록, 키·몸무게 측정값(성장 곡선의 입력), 첨부파일 업로드
+- 병원 찾기: 검색, 내 주변 반경 조회, 요양기관 종별 필터, 상세·리뷰·찜
+- 시설: 검색·필터(유형·정원 여유·보조금), 상세, 리뷰 작성, 방문 예약 및 예약 취소
+- 알림: 목록, 읽음·모두 읽음, 알림을 통한 재방문 집계, 유형·채널별 수신 설정, 웹 푸시 기기 등록
+- 시설 입소 가능성: 정원 관측 기반 예측, 실제 대기 기간 통계, 충원율 추이
+- 대기 관리: 대기 신청 기록, 입소·포기 결과 남기기 (이 기록이 다른 부모의 통계가 됩니다)
+- 자녀 통합 현황: 다자녀 가구를 위한 접종·대기·다자녀 혜택 한눈에 보기
+- 약관·처리방침 원문 열람
+- 마이페이지: 프로필, 나의 활동, 내 예약, 개인정보 동의·데이터 내보내기·탈퇴
+
+**관리자 (`/admin`)**
+
+`/admin` 은 요약 대시보드 + 섹션 인덱스입니다. 앱 셸이 모바일 폭(`max-w-sm`)이라
+탭을 늘리면 넘치므로 탭 바 대신 인덱스에서 각 섹션으로 들어가는 구조로 두었습니다.
+
+| 경로 | 내용 |
+| --- | --- |
+| `/admin` | 건수 요약, 신규 가입 추이, 최근 활동, 섹션 목록 |
+| `/admin/reports` | 신고 숨김/반려 |
+| `/admin/bookings` | 예약 확정·반려, 대기/확정/오늘 현황 |
+| `/admin/users` | 역할 변경, 계정 정지/해제 |
+| `/admin/community` | 게시글 직접 삭제 |
+| `/admin/policies/manage` | 정책 등록·수정·삭제 |
+| `/admin/policies` | 지역별 금액 검증률 |
+| `/admin/hospitals` | 병원 목록·삭제 |
+| `/admin/public-data` | 시설·유치원·정책·병원 동기화, 좌표 보정 |
+| `/admin/analytics` | 온보딩 퍼널(이탈 구간 강조), 코호트 리텐션, 이벤트 건수 |
+| `/admin/notifications` | 알림 발송·삭제 |
+| `/admin/health-records` | 건강기록 목록·삭제 (민감정보) |
+| `/admin/sample-data` | 샘플 데이터 적재·제거 (**개발 환경 전용**) |
+
+> 별도 어드민 앱을 만들지 않고 같은 앱에 역할 기반 라우트로 두었습니다.
+> `<AdminGuard>` 는 권한 없는 사용자가 빈 화면과 403 을 보지 않게 하는 **안내**일 뿐이고,
+> 실제 통제는 서버(`/api/admin/**` → `hasRole("ADMIN")`)가 합니다.
+> 어드민 쿼리는 `useIsAdmin()` 으로 역할을 확인한 뒤에만 나가 불필요한 403 을 만들지 않습니다.
+
+운영 중 실수를 막기 위해 지킨 규칙:
+
+- **본인 계정**의 역할·상태는 바꿀 수 없습니다. 스스로 관리자에서 내려오면 계정이 잠깁니다.
+- **관리자 승격** 시 권한 범위를 한 번 더 알립니다.
+- **공공데이터 동기화**는 한 번에 하나만 실행됩니다. 동시에 돌리면 외부 API 호출 한도를
+  넘길 수 있습니다. 응답이 수 분 걸리므로 이 요청만 타임아웃을 10분으로 늘려 두었습니다.
+- 신고를 거친 건은 신고 처리 화면에서 다루도록 안내합니다 — 처리 기록이 남기 때문입니다.
+- **예약**은 상태 변경(취소)을 기본으로 씁니다. 하드 삭제 API 는 레이어에만 두고 화면에
+  버튼을 만들지 않았습니다 — 지우면 누가 언제 취소했는지 기록이 사라집니다.
+- **건강기록**은 민감정보라 목록에 측정값을 표시하지 않고, 열람 주의 문구를 함께 둡니다.
+- **샘플 데이터** 화면은 `page.dev.tsx` 라 개발 서버에서만 열리고 프로덕션 번들에서 빠집니다.
+
+### 정책 수정은 PATCH 입니다
+
+`PUT /api/admin/policies/{id}` 는 요청 값으로 정책 **전체를 교체**합니다. 보내지 않은 필드는
+`null` 이 되므로, 일부만 고칠 때는 **`PATCH` 를 씁니다**. 프런트 수정 화면은 PATCH 만 사용합니다.
+
+서버는 값의 null 여부가 아니라 **요청 JSON 에 그 키가 있었는지**로 판단합니다.
+
+| 요청 | 결과 |
+| --- | --- |
+| 키 없음 | 기존 값 유지 |
+| 키 있음 + 값 있음 | 그 값으로 변경 |
+| 키 있음 + `null` | 해당 항목을 비움 |
+
+null 만으로 판단하면 "비우기" 와 "건드리지 않기" 를 구분할 수 없어 둘 중 하나는 불가능해집니다.
+그래서 프런트도 이 구분을 지켜야 합니다 — `toPolicyPatchBody()` 는 폼이 다루는 항목만 키로 넣고,
+입력이 비었으면 `undefined` 가 아니라 **`null`** 을 담습니다 (JSON 직렬화에서 `undefined` 는
+키째 사라져 "유지" 가 되어버립니다).
+
+조회도 사용자용 `PolicyDto` 가 아니라 `AdminPolicyDetailResponse` 를 씁니다. `PolicyDto` 는
+화면 표시용으로 값을 가공하기 때문에 (신청 기간을 `"2026.01.01 ~ 2026.12.31"` 문자열로 합치고
+`policyCode` 는 아예 내려주지 않음) 그 값으로는 수정 폼을 채울 수 없습니다.
+
+이 규약은 양쪽 테스트가 고정합니다:
+
+- `PolicyAdminServicePatchTest` — 키 존재 여부에 따른 유지/변경/비우기
+- `src/components/features/admin/__tests__/policyForm.test.ts` — 프런트가 보내는 키의 모양
+
+### 약관 버전은 서버가 정합니다
+
+동의 이력에 남는 값이라 `GET /legal/version`(`useLegalVersion`)에서 받아 씁니다.
+프런트에 상수로 박아 두면 서버가 개정할 때 **무엇에 동의했는지 증명할 수 없게 됩니다** —
+실제로 한동안 프런트가 `v1`, 서버가 `v1.0` 으로 어긋나 있었습니다.
+버전을 아직 못 받았으면 동의 토글과 버튼을 비활성화합니다.
+
+### 알림 열람 집계만 fetch 를 씁니다
+
+`GET /notifications/{id}/open` 은 클릭을 기록하고 읽음 처리한 뒤 딥링크(`carecode://`)로
+302 를 줍니다. 모바일 앱을 위한 설계라 웹에서 리다이렉트를 따라가면 실패합니다.
+
+그래서 이 호출만 axios 대신 `fetch(..., { redirect: 'manual' })` 을 씁니다. 요청은 전달되어
+집계·읽음 처리가 이뤄지고, 응답은 무시하고 **화면 이동은 앱 안에서 직접** 합니다.
+집계 실패가 사용자의 이동을 막으면 안 되므로 오류는 삼킵니다.
+
+### 알림 설정은 채널 단위로 저장합니다
+
+`PUT /notifications/preferences` 는 조회 응답 DTO 를 그대로 본문으로 받습니다. 화면에 없는
+값(`emailAddress`, `deviceToken` 등)까지 함께 덮어써서, 토글 하나 바꾸려다 기기 토큰을 지울 수
+있습니다. 그래서 `PUT /notifications/preferences/{type}/channels/{channel}` 을 씁니다.
+한 번에 한 채널만 바꾸므로 건드리지 않은 값이 사라지지 않습니다. 채널 이름은 서버가
+`toLowerCase()` 로 분기하므로 `inapp`(`inApp` 아님)·`push`·`email`·`sms` 만 보냅니다.
+
+조회는 **유형별 설정 배열**이고, 한 번도 설정한 적 없으면 **빈 배열**입니다. 서버가 준 것만
+그리면 신규 사용자에게 빈 화면이 나오므로 5개 유형 전체를 기본값 위에 덮어 그립니다.
+
+이 화면을 붙이면서 백엔드 두 곳을 함께 고쳤습니다.
+
+- 기본 설정 행이 이메일을 켠 채로 생성돼, 토글을 하나 끄는 순간(그때 행이 만들어지면서)
+  **요청한 적 없는 이메일 알림이 켜졌습니다.** 설정 행이 없을 때 실제로 발송되는 채널
+  (앱 알림함·푸시)과 같도록 맞췄습니다.
+- `disable-all` 이 저장된 행만 껐습니다. 설정을 한 번도 건드린 적 없는 사용자는 **"모두 끄기"를
+  눌러도 알림이 계속 왔습니다.** 행이 없는 유형까지 끄도록 고쳤습니다.
+- 푸시 토큰 등록은 SYSTEM 설정 행에만 저장하는데 발송은 알림 유형별 행에서 토큰을 읽었습니다.
+  그래서 **SYSTEM 을 뺀 모든 푸시가 조용히 실패**했습니다(지원금 마감도, 예방접종 알림도).
+  토큰은 기기의 성질이지 알림 유형의 성질이 아니므로 유형과 무관하게 찾도록 고쳤습니다.
+
+두 값은 어긋나면 조용히 틀리는 종류라 양쪽에 테스트로 고정했습니다.
+
+### 못 쓰는 채널은 이유와 함께 잠급니다
+
+이메일은 발신 주소 설정이, 푸시는 FCM 자격증명이 있어야 나갑니다. 문자는 아직 사업자 연동
+전이라 **켜도 절대 발송되지 않습니다**(`SmsNotificationSender.send()` 가 항상 실패). 전부
+서버 설정에서 오는 사정이라 클라이언트가 알 방법이 없습니다.
+
+그대로 두면 사용자는 토글을 켜 두고 오지 않는 알림을 기다리게 됩니다. 그래서
+`GET /notifications/channels` 로 채널별 가용 여부와 **그 이유**를 내려주고, 화면은 못 쓰는
+채널을 꺼진 상태로 잠근 뒤 이유를 함께 보여줍니다. "왜 못 켜는지" 를 밝히지 않으면 고장으로
+보입니다.
+
+이유는 각 발송기가 직접 답합니다(`NotificationSender.getUnavailableReason()`). 왜 못 쓰는지는
+채널마다 다르고 발송기 자신만 알기 때문입니다.
+
+반대로 **채널 상태 조회가 실패하면 전부 사용 가능으로 봅니다.** 응답을 못 받았다고 토글을
+잠그면 멀쩡한 설정까지 못 바꾸게 되는데, 그건 이 기능이 없던 때보다 나쁩니다.
+
+가용 여부는 서버 설정뿐 아니라 **이 사용자에게 보낼 수단이 있는지**까지 봅니다. 발송기가
+살아 있어도 이메일 주소·전화번호·등록된 기기가 없으면 알림은 오지 않습니다. 다만 둘은
+사용자에게 뜻이 다릅니다.
+
+- `SERVER_NOT_CONFIGURED` — 사용자가 할 수 있는 일이 없습니다. 안내만 합니다.
+- `NO_DESTINATION` — 등록하면 해결됩니다. 이때만 기기 등록 버튼을 띄웁니다.
+
+문구는 바뀔 수 있으므로 화면은 `unavailableReason` 문자열이 아니라 `reasonCode` 로 판단합니다.
+서버 설정 문제가 수신처 문제보다 **먼저** 안내됩니다 — 둘 다 문제인데 "번호를 등록하세요" 라고
+하면 사용자가 등록하고도 알림을 받지 못합니다.
+
+### 웹 푸시는 설정이 있을 때만 켜집니다
+
+`NEXT_PUBLIC_FIREBASE_*` 와 VAPID 키가 모두 있어야 푸시 기능이 동작합니다. 하나라도 비면
+`isPushConfigured()` 가 false 를 반환하고, 설정 화면은 푸시를 잠근 채 등록 버튼을 감춥니다.
+자격증명 없이 초기화를 시도해봐야 콘솔만 더럽히고 서버 발송기도 어차피 비활성입니다.
+
+firebase SDK 는 **항상 지연 로딩**합니다. 이 모듈은 루트 레이아웃에서 쓰이므로 정적으로
+import 하면 SDK 가 모든 페이지 첫 로딩에 실립니다. 푸시를 설정하지 않은 환경에서는 한 번도
+쓰지 않을 코드입니다.
+
+권한 요청은 **사용자가 버튼을 누를 때만** 합니다. 화면에 들어오자마자 물으면 대부분 거절하고,
+한 번 거절하면 브라우저 설정에서 직접 풀기 전까지 다시 물을 수 없습니다.
+
+앱이 열려 있는 동안 도착한 푸시는 시스템 알림이 뜨지 않습니다. `PushListener` 가 이때 목록과
+안 읽음 배지를 다시 읽습니다. 그러지 않으면 알림은 왔는데 화면은 그대로입니다.
+
+### 시설 검색은 엔드포인트가 둘입니다
+
+- `/facilities/search` — 키워드·지역으로 좁힘 (페이지 응답)
+- `/facilities/advanced-search` — 정원 여유·보조금 같은 **조건**으로 거름 (배열 응답, 키워드 없음)
+
+조건 필터를 켜면 후자로 전환되고, 키워드는 클라이언트에서 마저 적용합니다.
+
+### 추정치는 추정치로 보여줍니다
+
+입소 예측·대기 통계·충원율은 표본이 모자라면 서버가 `available: false` 와
+`unavailableReason` 을 내려줍니다. 이때 **숫자를 지어내지 않고 이유를 그대로 보여줍니다.**
+근거 없는 확률은 없느니만 못합니다. 예측이 가능할 때도 `confidence` 와 관측량(일수·횟수)을
+함께 노출합니다.
+
+### 금액 표기 규칙
+
+추정치를 확정 금액처럼 보여주면 안 됩니다. 서버가 `dataQuality`(VERIFIED/PARTIAL/ESTIMATED)와
+`disclaimers` 를 함께 내려주므로 금액 옆에 항상 노출합니다. 금액을 모르는 정책은 `0원` 이 아니라
+**"금액 미상"** 으로 표시합니다 — 둘은 사용자에게 전혀 다른 의미입니다.
+
+## 스크립트
+
+```bash
+npm run dev        # 개발 서버 (turbopack)
+npm run build      # 프로덕션 빌드
+npm run lint       # ESLint + Prettier
+npm run typecheck  # tsc --noEmit
+npm test           # Vitest (스키마 계약 테스트)
+```
+
+### 개발 전용 화면
+
+`*.dev.tsx` 확장자를 쓴 페이지는 개발 서버에서만 라우트로 잡히고 프로덕션 번들에서 제외됩니다
+(`next.config.ts` 의 `pageExtensions`). 컴포넌트 갤러리 `/component-test` 가 이 방식입니다.
+
+### 테스트
+
+Vitest + Testing Library (jsdom) 로 두 층을 덮습니다.
+
+**계약 테스트** — `src/types/apis/__tests__/contracts.test.ts`
+백엔드 응답 DTO 를 그대로 옮긴 픽스처로 zod 스키마를 검증합니다. 서버가 필드를 바꾸거나
+`null` 을 내리기 시작하면 화면이 아니라 여기서 먼저 깨지는 것이 목적이므로,
+값이 다 채워진 경우보다 **비어 있는 경우**를 우선 검증합니다.
+
+**컴포넌트 테스트** — `src/components/**/__tests__/*.test.tsx`
+분기가 있는 컴포넌트만 다룹니다. 스타일이 아니라 **사용자가 실제로 보고 누르는 것**
+(접근 가능한 이름, `aria-pressed`, 비활성 상태)을 기준으로 검증합니다.
+
+설정 메모:
+
+- `@vitejs/plugin-react` 는 이 프로젝트의 `@babel/core` 와 peer 충돌이 있어 쓰지 않습니다.
+  테스트에는 Fast Refresh 가 필요 없으므로 esbuild 의 JSX 변환(`esbuild.jsx: 'automatic'`)만 켭니다.
+- SVG 는 앱에서 `@svgr/webpack` 으로 컴포넌트가 되지만 Vitest 에는 그 로더가 없어
+  `src/test/svg-mock.tsx` 로 별칭 처리합니다. 정규식 별칭은 매칭된 부분만 치환하므로
+  `/^.*\.svg$/` 처럼 경로 전체를 잡아야 합니다.
+
+## 커밋 컨벤션
+
+`commitlint.config.cjs` 를 따릅니다. husky pre-commit 훅에서 린트가 실행됩니다.
