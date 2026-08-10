@@ -1,12 +1,13 @@
 'use client'
-import { format } from 'date-fns'
 import { useParams, useRouter } from 'next/navigation'
 import { JSX, Suspense, useState } from 'react'
+import { getAccessToken, getUserId } from '@/apis/auth'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import KebabIcon from '@/assets/icons/edit.svg'
 import PaperIcon from '@/assets/icons/paper_small.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import TrashIcon from '@/assets/icons/trash.svg'
+import WarningIcon from '@/assets/icons/warning.svg'
 import AlertDialog from '@/components/common/AlertDialog'
 import Button from '@/components/common/Button'
 import Separator from '@/components/common/Separator'
@@ -14,57 +15,59 @@ import Loading from '@/components/common/loading'
 import { Menubox } from '@/components/common/menubox'
 import ActionButton from '@/components/features/community/ActionButton'
 import Comment from '@/components/features/community/Comment'
+import ReportDialog from '@/components/features/community/ReportDialog'
 import {
   useDeleteCommunityPost,
   useGetCommunityPostDetail,
   usePostCommunityPostComment,
+  useToggleCommunityBookmark,
+  useToggleCommunityLike,
 } from '@/queries/community'
+import { useReport } from '@/queries/moderation'
 import { PostCommunityCommentBody } from '@/types/apis/community'
+import { formatDate } from '@/utils/date'
 
 const CommunityDetail = (): JSX.Element => {
   const params = useParams<{ id: string }>()
   const { id } = params ?? {}
   const postId = Number(id)
-  const userId = sessionStorage.getItem('userId') ?? ''
+  const router = useRouter()
+
   const { data: post } = useGetCommunityPostDetail({ postId })
   const { mutate: addComment, isPending: isAddingComment } = usePostCommunityPostComment({ postId })
   const { mutate: deletePost, isPending: isDeleting } = useDeleteCommunityPost({ postId })
-  const router = useRouter()
+  const { mutate: toggleLike, isPending: isTogglingLike } = useToggleCommunityLike(postId)
+  const { mutate: toggleBookmark, isPending: isTogglingBookmark } =
+    useToggleCommunityBookmark(postId)
+  const { mutate: report, isPending: isReporting } = useReport()
 
   const [newComment, setNewComment] = useState<string>('')
   const [deleteDialogVisible, setDeleteDialogVisible] = useState<boolean>(false)
+  const [reportDialogVisible, setReportDialogVisible] = useState<boolean>(false)
+  const [reportDone, setReportDone] = useState<boolean>(false)
 
-  const handleAddCommentButton = () => {
-    console.log('Add Comment Button Pressed')
-    if (!newComment) {
-      alert('댓글 내용이 비어 있습니다.')
+  // 작성자 본인에게만 수정·삭제를, 그 외에는 신고를 노출한다.
+  const isAuthor = !!post && getUserId() === post.authorId
+
+  const requireLogin = (action: () => void) => {
+    if (!getAccessToken()) {
+      router.push('/')
       return
     }
-
-    addComment({ content: newComment } as PostCommunityCommentBody, {
-      onSuccess: () => {
-        setNewComment('')
-      },
-    })
+    action()
   }
 
-  const handleEditButton = () => {
-    console.log('Edit Button Pressed')
-    router.push(`${id}/edit`)
-  }
+  const handleAddCommentButton = () => {
+    if (!newComment.trim()) return
 
-  const handleDeleteButton = () => {
-    console.log('Delete Button Pressed')
-    setDeleteDialogVisible(true)
-  }
-
-  const handleLikeButton = () => {
-    console.log('Like Button Pressed')
+    requireLogin(() =>
+      addComment({ content: newComment.trim() } as PostCommunityCommentBody, {
+        onSuccess: () => setNewComment(''),
+      }),
+    )
   }
 
   const handleDeleteConfirm = () => {
-    console.log('Delete Confirmed')
-    // 로직 처리
     deletePost(undefined, {
       onSuccess: () => {
         setDeleteDialogVisible(false)
@@ -73,6 +76,25 @@ const CommunityDetail = (): JSX.Element => {
     })
   }
 
+  const menuItems = isAuthor
+    ? [
+        { content: '수정', icon: PencilIcon, onSelect: () => router.push(`/community/${id}/edit`) },
+        {
+          content: '삭제',
+          icon: TrashIcon,
+          variant: 'destructive' as const,
+          onSelect: () => setDeleteDialogVisible(true),
+        },
+      ]
+    : [
+        {
+          content: '신고',
+          icon: WarningIcon,
+          variant: 'destructive' as const,
+          onSelect: () => requireLogin(() => setReportDialogVisible(true)),
+        },
+      ]
+
   return (
     <Suspense fallback={<Loading content="게시글 불러오는 중..." />}>
       <div className="relative flex h-screen flex-col bg-white text-black">
@@ -80,7 +102,7 @@ const CommunityDetail = (): JSX.Element => {
           id="topNavigator"
           className="sticky top-0 z-1 flex items-center justify-start gap-2.5 bg-white py-3.5 pr-[0.9375rem] pl-5"
         >
-          <button onClick={() => router.back()}>
+          <button onClick={() => router.back()} aria-label="뒤로 가기">
             <ArrowLeftIcon className="size-6 fill-black" />
           </button>
           <div className="text-h3-bold">게시글 조회</div>
@@ -94,26 +116,18 @@ const CommunityDetail = (): JSX.Element => {
               </div>
 
               <div className="text-c1-regular flex items-center gap-1 text-gray-500">
-                <div id="author">{post.authorName}</div>
+                <div id="author">{post.isAnonymous ? '익명' : post.authorName}</div>
                 <div className="h-2 w-[0.0625rem] bg-gray-200" />
-                <div id="createAt">{format(new Date(post.createdAt), 'MM/dd HH:mm')}</div>
+                <div id="createAt">{formatDate(post.createdAt, 'MM/dd HH:mm')}</div>
               </div>
             </div>
             <Menubox
-              triggerButton={<KebabIcon className="h-6 w-6 cursor-pointer fill-black" />}
-              items={[
-                {
-                  content: '수정',
-                  icon: PencilIcon,
-                  onSelect: handleEditButton,
-                },
-                {
-                  content: '삭제',
-                  icon: TrashIcon,
-                  variant: 'destructive',
-                  onSelect: handleDeleteButton,
-                },
-              ]}
+              triggerButton={
+                <button aria-label="게시글 메뉴">
+                  <KebabIcon className="h-6 w-6 cursor-pointer fill-black" />
+                </button>
+              }
+              items={menuItems}
             />
           </div>
 
@@ -122,18 +136,36 @@ const CommunityDetail = (): JSX.Element => {
           <div className="text-b1-regular whitespace-pre-line">{post.content}</div>
 
           <div className="flex items-start gap-[1.125rem]">
-            <ActionButton type={'like'} count={post.likeCount} onClick={handleLikeButton} />
-            <ActionButton type={'comment'} count={post.commentCount} />
+            <ActionButton
+              type="like"
+              count={post.likeCount}
+              active={post.isLiked}
+              disabled={isTogglingLike}
+              onClick={() => requireLogin(() => toggleLike())}
+            />
+            <ActionButton type="comment" count={post.commentCount} />
+            <ActionButton
+              type="bookmark"
+              active={post.isBookmarked}
+              disabled={isTogglingBookmark}
+              onClick={() => requireLogin(() => toggleBookmark())}
+            />
           </div>
 
+          {reportDone && (
+            <p className="text-b2-regular text-green-700" role="status">
+              신고가 접수됐어요. 확인 후 조치할게요.
+            </p>
+          )}
+
           <Separator className="w-full shrink-0" />
-          {post.comments?.map((comment, index) => (
+          {post.comments?.map((comment) => (
             <Comment
-              key={index}
+              key={comment.commentId}
               comment={{
                 author: comment.authorName,
                 content: comment.content,
-                timestamp: format(new Date('2025-08-18T14:30:00Z'), 'MM/dd HH:mm'),
+                timestamp: formatDate(comment.createdAt, 'MM/dd HH:mm'),
               }}
               className="w-full"
             />
@@ -147,10 +179,17 @@ const CommunityDetail = (): JSX.Element => {
               placeholder="댓글을 입력하세요"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleAddCommentButton()
+              }}
               className="text-b1-regular w-full border-none bg-transparent outline-none"
             />
-            <button onClick={handleAddCommentButton} disabled={isAddingComment}>
-              <PaperIcon className="size-6 fill-gray-600" />
+            <button
+              onClick={handleAddCommentButton}
+              disabled={isAddingComment || !newComment.trim()}
+              aria-label="댓글 등록"
+            >
+              <PaperIcon className="size-6 fill-gray-600 disabled:opacity-50" />
             </button>
           </div>
         </div>
@@ -174,6 +213,22 @@ const CommunityDetail = (): JSX.Element => {
             <Button color="red" size="small" onClick={handleDeleteConfirm} disabled={isDeleting}>
               삭제
             </Button>
+          }
+        />
+
+        <ReportDialog
+          isOpen={reportDialogVisible}
+          targetType="POST"
+          targetId={postId}
+          isPending={isReporting}
+          onClose={() => setReportDialogVisible(false)}
+          onSubmit={(body) =>
+            report(body, {
+              onSuccess: () => {
+                setReportDialogVisible(false)
+                setReportDone(true)
+              },
+            })
           }
         />
       </div>
