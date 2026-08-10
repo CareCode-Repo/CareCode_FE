@@ -29,8 +29,13 @@ export type PolicyCardProps = {
   onClick?: () => void
 } & ({ type: 'D-Day'; dday: number } | { type: Exclude<PolicyType, 'D-Day'>; dday?: never })
 
-// 연령을 월 단위에서 사용자 친화적 형태로 변환
-export const formatAge = (minAge: number, maxAge: number): string => {
+// 연령을 월 단위에서 사용자 친화적 형태로 변환.
+// 공공데이터에는 연령 제한이 비어 있는 정책이 많아 없는 경우를 정상으로 다룬다.
+export const formatAge = (minAge?: number | null, maxAge?: number | null): string => {
+  if (minAge == null && maxAge == null) return '연령 제한 없음'
+  if (minAge == null) return `만 ${Math.floor((maxAge as number) / 12)}세 이하`
+  if (maxAge == null) return `만 ${Math.floor(minAge / 12)}세 이상`
+
   if (minAge === 0) return `신생아~만 ${Math.floor(maxAge / 12)}세`
   if (maxAge >= 216) return `만 ${Math.floor(minAge / 12)}세 이상`
   return `만 ${Math.floor(minAge / 12)}세~만 ${Math.floor(maxAge / 12)}세`
@@ -45,7 +50,7 @@ export const formatSupportAmount = (amount?: number | null): string => {
 }
 
 // 정책 타입 결정
-export const determinePolicyType = (applicationPeriod?: string): PolicyType => {
+export const determinePolicyType = (applicationPeriod?: string | null): PolicyType => {
   const period = applicationPeriod?.toLowerCase() || ''
   if (period.includes('상시')) return '상시접수'
   if (period.includes('매월') || period.includes('월별')) return '매월'
@@ -60,10 +65,11 @@ export const convertPolicyToCardProps = (
   return {
     id: policy.id,
     type: determinePolicyType(policy.applicationPeriod),
-    tags: [policy.category],
+    // 카테고리가 없는 정책은 태그 줄을 비워 둔다 (빈 칩이 뜨지 않게)
+    tags: policy.category ? [policy.category] : [],
     title: policy.title,
-    description: policy.description,
-    region: policy.location,
+    description: policy.description ?? '',
+    region: policy.location ?? '전국',
     targetAge: formatAge(policy.minAge, policy.maxAge),
     applicationPeriod: policy.applicationPeriod || '상시 신청 가능',
   }
