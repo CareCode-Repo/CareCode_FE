@@ -116,14 +116,11 @@ export const postSignupResponseSchema = signupResponseSchema
 export type PostSignupResponse = z.infer<typeof postSignupResponseSchema>
 
 // /auth/refresh
-export const postRefreshTokenBodySchema = z.object({
-  refreshToken: z.string(),
-})
-export type PostRefreshTokenBody = z.infer<typeof postRefreshTokenBodySchema>
+// 리프레시 토큰은 HttpOnly 쿠키로 오가므로 요청 본문이 없다.
+// 응답의 refreshToken 도 쿠키를 쓰지 않는 클라이언트를 위한 값이라 읽지 않는다.
 export const postRefreshTokenResponseSchema = z.object({
   success: z.boolean(),
   accessToken: z.string(),
-  refreshToken: z.string(),
   tokenType: z.string(),
   expiresIn: z.number(),
   userId: z.string(),

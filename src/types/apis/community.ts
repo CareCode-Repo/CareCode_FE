@@ -156,3 +156,17 @@ export const getCommunitySearchResponseSchema = z.object({
   hasPrevious: z.boolean(),
 })
 export type GetCommunitySearchResponse = z.infer<typeof getCommunitySearchResponseSchema>
+
+// /community/posts/{postId}/like - 토글 응답
+export const toggleLikeResponseSchema = z.object({
+  isLiked: z.boolean(),
+  likeCount: z.number(),
+})
+export type ToggleLikeResponse = z.infer<typeof toggleLikeResponseSchema>
+
+// /community/posts/{postId}/bookmark - 토글 응답
+export const toggleBookmarkResponseSchema = z.object({
+  isBookmarked: z.boolean(),
+  bookmarkCount: z.number(),
+})
+export type ToggleBookmarkResponse = z.infer<typeof toggleBookmarkResponseSchema>

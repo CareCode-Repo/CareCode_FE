@@ -1,5 +1,12 @@
+import { z } from 'zod'
 import { CareCode } from './interceptor'
 import {
+  PostListItem,
+  postListItemSchema,
+  ToggleBookmarkResponse,
+  toggleBookmarkResponseSchema,
+  ToggleLikeResponse,
+  toggleLikeResponseSchema,
   DeleteCommunityPostPath,
   deleteCommunityPostPathSchema,
   GetCommunityPostByIdPath,
@@ -79,10 +86,9 @@ export const putCommunityPost = async (
   return putCommunityPostResponseSchema.parse(res.data)
 }
 
-export const deleteCommunityPost = async (path: DeleteCommunityPostPath): Promise<any> => {
+export const deleteCommunityPost = async (path: DeleteCommunityPostPath): Promise<void> => {
   const parsedPath = deleteCommunityPostPathSchema.parse(path)
-  const res = await CareCode.delete(`/community/posts/${parsedPath.postId}`)
-  return res.data
+  await CareCode.delete(`/community/posts/${parsedPath.postId}`)
 }
 
 export const getCommunityPopular = async (
@@ -105,4 +111,36 @@ export const getCommunitySearch = async (
     params: parsedQuery,
   })
   return getCommunitySearchResponseSchema.parse(res.data)
+}
+
+// ==================== 좋아요 / 북마크 ====================
+
+// POST /community/posts/{postId}/like - 토글 방식
+export const toggleCommunityLike = async (postId: number): Promise<ToggleLikeResponse> => {
+  const res = await CareCode.post(`/community/posts/${postId}/like`)
+  return toggleLikeResponseSchema.parse(res.data)
+}
+
+// POST /community/posts/{postId}/bookmark - 토글 방식
+export const toggleCommunityBookmark = async (postId: number): Promise<ToggleBookmarkResponse> => {
+  const res = await CareCode.post(`/community/posts/${postId}/bookmark`)
+  return toggleBookmarkResponseSchema.parse(res.data)
+}
+
+// GET /community/posts/liked
+export const getLikedPosts = async (): Promise<PostListItem[]> => {
+  const res = await CareCode.get('/community/posts/liked')
+  return postListItemSchema.array().parse(res.data)
+}
+
+// GET /community/posts/bookmarked
+export const getBookmarkedPosts = async (): Promise<PostListItem[]> => {
+  const res = await CareCode.get('/community/posts/bookmarked')
+  return postListItemSchema.array().parse(res.data)
+}
+
+// GET /community/tags - 인기 태그
+export const getCommunityTags = async (): Promise<string[]> => {
+  const res = await CareCode.get('/community/tags')
+  return z.array(z.string()).parse(res.data)
 }

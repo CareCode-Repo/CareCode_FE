@@ -13,17 +13,26 @@ import {
   useSuspenseQuery,
   UseSuspenseQueryResult,
 } from '@tanstack/react-query'
+import { getAccessToken } from '@/apis/auth'
 import {
   deleteCommunityPost,
+  getBookmarkedPosts,
   getCommunityPostById,
   getCommunityPosts,
   getCommunityPopular,
   getCommunitySearch,
+  getCommunityTags,
+  getLikedPosts,
   postCommunityComment,
   postCommunityPost,
   putCommunityPost,
+  toggleCommunityBookmark,
+  toggleCommunityLike,
 } from '@/apis/community'
 import {
+  PostListItem,
+  ToggleBookmarkResponse,
+  ToggleLikeResponse,
   DeleteCommunityPostPath,
   GetCommunityPostByIdPath,
   GetCommunityPostByIdResponse,
@@ -56,6 +65,21 @@ export const communityQueries = createQueryKeys('community', {
 
   search: (keyword: GetCommunitySearchQuery['keyword'], size: GetCommunitySearchQuery['size']) => ({
     queryKey: [{ keyword, size }],
+  }),
+
+  liked: () => ({
+    queryKey: ['liked'],
+    queryFn: getLikedPosts,
+  }),
+
+  bookmarked: () => ({
+    queryKey: ['bookmarked'],
+    queryFn: getBookmarkedPosts,
+  }),
+
+  tags: () => ({
+    queryKey: ['tags'],
+    queryFn: getCommunityTags,
   }),
 })
 
@@ -134,7 +158,7 @@ export const usePutCommunityPost = ({
 
 export const useDeleteCommunityPost = ({
   postId,
-}: DeleteCommunityPostPath): UseMutationResult<any, Error> => {
+}: DeleteCommunityPostPath): UseMutationResult<void, Error, void> => {
   const queryClient = useQueryClient()
 
   return useMutation({
@@ -170,5 +194,56 @@ export const useGetCommunityPopular = (): UseQueryResult<GetCommunityPostsRespon
     queryKey: communityQueries.popular().queryKey,
     queryFn: () => getCommunityPopular({ page: 0, size: 5 }),
     retry: false,
+  })
+}
+
+export const useLikedPosts = (): UseQueryResult<PostListItem[], Error> =>
+  useQuery({ ...communityQueries.liked(), enabled: !!getAccessToken() })
+
+export const useBookmarkedPosts = (): UseQueryResult<PostListItem[], Error> =>
+  useQuery({ ...communityQueries.bookmarked(), enabled: !!getAccessToken() })
+
+export const useCommunityTags = (): UseQueryResult<string[], Error> =>
+  useQuery({ ...communityQueries.tags(), staleTime: 1000 * 60 * 30 })
+
+/**
+ * 좋아요 토글.
+ * 응답 자체가 최신 상태(isLiked/likeCount)를 주므로 상세 캐시를 즉시 갱신하고,
+ * 목록·좋아요함은 무효화해 다음 조회에서 맞춰지게 한다.
+ */
+export const useToggleCommunityLike = (
+  postId: number,
+): UseMutationResult<ToggleLikeResponse, Error, void> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => toggleCommunityLike(postId),
+    onSuccess: (result) => {
+      queryClient.setQueryData(
+        communityQueries.detail(postId).queryKey,
+        (prev: GetCommunityPostByIdResponse | undefined) =>
+          prev ? { ...prev, isLiked: result.isLiked, likeCount: result.likeCount } : prev,
+      )
+      queryClient.invalidateQueries({ queryKey: communityQueries.liked().queryKey })
+      queryClient.invalidateQueries({ queryKey: communityQueries.list().queryKey })
+    },
+  })
+}
+
+export const useToggleCommunityBookmark = (
+  postId: number,
+): UseMutationResult<ToggleBookmarkResponse, Error, void> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => toggleCommunityBookmark(postId),
+    onSuccess: (result) => {
+      queryClient.setQueryData(
+        communityQueries.detail(postId).queryKey,
+        (prev: GetCommunityPostByIdResponse | undefined) =>
+          prev ? { ...prev, isBookmarked: result.isBookmarked } : prev,
+      )
+      queryClient.invalidateQueries({ queryKey: communityQueries.bookmarked().queryKey })
+    },
   })
 }

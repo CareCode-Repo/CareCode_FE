@@ -9,7 +9,7 @@ interface PostStatProps {
 
 const PostStat = ({ icon: Icon, count, className }: PostStatProps): ReactElement => {
   return (
-    <div className={clsx('flex items-center gap-1 text-c1-regular', className)}>
+    <div className={clsx('text-c1-regular flex items-center gap-1', className)}>
       <Icon className="size-4.5" />
       {count}
     </div>

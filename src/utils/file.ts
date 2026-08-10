@@ -15,3 +15,16 @@ export const convertFileToBase64 = (file: File): Promise<string> => {
     reader.readAsDataURL(file)
   })
 }
+
+/** 응답 객체를 JSON 파일로 내려받는다 (개인정보 내보내기 등). */
+export const downloadJson = (payload: unknown, fileName: string): void => {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = fileName
+  anchor.click()
+
+  URL.revokeObjectURL(url)
+}

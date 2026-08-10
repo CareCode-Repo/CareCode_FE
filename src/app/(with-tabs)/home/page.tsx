@@ -12,9 +12,12 @@ import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
 import ChatSection from '@/components/features/chat/ChatSection'
 import PopularPost from '@/components/features/community/popular-post'
+import MissedBenefitBanner from '@/components/features/home/MissedBenefitBanner'
+import QuickMenu from '@/components/features/home/QuickMenu'
 import PolicyCard from '@/components/features/policy/PolicyCard'
+import RecommendedPolicyCard from '@/components/features/policy/RecommendedPolicyCard'
 import { useGetCommunityPopular } from '@/queries/community'
-import { useGetLatestPolicies } from '@/queries/policy'
+import { useGetLatestPolicies, usePolicyRecommendations } from '@/queries/policy'
 import { convertPolicyToCardProps } from '@/types/policy'
 
 const Home = (): ReactElement => {
@@ -27,6 +30,7 @@ const Home = (): ReactElement => {
     isLoading: isPopularLoading,
     error: popularError,
   } = useGetCommunityPopular()
+  const { data: recommendations, isLoading: isRecommendationLoading } = usePolicyRecommendations(3)
 
   return (
     <Layout
@@ -45,7 +49,30 @@ const Home = (): ReactElement => {
         />
         <Spacer className="h-5" />
         <div className="flex flex-col gap-4">
+          <MissedBenefitBanner />
+          <QuickMenu />
           <ChatSection />
+          <MainSection title="맞춤 추천">
+            <div className="flex flex-col gap-3 px-4 pb-4">
+              {isRecommendationLoading ? (
+                [0, 1].map((index) => (
+                  <div key={index} className="h-24 animate-pulse rounded-lg bg-gray-200" />
+                ))
+              ) : !recommendations?.length ? (
+                <p className="text-b2-regular text-gray-600">
+                  아이를 등록하면 월령과 거주지에 맞는 지원금을 찾아드려요.
+                </p>
+              ) : (
+                recommendations.map((recommendation) => (
+                  <RecommendedPolicyCard
+                    key={recommendation.policy.id}
+                    recommendation={recommendation}
+                    onClick={() => router.push(`/policy/${recommendation.policy.id}`)}
+                  />
+                ))
+              )}
+            </div>
+          </MainSection>
           <MainSection title="최근 정책">
             <div className="scrollbar-hide flex gap-3 overflow-x-auto px-4 pb-4 [&>*]:w-64 [&>*]:flex-shrink-0">
               {isLoading ? (

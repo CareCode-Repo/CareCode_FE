@@ -20,7 +20,7 @@ const KakaoLoginButton = (): JSX.Element => {
     const login = async () => {
       try {
         const data = await postKakaoLogin({ kakaoAccessToken: code })
-        setTokens(data.accessToken, data.refreshToken, data.userId, data.expiresIn)
+        setTokens(data.accessToken, data.userId, data.expiresIn)
         router.push('/home')
       } catch (error) {
         if (error instanceof AxiosError) {
