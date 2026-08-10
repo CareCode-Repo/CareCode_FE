@@ -35,7 +35,8 @@ const KakaoCallbackContent = (): ReactElement | null => {
       {
         onSuccess: (data) => {
           if (data.success) {
-            setTokens(data.accessToken, data.refreshToken, data.user.userId, data.expiresIn)
+            // 리프레시 토큰은 서버가 HttpOnly 쿠키로 심어 주므로 여기서 다루지 않는다.
+            setTokens(data.accessToken, data.user.userId, data.expiresIn)
 
             // URL에서 code 파라미터 제거
             // window.history.replaceState({}, '', window.location.pathname)
