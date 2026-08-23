@@ -19,6 +19,15 @@ const compat = new FlatCompat({
 })
 
 const eslintConfig = [
+  {
+    /**
+     * flat config 는 `node_modules` 만 기본으로 건너뛴다.
+     * 빌드 산출물을 빼 두지 않으면 `eslint .` 이 `.next/` 안의 생성 코드까지 훑어
+     * 몇 분씩 걸린다.
+     */
+    ignores: ['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts'],
+  },
+
   // Next.js 기본 설정
   ...fixupConfigRules(compat.extends('next/core-web-vitals', 'next/typescript')),
 
