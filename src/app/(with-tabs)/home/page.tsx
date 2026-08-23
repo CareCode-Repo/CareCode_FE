@@ -17,11 +17,13 @@ import QuickMenu from '@/components/features/home/QuickMenu'
 import PolicyCard from '@/components/features/policy/PolicyCard'
 import RecommendedPolicyCard from '@/components/features/policy/RecommendedPolicyCard'
 import { useGetCommunityPopular } from '@/queries/community'
+import { useHasUnreadNotifications } from '@/queries/notification'
 import { useGetLatestPolicies, usePolicyRecommendations } from '@/queries/policy'
 import { convertPolicyToCardProps } from '@/types/policy'
 
 const Home = (): ReactElement => {
   const router = useRouter()
+  const hasUnread = useHasUnreadNotifications()
   const handleNotificationClick = () => router.push('/notification')
   const handleSearchClick = () => router.push('/search')
   const { data: policies, isLoading, error } = useGetLatestPolicies()
@@ -36,7 +38,14 @@ const Home = (): ReactElement => {
     <Layout
       hasTopNav
       title="홈"
-      actionButtons={[{ icon: BellIcon, onClick: handleNotificationClick }]}
+      actionButtons={[
+        {
+          icon: BellIcon,
+          'aria-label': '알림',
+          showBadge: hasUnread,
+          onClick: handleNotificationClick,
+        },
+      ]}
     >
       <div className="px-4.5">
         <Spacer className="h-5 shrink-0" />
