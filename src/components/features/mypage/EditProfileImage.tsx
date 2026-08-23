@@ -49,6 +49,7 @@ const EditProfileImage = ({ imageUrl, onImageChange }: EditProfileImageProps): R
       <IconButton
         icon={CameraIcon}
         iconClassName="size-6 fill-gray-700"
+        aria-label="프로필 사진 변경"
         className="absolute right-0 bottom-0 rounded-full border border-gray-50 bg-white p-1"
         onClick={handleImagePickerClick}
       />

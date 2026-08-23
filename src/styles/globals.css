@@ -1,9 +1,4 @@
 @import 'tailwindcss';
-/* skeleton UI */
-@import '@skeletonlabs/skeleton';
-@import '@skeletonlabs/skeleton/optional/presets';
-@import '@skeletonlabs/skeleton/themes/cerberus';
-@source '../../node_modules/@skeletonlabs/skeleton-react/dist';
 
 :root {
   --background: #ffffff;
@@ -20,8 +15,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 
   --color-green-50: #edfae8;
   --color-green-100: #d3f1c4;
@@ -55,6 +48,10 @@
 }
 
 @theme {
+  --font-pretendard:
+    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+    'Malgun Gothic', 'Noto Sans KR', sans-serif;
+
   --text-h1-bold: 1.563rem;
   --text-h1-bold--leading: 2.438rem;
   --text-h1-bold--font-weight: 700;
@@ -126,12 +123,6 @@
   --text-c1-regular--letter-spacing: -0.02em;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
 @layer utilities {
   .scrollbar-hide {
     -ms-overflow-style: none; /* IE and Edge */
@@ -145,7 +136,8 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Pretendard', Arial;
+  /* Pretendard 가 아직/영영 안 뜨더라도 한글이 시스템 산세리프로 그려지게 한다. */
+  font-family: var(--font-pretendard);
 }
 
 html body[data-scroll-locked] {

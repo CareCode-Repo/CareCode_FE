@@ -124,14 +124,17 @@ export default function ComponentTest(): ReactElement {
       <TopNavBar
         title="회원가입"
         hasBackButton
-        actionButtons={[{ icon: SettingIcon }, { icon: BellIcon, showBadge: true }]}
+        actionButtons={[
+          { icon: SettingIcon, 'aria-label': '설정' },
+          { icon: BellIcon, 'aria-label': '알림', showBadge: true },
+        ]}
       />
       <TopNavBar title="회원가입" hasBackButton />
       <div>
-        <IconButton icon={SettingIcon} />
-        <IconButton icon={BellIcon} />
-        <IconButton icon={HamburgerIcon} />
-        <IconButton icon={BellIcon} showBadge />
+        <IconButton icon={SettingIcon} aria-label="설정" />
+        <IconButton icon={BellIcon} aria-label="알림" />
+        <IconButton icon={HamburgerIcon} aria-label="메뉴" />
+        <IconButton icon={BellIcon} aria-label="알림" showBadge />
       </div>
       {/* 탭바 테스트 */}
       <TabBar />

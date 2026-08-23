@@ -26,15 +26,8 @@ const TopNavBar = ({
       <div className="text-h3-bold h-8 grow content-center pl-2.5 text-black">{title}</div>
       {/* action buttons */}
       <div className="flex items-center gap-2.5">
-        {actionButtons.map((button, index) => (
-          <IconButton
-            key={index}
-            icon={button.icon}
-            className={button.className}
-            iconClassName={button.iconClassName}
-            showBadge={button.showBadge}
-            onClick={button.onClick}
-          />
+        {actionButtons.map((button) => (
+          <IconButton key={button['aria-label']} {...button} />
         ))}
       </div>
     </div>
