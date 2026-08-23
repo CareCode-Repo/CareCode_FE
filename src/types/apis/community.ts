@@ -60,6 +60,20 @@ export const postListItemSchema = z.object({
 })
 export type PostListItem = z.infer<typeof postListItemSchema>
 
+// PUT /community/comments/{commentId} - 서버 CommunityUpdateCommentRequest 대응
+export const putCommunityCommentPathSchema = z.object({ commentId: z.number() })
+export type PutCommunityCommentPath = z.infer<typeof putCommunityCommentPathSchema>
+export const putCommunityCommentBodySchema = z.object({
+  content: z.string().min(1, '내용을 입력해주세요'),
+})
+export type PutCommunityCommentBody = z.infer<typeof putCommunityCommentBodySchema>
+export const putCommunityCommentResponseSchema = postCommentSchema
+export type PutCommunityCommentResponse = z.infer<typeof putCommunityCommentResponseSchema>
+
+// DELETE /community/comments/{commentId}
+export const deleteCommunityCommentPathSchema = z.object({ commentId: z.number() })
+export type DeleteCommunityCommentPath = z.infer<typeof deleteCommunityCommentPathSchema>
+
 // /community/posts 게시글 리스트 조회
 export const getCommunityPostsQuerySchema = z.object({
   page: z.number().optional(),

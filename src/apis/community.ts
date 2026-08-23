@@ -27,6 +27,14 @@ import {
   postCommunityCommentPathSchema,
   PostCommunityCommentResponse,
   postCommunityCommentResponseSchema,
+  PutCommunityCommentBody,
+  putCommunityCommentBodySchema,
+  PutCommunityCommentPath,
+  putCommunityCommentPathSchema,
+  PutCommunityCommentResponse,
+  putCommunityCommentResponseSchema,
+  DeleteCommunityCommentPath,
+  deleteCommunityCommentPathSchema,
   PostCommunityPostBody,
   postCommunityPostBodySchema,
   PostCommunityPostResponse,
@@ -143,4 +151,21 @@ export const getBookmarkedPosts = async (): Promise<PostListItem[]> => {
 export const getCommunityTags = async (): Promise<string[]> => {
   const res = await CareCode.get('/community/tags')
   return z.array(z.string()).parse(res.data)
+}
+
+// PUT /community/comments/{commentId}
+export const putCommunityComment = async (
+  path: PutCommunityCommentPath,
+  body: PutCommunityCommentBody,
+): Promise<PutCommunityCommentResponse> => {
+  const parsedPath = putCommunityCommentPathSchema.parse(path)
+  const parsedBody = putCommunityCommentBodySchema.parse(body)
+  const res = await CareCode.put(`/community/comments/${parsedPath.commentId}`, parsedBody)
+  return putCommunityCommentResponseSchema.parse(res.data)
+}
+
+// DELETE /community/comments/{commentId}
+export const deleteCommunityComment = async (path: DeleteCommunityCommentPath): Promise<void> => {
+  const parsedPath = deleteCommunityCommentPathSchema.parse(path)
+  await CareCode.delete(`/community/comments/${parsedPath.commentId}`)
 }

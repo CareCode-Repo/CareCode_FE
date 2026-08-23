@@ -38,13 +38,6 @@ export const getNotificationsResponseSchema = z.array(notificationSchema)
 export type GetNotificationsResponse = z.infer<typeof getNotificationsResponseSchema>
 
 // GET /notifications/{notificationId}
-export const getNotificationByIdPathSchema = z.object({
-  notificationId: z.number(),
-})
-export type GetNotificationByIdPath = z.infer<typeof getNotificationByIdPathSchema>
-export const getNotificationByIdResponseSchema = notificationSchema
-export type GetNotificationByIdResponse = z.infer<typeof getNotificationByIdResponseSchema>
-
 // PUT /notifications/{notificationId}/read
 export const putNotificationToReadPathSchema = z.object({
   notificationId: z.number(),

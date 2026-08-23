@@ -4,8 +4,6 @@ import {
   getProfileCompletionResponseSchema,
   GetUserInfoResponse,
   getUserInfoResponseSchema,
-  PatchNicknameBody,
-  patchNicknameBodySchema,
   PutUserInfoBody,
   putUserInfoBodySchema,
   PutUserInfoResponse,
@@ -22,13 +20,6 @@ export const getUserInfo = async (): Promise<GetUserInfoResponse> => {
 export const putUserInfo = async (body: PutUserInfoBody): Promise<PutUserInfoResponse> => {
   const parsedBody = putUserInfoBodySchema.parse(body)
   const res = await CareCode.put('/users/profile', parsedBody)
-  return putUserInfoResponseSchema.parse(res.data)
-}
-
-// PATCH /users/profile/nickname - 닉네임만 변경
-export const patchNickname = async (body: PatchNicknameBody): Promise<PutUserInfoResponse> => {
-  const parsedBody = patchNicknameBodySchema.parse(body)
-  const res = await CareCode.patch('/users/profile/nickname', parsedBody)
   return putUserInfoResponseSchema.parse(res.data)
 }
 
