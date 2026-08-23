@@ -7,6 +7,8 @@ export const childSchema = z.object({
   name: z.string(),
   birthDate: z.string().nullish(), // yyyy-MM-dd
   gender: z.string().nullish(),
+  // 수정 화면이 현재 값을 읽어와야 한다. 수정은 전체 교체라 못 읽으면 저장할 때마다 지워진다.
+  specialNeeds: z.string().nullish(),
   createdAt: z.string().nullish(),
   updatedAt: z.string().nullish(),
 })

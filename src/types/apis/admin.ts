@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { healthRecordSchema } from './health'
 import { hospitalSchema } from './hospital'
 import { reportSchema } from './moderation'
+import { USER_ROLE, USER_ROLE_LABEL, type UserRoleValue } from './user'
 
 // ==================== 퍼널 ====================
 
@@ -136,15 +137,10 @@ export type AdminDashboard = z.infer<typeof adminDashboardSchema>
 
 // ==================== 사용자 관리 ====================
 
-export const UserRole = ['PARENT', 'CAREGIVER', 'ADMIN', 'GUEST'] as const
-export type UserRole = (typeof UserRole)[number]
-
-export const USER_ROLE_LABEL: Record<string, string> = {
-  PARENT: '부모',
-  CAREGIVER: '보육사',
-  ADMIN: '관리자',
-  GUEST: '게스트',
-}
+// 역할 목록·표기는 user.ts 가 정본이다. 두 벌로 두면 한쪽만 고쳐져 조용히 어긋난다.
+export const UserRole = USER_ROLE
+export type UserRole = UserRoleValue
+export { USER_ROLE_LABEL }
 
 // 서버 AdminUserResponse 대응
 export const adminUserSchema = z.object({
