@@ -1,10 +1,11 @@
 'use client'
+import { useRouter } from 'next/navigation'
 import { ReactElement, use } from 'react'
 import SearchIcon from '@/assets/icons/search.svg'
 import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
-// import ToggleChip from '@/components/common/ToggleChip'
 import Input from '@/components/common/input'
+import IconButton from '@/components/common/top-navbar/IconButton'
 import PolicyCard from '@/components/features/policy/PolicyCard'
 import useInfiniteScroll from '@/hooks/useInfiniteScroll'
 import { useSearchPolicy } from '@/hooks/useSearchPolicy'
@@ -18,6 +19,7 @@ interface PolicySearchPageProps {
 }
 
 const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement => {
+  const router = useRouter()
   const { keyword } = use(searchParams)
   const { inputValue, handleInputChange, search } = useSearchPolicy(keyword || '')
 
@@ -47,10 +49,11 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
           rightIcon={
-            <SearchIcon
-              className="size-6 cursor-pointer fill-gray-400"
-              onClick={search}
+            <IconButton
+              icon={SearchIcon}
+              iconClassName="size-6 fill-gray-400"
               aria-label="검색"
+              onClick={() => search()}
             />
           }
         />
@@ -85,7 +88,7 @@ const PolicySearchPage = ({ searchParams }: PolicySearchPageProps): ReactElement
             <PolicyCard
               key={policy.id}
               {...cardProps}
-              onClick={() => console.log(`정책 ${policy.id} 클릭됨`)}
+              onClick={() => router.push(`/policy/${policy.id}`)}
             />
           )
         })}

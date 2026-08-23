@@ -3,13 +3,20 @@ import { formatDistanceToNow } from 'date-fns'
 import { ko } from 'date-fns/locale'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
+import AlertDialog from '@/components/common/AlertDialog'
 import AuthGuard from '@/components/common/AuthGuard'
+import Button from '@/components/common/Button'
 import EmptyState from '@/components/common/EmptyState'
 import ErrorView from '@/components/common/Error'
 import Layout from '@/components/common/Layout'
 import NotificationCard from '@/components/features/notification/NotificationCard'
-import { useNotifications, useOpenNotification } from '@/queries/notification'
+import {
+  useDeleteNotification,
+  useMarkNotificationRead,
+  useNotifications,
+  useOpenNotification,
+} from '@/queries/notification'
 import { useMarkAllNotificationsRead } from '@/queries/notification'
 import { Notification, NOTIFICATION_TARGET } from '@/types/apis/notification'
 import { toDate } from '@/utils/date'
@@ -26,6 +33,9 @@ const NotificationPage = (): ReactElement => {
   const { data: notifications = [], isLoading, isError, refetch } = useNotifications()
   const { mutate: openNotification } = useOpenNotification()
   const { mutate: markAllRead, isPending: isMarkingAll } = useMarkAllNotificationsRead()
+  const { mutate: markRead } = useMarkNotificationRead()
+  const { mutate: removeNotification } = useDeleteNotification()
+  const [notificationToDelete, setNotificationToDelete] = useState<number | null>(null)
 
   const unreadCount = notifications.filter((notification) => !notification.isRead).length
 
@@ -80,7 +90,7 @@ const NotificationPage = (): ReactElement => {
 
             <ul className="flex flex-col gap-2.5">
               {notifications.map((notification) => (
-                <li key={notification.id}>
+                <li key={notification.id} className="flex flex-col gap-1">
                   <NotificationCard
                     timeAgo={formatTimeAgo(notification.createdAt)}
                     title={notification.title ?? '알림'}
@@ -88,9 +98,52 @@ const NotificationPage = (): ReactElement => {
                     isRead={notification.isRead}
                     onClick={() => handleClick(notification)}
                   />
+                  <div className="flex justify-end gap-3 pr-1">
+                    {/* 열지 않고도 읽음 처리할 수 있어야 한다. 여는 순간 딥링크로 이동하기 때문이다. */}
+                    {!notification.isRead && (
+                      <button
+                        type="button"
+                        onClick={() => markRead(notification.id)}
+                        className="text-c1-regular rounded text-gray-600 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+                      >
+                        읽음으로 표시
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setNotificationToDelete(notification.id)}
+                      className="text-c1-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+                    >
+                      삭제
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
+
+            <AlertDialog
+              title="이 알림을 삭제할까요?"
+              description="삭제한 알림은 되돌릴 수 없어요."
+              isOpen={notificationToDelete !== null}
+              onClose={() => setNotificationToDelete(null)}
+              cancelButton={
+                <Button color="gray" size="small" onClick={() => setNotificationToDelete(null)}>
+                  취소
+                </Button>
+              }
+              confirmButton={
+                <Button
+                  color="red"
+                  size="small"
+                  onClick={() => {
+                    if (notificationToDelete !== null) removeNotification(notificationToDelete)
+                    setNotificationToDelete(null)
+                  }}
+                >
+                  삭제
+                </Button>
+              }
+            />
           </>
         )}
       </Layout>
