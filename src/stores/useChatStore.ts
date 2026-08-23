@@ -58,6 +58,8 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: 'chat-store',
+      // 프로덕션에서는 Redux DevTools 커넥터를 붙이지 않는다(액션 이력을 계속 들고 있다).
+      enabled: process.env.NODE_ENV === 'development',
     },
   ),
 )

@@ -1,7 +1,13 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
+/**
+ * 요소의 교차 상태를 구독한다.
+ *
+ * `options` 는 effect 의 의존성이므로 **모듈 스코프의 고정 객체**를 넘겨야 한다.
+ * 렌더마다 새 객체 리터럴을 넘기면 옵저버가 매 렌더 다시 만들어진다.
+ */
 const useIntersectionObserver = (
-  elemRef: RefObject<HTMLElement>,
+  elemRef: RefObject<HTMLElement | null>,
   options: IntersectionObserverInit,
 ): {
   entries: IntersectionObserverEntry[]
@@ -14,10 +20,11 @@ const useIntersectionObserver = (
     const node = elemRef.current
     if (!node) return
 
-    observerRef.current = new IntersectionObserver(setEntries, options)
-    observerRef.current.observe(node)
+    const observer = new IntersectionObserver(setEntries, options)
+    observerRef.current = observer
+    observer.observe(node)
 
-    return () => observerRef.current?.disconnect()
+    return () => observer.disconnect()
   }, [elemRef, options])
 
   return {

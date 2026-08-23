@@ -1,7 +1,6 @@
 import { ReactElement } from 'react'
 
 import FacilityStat from './FacilityStat'
-// import MapIcon from '@/assets/icons/map_thin.svg'
 import ReviewIcon from '@/assets/icons/chat_small.svg'
 import StarIcon from '@/assets/icons/star_small.svg'
 import Chip from '@/components/common/Chip'

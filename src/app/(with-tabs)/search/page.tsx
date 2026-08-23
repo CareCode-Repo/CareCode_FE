@@ -7,12 +7,15 @@ import Chip from '@/components/common/Chip'
 import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
+import IconButton from '@/components/common/top-navbar/IconButton'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { useSearchPolicy } from '@/hooks/useSearchPolicy'
+import { useHasUnreadNotifications } from '@/queries/notification'
 
 const Search = (): ReactElement => {
   const { recentSearches, removeSearch, clearAllSearches } = useRecentSearches()
   const router = useRouter()
+  const hasUnread = useHasUnreadNotifications()
   const { inputValue, handleInputChange, search } = useSearchPolicy()
   const handleNotificationClick = () => router.push('/notification')
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,7 +27,14 @@ const Search = (): ReactElement => {
     <Layout
       hasTopNav
       title="육아 정보"
-      actionButtons={[{ icon: BellIcon, onClick: handleNotificationClick }]}
+      actionButtons={[
+        {
+          icon: BellIcon,
+          'aria-label': '알림',
+          showBadge: hasUnread,
+          onClick: handleNotificationClick,
+        },
+      ]}
       contentClassName="overflow-y-scroll py-6 px-4.5"
     >
       <form onSubmit={handleSubmit}>
@@ -33,10 +43,11 @@ const Search = (): ReactElement => {
           placeholder="검색어를 입력하세요"
           onChange={handleInputChange}
           rightIcon={
-            <SearchIcon
-              className="size-6 cursor-pointer fill-gray-400"
-              onClick={search}
+            <IconButton
+              icon={SearchIcon}
+              iconClassName="size-6 fill-gray-400"
               aria-label="검색"
+              onClick={() => search()}
             />
           }
         />
