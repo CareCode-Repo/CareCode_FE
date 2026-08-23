@@ -8,17 +8,10 @@ import {
 } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { clearTokens, getAccessToken } from '@/apis/auth'
-import {
-  getProfileCompletion,
-  getUserInfo,
-  patchNickname,
-  postLogout,
-  putUserInfo,
-} from '@/apis/user'
+import { getProfileCompletion, getUserInfo, postLogout, putUserInfo } from '@/apis/user'
 import {
   GetProfileCompletionResponse,
   GetUserInfoResponse,
-  PatchNicknameBody,
   PutUserInfoBody,
   PutUserInfoResponse,
 } from '@/types/apis/user'
@@ -66,21 +59,6 @@ export const useUpdateProfile = (): UseMutationResult<
     onSuccess: (updated) => {
       queryClient.setQueryData(userQueries.profile().queryKey, updated)
       queryClient.invalidateQueries({ queryKey: userQueries.completion().queryKey })
-    },
-  })
-}
-
-export const useUpdateNickname = (): UseMutationResult<
-  PutUserInfoResponse,
-  Error,
-  PatchNicknameBody
-> => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: patchNickname,
-    onSuccess: (updated) => {
-      queryClient.setQueryData(userQueries.profile().queryKey, updated)
     },
   })
 }

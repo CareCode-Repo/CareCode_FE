@@ -128,7 +128,7 @@ export const useToggleHospitalLike = (
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: statusKey })
-      queryClient.invalidateQueries({ queryKey: ['hospital', 'popular'] })
+      queryClient.invalidateQueries({ queryKey: hospitalQueries.popular._def })
     },
   })
 }

@@ -19,6 +19,7 @@ import {
   putHealthRecord,
   uploadAttachment,
 } from '@/apis/health'
+import { childQueries } from '@/queries/child'
 import {
   Attachment,
   CreateHealthRecordBody,
@@ -94,8 +95,8 @@ export const useCreateHealthRecord = (): UseMutationResult<
   return useMutation({
     mutationFn: postHealthRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }
@@ -109,8 +110,8 @@ export const useUpdateHealthRecord = (
     mutationFn: (body: UpdateHealthRecordBody) => putHealthRecord(recordId, body),
     onSuccess: (record) => {
       queryClient.setQueryData(healthQueries.record(recordId).queryKey, record)
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }
@@ -121,8 +122,8 @@ export const useDeleteHealthRecord = (): UseMutationResult<void, Error, number> 
   return useMutation({
     mutationFn: deleteHealthRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }

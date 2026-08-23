@@ -15,7 +15,6 @@ import {
   getBenefitAmountConsensus,
   getMissedBenefits,
   getPolicyBookmarks,
-  getPolicyList,
   getLatestPolicies,
   getPolicyRecommendations,
   getRegionalComparison,
@@ -27,8 +26,6 @@ import {
 import {
   BenefitAmountConsensus,
   BenefitAmountReportBody,
-  GetPolicyListQuery,
-  GetPolicyListResponse,
   GetLatestPoliciesResponse,
   MissedBenefitSummary,
   PersonalizedPolicy,
@@ -41,7 +38,6 @@ import {
 } from '@/types/apis/policy'
 
 export const policyQueryKeys = createQueryKeys('policy', {
-  list: (query?: GetPolicyListQuery) => [query],
   detail: (id: number) => [id],
   latest: () => ['latest'],
   search: (searchParams: Omit<PolicySearchRequestDto, 'page' | 'size'>) => [searchParams],
@@ -76,19 +72,9 @@ export const useReportBenefitAmount = (
       queryClient.setQueryData(policyQueryKeys.amountConsensus(policyId).queryKey, consensus)
       // 합의가 확정되면 정책 금액이 채워지므로 상세·목록도 다시 받는다.
       if (consensus.confirmed) {
-        queryClient.invalidateQueries({ queryKey: ['policy'] })
+        queryClient.invalidateQueries({ queryKey: policyQueryKeys._def })
       }
     },
-  })
-}
-
-export const useGetPolicyList = (
-  query?: GetPolicyListQuery,
-): UseQueryResult<GetPolicyListResponse, Error> => {
-  return useQuery({
-    queryKey: policyQueryKeys.list(query).queryKey,
-    queryFn: () => getPolicyList(query || {}),
-    enabled: true,
   })
 }
 
