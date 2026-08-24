@@ -16,6 +16,7 @@ import IconButton from '@/components/common/top-navbar/IconButton'
 import NewPostFAB from '@/components/features/community/NewPostFAB'
 import CommunityPost from '@/components/features/community/community-post-list'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
+import { useCommunityTags } from '@/queries/community'
 import { useHasUnreadNotifications } from '@/queries/notification'
 
 const Community = (): JSX.Element => {
@@ -28,6 +29,7 @@ const Community = (): JSX.Element => {
   const { recentSearches, addSearch, removeSearch, clearAllSearches } = useRecentSearches()
 
   const { posts, loadMoreRef, hasNextPage, isLoading, isError, refetch } = usePosts({ size: 10 })
+  const { data: tags = [] } = useCommunityTags()
 
   const goToSearch = (keyword: string) => {
     const trimmed = keyword.trim()
@@ -89,6 +91,26 @@ const Community = (): JSX.Element => {
             </button>
           )}
         </form>
+
+        {/*
+          태그로 게시글을 거르는 API 가 없어 태그 이름으로 검색을 태운다.
+          없는 필터를 흉내 내는 것보다 실제로 동작하는 경로를 쓴다.
+        */}
+        {!isSearching && tags.length > 0 && (
+          <div className="scrollbar-hide flex gap-2 overflow-x-auto px-[1.125rem] pb-3 [&>*]:shrink-0">
+            {tags.map((tag) => (
+              <Chip
+                key={tag.id}
+                size="md"
+                shape="round"
+                color="transparent"
+                onClick={() => goToSearch(tag.name)}
+              >
+                {tag.name}
+              </Chip>
+            ))}
+          </div>
+        )}
 
         {isSearching ? (
           <div className="flex w-full flex-col items-start gap-6 p-[1.125rem]">

@@ -6,6 +6,8 @@ import {
   CreateHealthRecordBody,
   createHealthRecordBodySchema,
   HealthAlert,
+  HealthRecommendation,
+  healthRecommendationSchema,
   healthAlertListSchema,
   HealthRecord,
   healthRecordListSchema,
@@ -113,4 +115,10 @@ export const getHealthAlerts = async (userId: string): Promise<HealthAlert[]> =>
 export const getHealthStatistics = async (userId: string): Promise<HealthStats> => {
   const res = await CareCode.get('/health/statistics', { params: { userId } })
   return healthStatsSchema.parse(res.data)
+}
+
+// GET /health/recommendations - 아이 월령 기준 추천
+export const getHealthRecommendations = async (): Promise<HealthRecommendation> => {
+  const res = await CareCode.get('/health/recommendations')
+  return healthRecommendationSchema.parse(res.data)
 }

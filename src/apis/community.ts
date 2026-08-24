@@ -1,6 +1,7 @@
-import { z } from 'zod'
 import { CareCode } from './interceptor'
 import {
+  CommunityTag,
+  communityTagListSchema,
   PostListItem,
   postListItemSchema,
   ToggleBookmarkResponse,
@@ -148,9 +149,9 @@ export const getBookmarkedPosts = async (): Promise<PostListItem[]> => {
 }
 
 // GET /community/tags - 인기 태그
-export const getCommunityTags = async (): Promise<string[]> => {
+export const getCommunityTags = async (): Promise<CommunityTag[]> => {
   const res = await CareCode.get('/community/tags')
-  return z.array(z.string()).parse(res.data)
+  return communityTagListSchema.parse(res.data)
 }
 
 // PUT /community/comments/{commentId}

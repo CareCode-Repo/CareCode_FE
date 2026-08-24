@@ -32,6 +32,7 @@ import {
   toggleCommunityLike,
 } from '@/apis/community'
 import {
+  CommunityTag,
   PostListItem,
   ToggleBookmarkResponse,
   ToggleLikeResponse,
@@ -218,7 +219,7 @@ export const useLikedPosts = (): UseQueryResult<PostListItem[], Error> =>
 export const useBookmarkedPosts = (): UseQueryResult<PostListItem[], Error> =>
   useQuery({ ...communityQueries.bookmarked(), enabled: !!getAccessToken() })
 
-export const useCommunityTags = (): UseQueryResult<string[], Error> =>
+export const useCommunityTags = (): UseQueryResult<CommunityTag[], Error> =>
   useQuery({ ...communityQueries.tags(), staleTime: 1000 * 60 * 30 })
 
 /**

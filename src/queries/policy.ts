@@ -16,6 +16,9 @@ import {
   getMissedBenefits,
   getPolicyBookmarks,
   getLatestPolicies,
+  getPoliciesByCategory,
+  getPolicyCategories,
+  getPopularPolicies,
   getPolicyRecommendations,
   getRegionalComparison,
   postBenefitAmountReport,
@@ -27,6 +30,7 @@ import {
   BenefitAmountConsensus,
   BenefitAmountReportBody,
   GetLatestPoliciesResponse,
+  PolicyCategoryList,
   MissedBenefitSummary,
   PersonalizedPolicy,
   PolicyBookmark,
@@ -40,6 +44,9 @@ import {
 export const policyQueryKeys = createQueryKeys('policy', {
   detail: (id: number) => [id],
   latest: () => ['latest'],
+  categories: () => ['categories'],
+  byCategory: (category: string) => ['category', category],
+  popular: () => ['popular'],
   search: (searchParams: Omit<PolicySearchRequestDto, 'page' | 'size'>) => [searchParams],
   recommendations: (limit: number) => ['recommendations', limit],
   missedBenefits: () => ['missed-benefits'],
@@ -47,6 +54,30 @@ export const policyQueryKeys = createQueryKeys('policy', {
   bookmarks: () => ['bookmarks'],
   amountConsensus: (policyId: number) => ['amount-consensus', policyId],
 })
+
+/** 정책 카테고리 목록. 자주 바뀌지 않으므로 오래 신선하게 둔다. */
+export const usePolicyCategories = (): UseQueryResult<PolicyCategoryList, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.categories().queryKey,
+    queryFn: getPolicyCategories,
+    staleTime: 1000 * 60 * 60,
+  })
+
+export const usePoliciesByCategory = (
+  category: string,
+): UseQueryResult<GetLatestPoliciesResponse, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.byCategory(category).queryKey,
+    queryFn: () => getPoliciesByCategory(category),
+    enabled: !!category,
+  })
+
+export const usePopularPolicies = (): UseQueryResult<GetLatestPoliciesResponse, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.popular().queryKey,
+    queryFn: getPopularPolicies,
+    staleTime: 1000 * 60 * 10,
+  })
 
 export const useBenefitAmountConsensus = (
   policyId: number,

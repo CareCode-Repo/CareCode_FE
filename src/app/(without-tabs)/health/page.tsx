@@ -11,7 +11,7 @@ import Spacer from '@/components/common/Spacer'
 import ToggleChip from '@/components/common/ToggleChip'
 import HealthRecordCard from '@/components/features/health/HealthRecordCard'
 import { useMyChildren } from '@/queries/child'
-import { useHealthAlerts, useMyHealthRecords } from '@/queries/health'
+import { useHealthAlerts, useHealthRecommendations, useMyHealthRecords } from '@/queries/health'
 import { RECORD_TYPE_LABEL, RecordType } from '@/types/apis/health'
 import { formatDate } from '@/utils/date'
 
@@ -68,6 +68,42 @@ const HealthAlertSection = (): ReactElement | null => {
   )
 }
 
+/**
+ * 아이 월령 기준 넛지.
+ *
+ * 서버는 추천 정책·시설을 **이름 문자열로만** 준다(id 가 없다). 상세로 바로 보낼 수 없으므로
+ * 검색 지름길로 쓴다 — 없는 링크를 만들어 404 로 보내는 것보다 낫다.
+ */
+const HealthRecommendationSection = (): ReactElement | null => {
+  const router = useRouter()
+  const { data } = useHealthRecommendations()
+
+  const policies = data?.recommendedPolicies ?? []
+  if (!data?.nudgeMessage && !policies.length) return null
+
+  return (
+    <section className="mb-5 flex flex-col gap-2 rounded-lg border border-green-300 bg-green-50 p-3.5">
+      {data?.nudgeMessage && (
+        <span className="text-b1-semibold text-gray-800">{data.nudgeMessage}</span>
+      )}
+      {policies.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {policies.map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => router.push(`/search/policy?keyword=${encodeURIComponent(name)}`)}
+              className="text-c1-regular rounded-full border border-green-600 bg-white px-3 py-1 text-green-700 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
 const HealthPage = (): ReactElement => {
   const router = useRouter()
   const [selectedType, setSelectedType] = useState<RecordType | null>(null)
@@ -90,6 +126,7 @@ const HealthPage = (): ReactElement => {
     <AuthGuard>
       <Layout hasTopNav hasBackButton title="건강 기록" contentClassName="px-4.5 py-5">
         <HealthAlertSection />
+        <HealthRecommendationSection />
 
         {children.length > 1 && (
           <>

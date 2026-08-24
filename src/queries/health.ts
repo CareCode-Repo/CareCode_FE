@@ -12,6 +12,7 @@ import {
   deleteHealthRecord,
   getAttachments,
   getHealthAlerts,
+  getHealthRecommendations,
   getHealthRecord,
   getHealthRecordsByType,
   getUserHealthRecords,
@@ -24,6 +25,7 @@ import {
   Attachment,
   CreateHealthRecordBody,
   HealthAlert,
+  HealthRecommendation,
   HealthRecord,
   RecordType,
   UpdateHealthRecordBody,
@@ -50,6 +52,10 @@ export const healthQueries = createQueryKeys('health', {
     queryFn: () => getAttachments(recordId),
   }),
 
+  recommendations: () => ({
+    queryKey: ['recommendations'],
+  }),
+
   alerts: (userId: string) => ({
     queryKey: ['alerts', userId],
     queryFn: () => getHealthAlerts(userId),
@@ -67,6 +73,13 @@ export const useHealthRecord = (recordId: number): UseQueryResult<HealthRecord, 
   useQuery({
     ...healthQueries.record(recordId),
     enabled: Number.isFinite(recordId) && recordId > 0,
+  })
+
+export const useHealthRecommendations = (): UseQueryResult<HealthRecommendation, Error> =>
+  useQuery({
+    queryKey: healthQueries.recommendations().queryKey,
+    queryFn: getHealthRecommendations,
+    enabled: !!getAccessToken(),
   })
 
 export const useHealthAlerts = (): UseQueryResult<HealthAlert[], Error> => {

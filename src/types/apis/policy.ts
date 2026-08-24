@@ -79,6 +79,10 @@ export const getPolicyByIdResponseSchema = policySchema
 export type GetPolicyByIdResponse = z.infer<typeof getPolicyByIdResponseSchema>
 
 // /policies/latest
+/** GET /policies/categories — 카테고리 이름 목록 */
+export const policyCategoryListSchema = z.array(z.string())
+export type PolicyCategoryList = z.infer<typeof policyCategoryListSchema>
+
 export const getLatestPoliciesResponseSchema = z.array(policySchema)
 export type GetLatestPoliciesResponse = z.infer<typeof getLatestPoliciesResponseSchema>
 
