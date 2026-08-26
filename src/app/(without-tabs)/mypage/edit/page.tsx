@@ -10,7 +10,9 @@ import Label from '@/components/common/Label'
 import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
-import { useUpdateProfile, useUserProfile } from '@/queries/user'
+import EditProfileImage from '@/components/features/mypage/EditProfileImage'
+import { useUpdateProfile, useUploadProfileImage, useUserProfile } from '@/queries/user'
+import { toAbsoluteFileUrl } from '@/utils/file'
 
 // Daum Postcode API 타입 정의
 interface DaumPostcodeData {
@@ -53,6 +55,7 @@ const ProfileEditContent = (): ReactElement => {
   const router = useRouter()
   const { data: profile, isLoading, isError, refetch } = useUserProfile()
   const { mutate: updateProfile, isPending, isError: isSaveError, error } = useUpdateProfile()
+  const { mutate: uploadImage, isPending: isUploadingImage } = useUploadProfileImage()
 
   const [name, setName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
@@ -146,6 +149,12 @@ const ProfileEditContent = (): ReactElement => {
   return (
     <>
       <div className="flex grow flex-col gap-8 overflow-y-auto p-6">
+        <EditProfileImage
+          imageUrl={toAbsoluteFileUrl(profile?.profileImageUrl)}
+          isUploading={isUploadingImage}
+          onSelect={(file) => uploadImage(file)}
+        />
+
         <Input
           label="이름"
           required

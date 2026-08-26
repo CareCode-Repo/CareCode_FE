@@ -63,6 +63,12 @@ export type PutUserInfoBody = z.infer<typeof putUserInfoBodySchema>
 export const putUserInfoResponseSchema = userSchema
 export type PutUserInfoResponse = z.infer<typeof putUserInfoResponseSchema>
 
+// POST /users/me/profile-image - multipart 업로드
+export const profileImageResponseSchema = z.object({
+  profileImageUrl: z.string(),
+})
+export type ProfileImageResponse = z.infer<typeof profileImageResponseSchema>
+
 // GET /users/profile/completion
 /**
  * GET /users/profile/completion — 서버 UserProfileCompletionResponse 대응.

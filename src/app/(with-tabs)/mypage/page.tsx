@@ -162,6 +162,11 @@ const MyPage = (): ReactElement => {
             },
             { id: 'bookings', title: '내 예약', onClick: () => router.push('/mypage/bookings') },
             { id: 'waitlist', title: '내 대기', onClick: () => router.push('/mypage/waitlist') },
+            {
+              id: 'liked-hospitals',
+              title: '찜한 병원',
+              onClick: () => router.push('/mypage/liked-hospitals'),
+            },
           ]}
         />
         <MenuList

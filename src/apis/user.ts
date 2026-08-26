@@ -4,6 +4,8 @@ import {
   getProfileCompletionResponseSchema,
   GetUserInfoResponse,
   getUserInfoResponseSchema,
+  ProfileImageResponse,
+  profileImageResponseSchema,
   PutUserInfoBody,
   putUserInfoBodySchema,
   PutUserInfoResponse,
@@ -21,6 +23,22 @@ export const putUserInfo = async (body: PutUserInfoBody): Promise<PutUserInfoRes
   const parsedBody = putUserInfoBodySchema.parse(body)
   const res = await CareCode.put('/users/profile', parsedBody)
   return putUserInfoResponseSchema.parse(res.data)
+}
+
+/**
+ * POST /users/me/profile-image - 프로필 이미지 업로드.
+ *
+ * 예전에는 URL 문자열만 받는 PUT 뿐이라 파일을 올릴 곳이 없었다.
+ * 서버가 저장 후 주소를 돌려주므로 그 값을 그대로 화면에 반영한다.
+ */
+export const uploadProfileImage = async (file: File): Promise<ProfileImageResponse> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const res = await CareCode.post('/users/me/profile-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+  return profileImageResponseSchema.parse(res.data)
 }
 
 // GET /users/profile/completion - 프로필 완성도

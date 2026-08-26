@@ -8,10 +8,17 @@ import {
 } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { clearTokens, getAccessToken } from '@/apis/auth'
-import { getProfileCompletion, getUserInfo, postLogout, putUserInfo } from '@/apis/user'
+import {
+  getProfileCompletion,
+  getUserInfo,
+  postLogout,
+  putUserInfo,
+  uploadProfileImage,
+} from '@/apis/user'
 import {
   GetProfileCompletionResponse,
   GetUserInfoResponse,
+  ProfileImageResponse,
   PutUserInfoBody,
   PutUserInfoResponse,
 } from '@/types/apis/user'
@@ -58,6 +65,19 @@ export const useUpdateProfile = (): UseMutationResult<
     mutationFn: putUserInfo,
     onSuccess: (updated) => {
       queryClient.setQueryData(userQueries.profile().queryKey, updated)
+      queryClient.invalidateQueries({ queryKey: userQueries.completion().queryKey })
+    },
+  })
+}
+
+/** 프로필 이미지 업로드. 성공하면 프로필 캐시를 다시 받아 화면이 곧바로 바뀐다. */
+export const useUploadProfileImage = (): UseMutationResult<ProfileImageResponse, Error, File> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: uploadProfileImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userQueries.profile().queryKey })
       queryClient.invalidateQueries({ queryKey: userQueries.completion().queryKey })
     },
   })
