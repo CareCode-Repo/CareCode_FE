@@ -98,6 +98,20 @@ export const uploadAttachment = async (
   return attachmentSchema.parse(res.data)
 }
 
+/**
+ * GET /health/records/{recordId}/attachments/{attachmentId}/download
+ *
+ * 첨부 저장소는 정적으로 공개되지 않는다(민감정보). `<a href>` 나 `<img src>` 로는
+ * 인증 헤더를 붙일 수 없어 401 이 나므로, 인증된 axios 로 본문을 받아 blob 으로 다룬다.
+ */
+export const downloadAttachment = async (recordId: number, attachmentId: number): Promise<Blob> => {
+  const res = await CareCode.get(
+    `/health/records/${recordId}/attachments/${attachmentId}/download`,
+    { responseType: 'blob' },
+  )
+  return res.data as Blob
+}
+
 // DELETE /health/records/attachments/{attachmentId}
 export const deleteAttachment = async (attachmentId: number): Promise<void> => {
   await CareCode.delete(`/health/records/attachments/${attachmentId}`)

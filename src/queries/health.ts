@@ -11,6 +11,7 @@ import {
   deleteAttachment,
   deleteHealthRecord,
   getAttachments,
+  downloadAttachment,
   getHealthAlerts,
   getHealthRecommendations,
   getHealthRecord,
@@ -47,6 +48,11 @@ export const healthQueries = createQueryKeys('health', {
     queryFn: () => getHealthRecord(recordId),
   }),
 
+  attachmentBlob: (recordId: number, attachmentId: number) => ({
+    queryKey: ['attachment-blob', recordId, attachmentId],
+    queryFn: () => downloadAttachment(recordId, attachmentId),
+  }),
+
   attachments: (recordId: number) => ({
     queryKey: ['attachments', recordId],
     queryFn: () => getAttachments(recordId),
@@ -73,6 +79,25 @@ export const useHealthRecord = (recordId: number): UseQueryResult<HealthRecord, 
   useQuery({
     ...healthQueries.record(recordId),
     enabled: Number.isFinite(recordId) && recordId > 0,
+  })
+
+/**
+ * 첨부 본문(blob).
+ *
+ * 첨부는 인증을 거쳐야 받을 수 있어 주소를 그대로 열 수 없다. 쿼리로 감싸 같은 첨부를
+ * 여러 곳에서 그려도 요청이 한 번만 나가게 한다(직접 useEffect 로 받으면 렌더마다 중복된다).
+ * 본문은 바뀌지 않으므로 오래 신선하게 둔다.
+ */
+export const useAttachmentBlob = (
+  recordId: number,
+  attachmentId: number,
+  enabled = true,
+): UseQueryResult<Blob, Error> =>
+  useQuery({
+    ...healthQueries.attachmentBlob(recordId, attachmentId),
+    enabled:
+      enabled && Number.isFinite(recordId) && Number.isFinite(attachmentId) && attachmentId > 0,
+    staleTime: 1000 * 60 * 30,
   })
 
 export const useHealthRecommendations = (): UseQueryResult<HealthRecommendation, Error> =>

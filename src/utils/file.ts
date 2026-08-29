@@ -42,3 +42,15 @@ export const toAbsoluteFileUrl = (url?: string | null): string | undefined => {
   const base = process.env.NEXT_PUBLIC_API_URL ?? ''
   return `${base}${url.startsWith('/') ? '' : '/'}${url}`
 }
+
+/** blob 을 파일로 내려받게 한다. 인증이 필요한 파일은 주소를 직접 열 수 없어 이 경로를 쓴다. */
+export const downloadBlob = (blob: Blob, fileName: string): void => {
+  const url = URL.createObjectURL(blob)
+
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = fileName
+  anchor.click()
+
+  URL.revokeObjectURL(url)
+}
