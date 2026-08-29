@@ -104,7 +104,7 @@ export const useResolveWaitlist = (): UseMutationResult<
     mutationFn: ({ waitlistId, status, resolvedAt, note }) =>
       patchWaitlistResult(waitlistId, status, resolvedAt, note),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['waitlist'] })
+      queryClient.invalidateQueries({ queryKey: waitlistQueries._def })
     },
   })
 }

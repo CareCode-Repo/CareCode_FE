@@ -39,6 +39,11 @@ import {
   patchAdminPolicy,
 } from '@/apis/admin'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
+import { communityQueries } from '@/queries/community'
+import { facilityQueries } from '@/queries/facility'
+import { healthQueries } from '@/queries/health'
+import { hospitalQueries } from '@/queries/hospital'
+import { policyQueryKeys } from '@/queries/policy'
 import {
   AdminBookingSearch,
   AdminBookingSearchQuery,
@@ -192,7 +197,7 @@ export const useVerifyPolicy = (): UseMutationResult<
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminQueries.verificationStatus().queryKey })
       // 검증 여부가 사용자 화면의 금액 신뢰도 표기에 반영된다.
-      queryClient.invalidateQueries({ queryKey: ['policy'] })
+      queryClient.invalidateQueries({ queryKey: policyQueryKeys._def })
     },
   })
 }
@@ -204,7 +209,7 @@ export const useUnverifyPolicy = (): UseMutationResult<void, Error, number> => {
     mutationFn: deletePolicyVerify,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminQueries.verificationStatus().queryKey })
-      queryClient.invalidateQueries({ queryKey: ['policy'] })
+      queryClient.invalidateQueries({ queryKey: policyQueryKeys._def })
     },
   })
 }
@@ -229,7 +234,7 @@ export const useUpdateAdminUser = (): UseMutationResult<
   return useMutation({
     mutationFn: ({ id, body }) => patchAdminUser(id, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.users._def })
     },
   })
 }
@@ -240,7 +245,7 @@ export const useDeleteAdminUser = (): UseMutationResult<void, Error, number> => 
   return useMutation({
     mutationFn: deleteAdminUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.users._def })
     },
   })
 }
@@ -251,9 +256,9 @@ export const useDeleteAdminPost = (): UseMutationResult<void, Error, number> => 
   return useMutation({
     mutationFn: deleteAdminPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'posts'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.posts._def })
       // 관리자 삭제는 사용자 화면의 목록에도 반영돼야 한다.
-      queryClient.invalidateQueries({ queryKey: ['community'] })
+      queryClient.invalidateQueries({ queryKey: communityQueries._def })
     },
   })
 }
@@ -282,9 +287,9 @@ export const useUpdateBookingStatus = (): UseMutationResult<
   return useMutation({
     mutationFn: ({ bookingId, body }) => patchBookingStatus(bookingId, body),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'bookings'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.bookings._def })
       // 사용자의 "내 예약" 화면에도 즉시 반영돼야 한다.
-      queryClient.invalidateQueries({ queryKey: ['facility', 'my-bookings'] })
+      queryClient.invalidateQueries({ queryKey: facilityQueries.myBookings().queryKey })
     },
   })
 }
@@ -299,8 +304,8 @@ export const useDeleteAdminBooking = (): UseMutationResult<void, Error, number> 
   return useMutation({
     mutationFn: deleteAdminBooking,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'bookings'] })
-      queryClient.invalidateQueries({ queryKey: ['facility', 'my-bookings'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.bookings._def })
+      queryClient.invalidateQueries({ queryKey: facilityQueries.myBookings().queryKey })
     },
   })
 }
@@ -314,8 +319,9 @@ export const useAdminPolicies = (page = 0): UseQueryResult<AdminPolicyPage, Erro
 
 /** 정책 변경은 사용자 화면의 목록·추천·지역 비교에 모두 영향을 준다. */
 const invalidatePolicyViews = (queryClient: ReturnType<typeof useQueryClient>): void => {
-  queryClient.invalidateQueries({ queryKey: ['admin', 'policies'] })
-  queryClient.invalidateQueries({ queryKey: ['policy'] })
+  queryClient.invalidateQueries({ queryKey: adminQueries.policies._def })
+  queryClient.invalidateQueries({ queryKey: adminQueries.verificationStatus().queryKey })
+  queryClient.invalidateQueries({ queryKey: policyQueryKeys._def })
 }
 
 export const useCreateAdminPolicy = (): UseMutationResult<
@@ -370,8 +376,8 @@ export const useDeleteAdminHospital = (): UseMutationResult<void, Error, number>
   return useMutation({
     mutationFn: deleteAdminHospital,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'hospitals'] })
-      queryClient.invalidateQueries({ queryKey: ['hospital'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.hospitals._def })
+      queryClient.invalidateQueries({ queryKey: hospitalQueries._def })
     },
   })
 }
@@ -387,8 +393,8 @@ export const useDeleteAdminHealthRecord = (): UseMutationResult<void, Error, num
   return useMutation({
     mutationFn: deleteAdminHealthRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'health-records'] })
-      queryClient.invalidateQueries({ queryKey: ['health'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.healthRecords._def })
+      queryClient.invalidateQueries({ queryKey: healthQueries._def })
     },
   })
 }
@@ -408,7 +414,7 @@ export const useCreateAdminNotification = (): UseMutationResult<
   return useMutation({
     mutationFn: postAdminNotification,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'notifications'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.notifications._def })
     },
   })
 }
@@ -419,7 +425,7 @@ export const useDeleteAdminNotification = (): UseMutationResult<void, Error, num
   return useMutation({
     mutationFn: deleteAdminNotification,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'notifications'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.notifications._def })
     },
   })
 }
@@ -451,9 +457,9 @@ export const useResolveReport = (): UseMutationResult<
   return useMutation({
     mutationFn: ({ reportId, status, note }) => patchReportStatus(reportId, status, note),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'reports'] })
+      queryClient.invalidateQueries({ queryKey: adminQueries.reports._def })
       // 처리 결과에 따라 게시글이 숨겨지므로 커뮤니티 목록도 다시 받는다.
-      queryClient.invalidateQueries({ queryKey: ['community'] })
+      queryClient.invalidateQueries({ queryKey: communityQueries._def })
     },
   })
 }

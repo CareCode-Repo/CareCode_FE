@@ -18,40 +18,17 @@ export const postChatMessageResponseSchema = z.object({
   timestamp: z.string(),
   // suggestion: z.array(z.string()),
   // relatedTopics: z.array(z.string()),
-  // sessionId: z.string(),
-  // createdAt: z.string(),
 })
 export type PostChatMessageResponse = z.infer<typeof postChatMessageResponseSchema>
 
-// /chatbot/history 해당 세션의 챗봇 메세지 기록 조회
-export const getChatMessagesQuerySchema = z.object({
-  userId: z.string(),
-  sessionId: z.string().optional(),
-  page: z.string().optional(),
-  size: z.string().optional(),
-})
-export type GetChatMessagesQuery = z.infer<typeof getChatMessagesQuerySchema>
-export const getChatMessagesResponseSchema = z.object({
-  success: z.boolean(),
-  content: z.object({
-    messageId: z.number(),
-    userMessage: z.string(),
-    botResponse: z.string(),
-    confidence: z.number(),
-    isHelpful: z.boolean(),
-    sessionId: z.string(),
-    createAt: z.string(),
-    page: z.number(),
-    size: z.number(),
-    totalElements: z.number(),
-    totalPages: z.number(),
-  }),
-})
-export type GetChatMessagesResponse = z.infer<typeof getChatMessagesResponseSchema>
-
-// /chatbot/history 해당 세션의 챗봇 메세지 기록 조회
+/**
+ * GET /chatbot/history — 대화 기록.
+ *
+ * 사용자는 서버가 토큰에서 꺼내 쓴다(`currentUserFacade.requireCurrentUserId()`).
+ * 예전에는 `userId` 를 쿼리로 보냈지만 서버는 그 값을 읽지 않는다.
+ * 응답도 `{ success, content }` 래퍼가 아니라 **배열**이다.
+ */
 export const getChatHistoryQuerySchema = z.object({
-  userId: z.string(),
   sessionId: z.string().optional(),
   page: z.number().optional(),
   size: z.number().optional(),
@@ -65,15 +42,17 @@ export const getChatHistoryResponseSchema = z.object({
   intentType: z.string(),
   confidence: z.number(),
   sessionId: z.string(),
-  isHelpful: z.boolean(),
+  // 사용자가 아직 도움 여부를 남기지 않으면 null 이다.
+  isHelpful: z.boolean().nullish(),
   createdAt: z.string(),
 })
-export const GetChatHistoryResponseSchema = z.array(getChatHistoryResponseSchema)
-export type GetChatHistoryResponse = z.infer<typeof getChatHistoryResponseSchema>
+export type ChatHistoryItem = z.infer<typeof getChatHistoryResponseSchema>
+export const getChatHistoryListSchema = z.array(getChatHistoryResponseSchema)
+export type GetChatHistoryResponse = z.infer<typeof getChatHistoryListSchema>
 
 // /chatbot/sessions 챗봇 대화 리스트 가져오기
+/** 사용자는 서버가 토큰에서 꺼낸다. 여기에 userId 를 넣어도 무시된다. */
 export const getChatSessionsQuerySchema = z.object({
-  userId: z.string(),
   page: z.number().optional(),
   size: z.number().optional(),
 })
@@ -86,14 +65,6 @@ export const sessionResponseSchema = z.object({
   messageCount: z.number(),
   lastActivityAt: z.string(),
   createdAt: z.string(),
-  // sessionId: z.string(),
-  // userId: z.string(),
-  // title: z.string(),
-  // description: z.string(),
-  // status: z.string(),
-  // messageCount: z.number(),
-  // lastActivityAt: z.string(),
-  // createAt: z.string(),
 })
 export const getChatSessionsResponseSchema = z.array(sessionResponseSchema)
 export type GetChatSessionsResponse = z.infer<typeof getChatSessionsResponseSchema>

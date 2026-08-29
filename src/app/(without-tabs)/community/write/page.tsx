@@ -15,8 +15,7 @@ const PostAdd = (): JSX.Element => {
   const [content, setContent] = useState<Post['content']>('')
 
   const handleAddButton = () => {
-    console.log('Add Post Button Pressed')
-    if (!title || !content) return alert('제목과 내용을 입력해주세요.')
+    if (!title.trim() || !content.trim()) return
     addPost({ title, content } as PostCommunityPostBody, {
       onSuccess: () => router.back(),
       onError: (err) => {
@@ -25,7 +24,7 @@ const PostAdd = (): JSX.Element => {
     })
   }
   return (
-    <div className="relative flex h-screen flex-col bg-white text-black">
+    <div className="relative flex h-full flex-col bg-white text-black">
       {isPending && <Loading />}
 
       <TopNavBar title="커뮤니티" hasBackButton isSticky={true} />
@@ -47,7 +46,12 @@ const PostAdd = (): JSX.Element => {
           className="text-b1-regular scrollbar-hide w-full flex-1 resize-none rounded-lg border border-gray-500 p-3 whitespace-pre-wrap !outline-none focus:border-gray-800"
           disabled={isPending}
         />
-        <Button color={'green'} onClick={handleAddButton} disabled={isPending}>
+        <Button
+          color={'green'}
+          onClick={handleAddButton}
+          // 눌러도 아무 일이 없는 것보다 왜 못 누르는지 보이는 편이 낫다.
+          disabled={isPending || !title.trim() || !content.trim()}
+        >
           등록하기
         </Button>
       </div>

@@ -14,6 +14,15 @@ const COLORS = {
 type HttpMethod = keyof typeof COLORS // "GET" | "POST" | "PUT" | "DELETE" | "RESET" | ...
 
 /**
+ * 토큰은 붙었는지 여부만 알면 된다.
+ * 전문을 찍으면 화면 공유·녹화·스크린샷에 그대로 남는다.
+ */
+const maskToken = (authorization: unknown): string => {
+  if (typeof authorization !== 'string' || !authorization) return '(none)'
+  return `${authorization.slice(0, 13)}…(${authorization.length})`
+}
+
+/**
  * HTTP 요청 정보를 콘솔에 출력하는 함수
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +36,7 @@ export const printRequestConsole = (config: { [key: string]: any }): void => {
     - URL    : ${config.baseURL}${config.url}
     - Data   : ${JSON.stringify(config.data, null, 2)}
     - Params : ${JSON.stringify(config.params, null, 2)}
-    - Header :  ${config.headers.Authorization}
+    - Auth   : ${maskToken(config.headers?.Authorization)}
     =================================
   `)
 }

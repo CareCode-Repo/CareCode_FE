@@ -2,7 +2,6 @@
 import { useParams, useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
 import { getAccessToken } from '@/apis/auth'
-import StarIcon from '@/assets/icons/star_small.svg'
 import Chip from '@/components/common/Chip'
 import DescriptionItem from '@/components/common/DescriptionItem'
 import EmptyState from '@/components/common/EmptyState'
@@ -10,14 +9,17 @@ import ErrorView from '@/components/common/Error'
 import Layout from '@/components/common/Layout'
 import Separator from '@/components/common/Separator'
 import ReviewForm from '@/components/features/facility/ReviewForm'
+import ReviewItem from '@/components/features/facility/ReviewItem'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 import {
   useCreateHospitalReview,
+  useDeleteHospitalReview,
+  useUpdateHospitalReview,
   useHospitalDetail,
   useHospitalLikeStatus,
   useHospitalReviews,
   useToggleHospitalLike,
 } from '@/queries/hospital'
-import { formatDate } from '@/utils/date'
 
 const HospitalDetailPage = (): ReactElement => {
   const params = useParams<{ id: string }>()
@@ -27,9 +29,12 @@ const HospitalDetailPage = (): ReactElement => {
   const { data: hospital, isLoading, isError, refetch } = useHospitalDetail(hospitalId)
   // 찜 여부는 서버가 알려준다. 로컬 state 로 두면 새로고침마다 초기화된다.
   const { data: likeStatus } = useHospitalLikeStatus(hospitalId)
+  const { dbId } = useCurrentUser()
   const { data: reviews = [], isLoading: isReviewLoading } = useHospitalReviews(hospitalId)
   const { mutate: toggleLike, isPending: isTogglingLike } = useToggleHospitalLike(hospitalId)
   const { mutate: createReview, isPending: isReviewPending } = useCreateHospitalReview(hospitalId)
+  const { mutate: updateReview, isPending: isUpdatingReview } = useUpdateHospitalReview(hospitalId)
+  const { mutate: removeReview } = useDeleteHospitalReview(hospitalId)
 
   const liked = likeStatus?.liked ?? false
   const likeCount = likeStatus?.likeCount ?? 0
@@ -109,32 +114,26 @@ const HospitalDetailPage = (): ReactElement => {
               />
             ) : (
               <ul className="flex flex-col gap-3">
-                {reviews.map((review) => (
-                  <li
-                    key={review.id}
-                    className="flex flex-col gap-1.5 rounded-lg border border-gray-200 bg-white p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <StarIcon className="fill-yellow size-4" aria-hidden />
-                        <span className="text-b1-semibold text-gray-800">
-                          {review.rating ?? '-'}
-                        </span>
-                        {review.userName && (
-                          <span className="text-c1-regular pl-2 text-gray-500">
-                            {review.userName}
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-c1-regular text-gray-500">
-                        {formatDate(review.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-b1-regular whitespace-pre-line text-gray-700">
-                      {review.content}
-                    </p>
-                  </li>
-                ))}
+                {reviews.map((review) => {
+                  // 본인 리뷰에만 수정·삭제를 준다. 실제 통제는 서버가 한다.
+                  // 병원 리뷰의 userId 는 DB id 다 (HospitalReviewMapper: getUser().getId()).
+                  const isMine = review.userId != null && String(review.userId) === dbId
+
+                  return (
+                    <ReviewItem
+                      key={review.id}
+                      rating={review.rating}
+                      content={review.content}
+                      createdAt={review.createdAt}
+                      authorName={review.userName}
+                      isSaving={isUpdatingReview}
+                      onEdit={
+                        isMine ? (body) => updateReview({ reviewId: review.id, body }) : undefined
+                      }
+                      onDelete={isMine ? () => removeReview(review.id) : undefined}
+                    />
+                  )
+                })}
               </ul>
             )}
 

@@ -8,7 +8,6 @@ import {
 } from '@tanstack/react-query'
 import { getAccessToken } from '@/apis/auth'
 import {
-  getNotificationById,
   getNotificationChannels,
   getNotificationList,
   getNotificationPreferences,
@@ -17,14 +16,13 @@ import {
   putDisableAllNotifications,
   putNotificationChannel,
   postPushToken,
+  deleteNotification,
   putNotificationToRead,
   putResetNotificationPreferences,
   trackNotificationOpen,
 } from '@/apis/notification'
 import { requestPushToken } from '@/apis/push'
 import {
-  GetNotificationByIdPath,
-  GetNotificationByIdResponse,
   GetNotificationChannelsResponse,
   GetNotificationPreferencesResponse,
   GetNotificationsResponse,
@@ -41,11 +39,6 @@ export const notificationQueries = createQueryKeys('notification', {
   unread: () => ({
     queryKey: ['unread'],
     queryFn: getUnreadNotifications,
-  }),
-
-  detail: (notificationId: GetNotificationByIdPath['notificationId']) => ({
-    queryKey: ['detail', notificationId],
-    queryFn: () => getNotificationById({ notificationId }),
   }),
 
   preferences: () => ({
@@ -65,13 +58,16 @@ export const useNotifications = (): UseQueryResult<GetNotificationsResponse, Err
 export const useUnreadNotifications = (): UseQueryResult<GetNotificationsResponse, Error> =>
   useQuery({ ...notificationQueries.unread(), enabled: !!getAccessToken() })
 
-export const useNotificationDetail = (
-  notificationId: number,
-): UseQueryResult<GetNotificationByIdResponse, Error> =>
-  useQuery({
-    ...notificationQueries.detail(notificationId),
-    enabled: Number.isFinite(notificationId) && notificationId > 0,
-  })
+/**
+ * 종 아이콘에 표시할 안 읽음 여부.
+ *
+ * 여러 화면의 상단바가 같은 쿼리를 쓰지만 키가 같아 요청은 한 번만 나간다.
+ * 이게 없으면 알림이 도착해도 알림함에 들어가 보기 전까지 알 수 없다.
+ */
+export const useHasUnreadNotifications = (): boolean => {
+  const { data = [] } = useUnreadNotifications()
+  return data.length > 0
+}
 
 export const useNotificationPreferences = (): UseQueryResult<
   GetNotificationPreferencesResponse,
@@ -151,7 +147,7 @@ export const useResetNotificationPreferences = (): UseMutationResult<void, Error
 
 /** 알림 목록과 미읽음 배지를 함께 갱신한다. */
 const invalidateNotifications = (queryClient: ReturnType<typeof useQueryClient>): void => {
-  queryClient.invalidateQueries({ queryKey: ['notification'] })
+  queryClient.invalidateQueries({ queryKey: notificationQueries._def })
 }
 
 /**
@@ -174,6 +170,16 @@ export const useMarkNotificationRead = (): UseMutationResult<void, Error, number
 
   return useMutation({
     mutationFn: (notificationId: number) => putNotificationToRead({ notificationId }),
+    onSuccess: () => invalidateNotifications(queryClient),
+  })
+}
+
+/** 알림함에서 한 건만 지운다. 읽음 처리와 달리 되돌릴 수 없다. */
+export const useDeleteNotification = (): UseMutationResult<void, Error, number> => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: deleteNotification,
     onSuccess: () => invalidateNotifications(queryClient),
   })
 }

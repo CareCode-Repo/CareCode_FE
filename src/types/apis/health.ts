@@ -113,6 +113,20 @@ export const getAttachmentId = (attachment: Attachment): number =>
 // ==================== 알림 / 통계 ====================
 
 // 서버 HealthAlertResponse 대응
+/**
+ * GET /health/recommendations — 아이 월령 기준 넛지.
+ *
+ * 추천 정책·시설은 **이름 문자열만** 온다(id 가 없다). 상세로 바로 보낼 수 없으므로
+ * 화면에서는 검색 지름길로 쓴다.
+ */
+export const healthRecommendationSchema = z.object({
+  nudgeMessage: z.string().nullish(),
+  childAge: z.number().nullish(),
+  recommendedPolicies: z.array(z.string()).nullish(),
+  recommendedFacilities: z.array(z.string()).nullish(),
+})
+export type HealthRecommendation = z.infer<typeof healthRecommendationSchema>
+
 export const healthAlertSchema = z.object({
   alertId: z.string().nullish(),
   alertType: z.string().nullish(),

@@ -8,11 +8,17 @@ import EmptyState from '@/components/common/EmptyState'
 import Layout from '@/components/common/Layout'
 import PostListItem from '@/components/features/community/PostListItem'
 import { useBookmarkedPosts, useLikedPosts } from '@/queries/community'
+import { usePolicyBookmarks } from '@/queries/policy'
 import { PostListItem as Post } from '@/types/apis/community'
+import { PolicyBookmark } from '@/types/apis/policy'
+import { formatDate } from '@/utils/date'
 
 const TABS = [
   { value: 'liked', label: '좋아요한 글' },
-  { value: 'bookmarked', label: '북마크' },
+  { value: 'bookmarked', label: '북마크한 글' },
+  // 지원금 북마크는 커뮤니티 글과 다른 도메인이지만, 사용자에게는 "내가 저장해 둔 것"으로
+  // 한 자리에 있는 편이 찾기 쉽다.
+  { value: 'policies', label: '지원금' },
 ] as const
 
 const PostSection = ({
@@ -53,12 +59,68 @@ const PostSection = ({
   )
 }
 
+const PolicyBookmarkSection = ({
+  bookmarks,
+  isLoading,
+}: {
+  bookmarks: PolicyBookmark[]
+  isLoading: boolean
+}): ReactElement => {
+  const router = useRouter()
+
+  if (isLoading) {
+    return (
+      <ul className="flex flex-col gap-3">
+        {[0, 1, 2].map((i) => (
+          <li key={i} className="h-20 animate-pulse rounded-lg bg-gray-200" />
+        ))}
+      </ul>
+    )
+  }
+
+  if (!bookmarks.length) {
+    return (
+      <EmptyState
+        title="북마크한 지원금이 없어요"
+        description={'놓치고 싶지 않은 지원금을 북마크해두면\n여기에서 다시 볼 수 있어요.'}
+        actionLabel="지원금 찾아보기"
+        onAction={() => router.push('/search')}
+      />
+    )
+  }
+
+  return (
+    <ul className="flex flex-col gap-3">
+      {bookmarks.map((bookmark) => (
+        <li key={bookmark.policyId}>
+          <button
+            type="button"
+            onClick={() => router.push(`/policy/${bookmark.policyId}`)}
+            className="flex w-full flex-col gap-1 rounded-lg border border-gray-200 bg-white p-4 text-left focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+          >
+            <span className="text-b1-semibold line-clamp-2 text-gray-800">
+              {bookmark.title ?? '제목 없음'}
+            </span>
+            <span className="text-c1-regular text-gray-500">
+              {[bookmark.category, formatDate(bookmark.bookmarkedAt)].filter(Boolean).join(' · ')}
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 const ActivityContent = (): ReactElement => {
   const searchParams = useSearchParams()
-  const defaultTab = searchParams?.get('tab') === 'bookmarked' ? 'bookmarked' : 'liked'
+  const requestedTab = searchParams?.get('tab')
+  const defaultTab = TABS.some((tab) => tab.value === requestedTab)
+    ? (requestedTab as (typeof TABS)[number]['value'])
+    : 'liked'
 
   const { data: liked = [], isLoading: isLikedLoading } = useLikedPosts()
   const { data: bookmarked = [], isLoading: isBookmarkedLoading } = useBookmarkedPosts()
+  const { data: policyBookmarks = [], isLoading: isPolicyLoading } = usePolicyBookmarks()
 
   return (
     <Tabs.Root defaultValue={defaultTab} className="flex grow flex-col">
@@ -93,6 +155,10 @@ const ActivityContent = (): ReactElement => {
           emptyTitle="북마크한 글이 없어요"
           emptyDescription="나중에 다시 볼 글을 북마크해두세요."
         />
+      </Tabs.Content>
+
+      <Tabs.Content value="policies" className="px-4.5 py-5">
+        <PolicyBookmarkSection bookmarks={policyBookmarks} isLoading={isPolicyLoading} />
       </Tabs.Content>
     </Tabs.Root>
   )

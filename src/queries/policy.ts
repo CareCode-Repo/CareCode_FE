@@ -15,8 +15,10 @@ import {
   getBenefitAmountConsensus,
   getMissedBenefits,
   getPolicyBookmarks,
-  getPolicyList,
   getLatestPolicies,
+  getPoliciesByCategory,
+  getPolicyCategories,
+  getPopularPolicies,
   getPolicyRecommendations,
   getRegionalComparison,
   postBenefitAmountReport,
@@ -27,9 +29,8 @@ import {
 import {
   BenefitAmountConsensus,
   BenefitAmountReportBody,
-  GetPolicyListQuery,
-  GetPolicyListResponse,
   GetLatestPoliciesResponse,
+  PolicyCategoryList,
   MissedBenefitSummary,
   PersonalizedPolicy,
   PolicyBookmark,
@@ -41,9 +42,11 @@ import {
 } from '@/types/apis/policy'
 
 export const policyQueryKeys = createQueryKeys('policy', {
-  list: (query?: GetPolicyListQuery) => [query],
   detail: (id: number) => [id],
   latest: () => ['latest'],
+  categories: () => ['categories'],
+  byCategory: (category: string) => ['category', category],
+  popular: () => ['popular'],
   search: (searchParams: Omit<PolicySearchRequestDto, 'page' | 'size'>) => [searchParams],
   recommendations: (limit: number) => ['recommendations', limit],
   missedBenefits: () => ['missed-benefits'],
@@ -51,6 +54,30 @@ export const policyQueryKeys = createQueryKeys('policy', {
   bookmarks: () => ['bookmarks'],
   amountConsensus: (policyId: number) => ['amount-consensus', policyId],
 })
+
+/** 정책 카테고리 목록. 자주 바뀌지 않으므로 오래 신선하게 둔다. */
+export const usePolicyCategories = (): UseQueryResult<PolicyCategoryList, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.categories().queryKey,
+    queryFn: getPolicyCategories,
+    staleTime: 1000 * 60 * 60,
+  })
+
+export const usePoliciesByCategory = (
+  category: string,
+): UseQueryResult<GetLatestPoliciesResponse, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.byCategory(category).queryKey,
+    queryFn: () => getPoliciesByCategory(category),
+    enabled: !!category,
+  })
+
+export const usePopularPolicies = (): UseQueryResult<GetLatestPoliciesResponse, Error> =>
+  useQuery({
+    queryKey: policyQueryKeys.popular().queryKey,
+    queryFn: getPopularPolicies,
+    staleTime: 1000 * 60 * 10,
+  })
 
 export const useBenefitAmountConsensus = (
   policyId: number,
@@ -76,19 +103,9 @@ export const useReportBenefitAmount = (
       queryClient.setQueryData(policyQueryKeys.amountConsensus(policyId).queryKey, consensus)
       // 합의가 확정되면 정책 금액이 채워지므로 상세·목록도 다시 받는다.
       if (consensus.confirmed) {
-        queryClient.invalidateQueries({ queryKey: ['policy'] })
+        queryClient.invalidateQueries({ queryKey: policyQueryKeys._def })
       }
     },
-  })
-}
-
-export const useGetPolicyList = (
-  query?: GetPolicyListQuery,
-): UseQueryResult<GetPolicyListResponse, Error> => {
-  return useQuery({
-    queryKey: policyQueryKeys.list(query).queryKey,
-    queryFn: () => getPolicyList(query || {}),
-    enabled: true,
   })
 }
 

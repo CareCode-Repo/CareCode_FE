@@ -70,16 +70,6 @@ export const policyListItemSchema = policySchema.pick({
 export type PolicyListItem = z.infer<typeof policyListItemSchema>
 
 // /policies
-export const getPolicyListQuerySchema = z.object({
-  category: z.string().optional(),
-  region: z.string().optional(),
-  page: z.number().optional(),
-  size: z.number().optional(),
-})
-export type GetPolicyListQuery = z.infer<typeof getPolicyListQuerySchema>
-export const getPolicyListResponseSchema = z.array(policyListItemSchema)
-export type GetPolicyListResponse = z.infer<typeof getPolicyListResponseSchema>
-
 // /policies/{policyId}
 export const getPolicyByIdPathSchema = z.object({
   policyId: z.number(),
@@ -89,6 +79,10 @@ export const getPolicyByIdResponseSchema = policySchema
 export type GetPolicyByIdResponse = z.infer<typeof getPolicyByIdResponseSchema>
 
 // /policies/latest
+/** GET /policies/categories — 카테고리 이름 목록 */
+export const policyCategoryListSchema = z.array(z.string())
+export type PolicyCategoryList = z.infer<typeof policyCategoryListSchema>
+
 export const getLatestPoliciesResponseSchema = z.array(policySchema)
 export type GetLatestPoliciesResponse = z.infer<typeof getLatestPoliciesResponseSchema>
 

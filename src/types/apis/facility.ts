@@ -82,12 +82,6 @@ export const getFacilitiesInRadiusQuerySchema = z.object({
 })
 export type GetFacilitiesInRadiusQuery = z.infer<typeof getFacilitiesInRadiusQuerySchema>
 
-// GET /facilities/keyword
-export const getFacilitiesByKeywordQuerySchema = z.object({
-  keyword: z.string().min(1),
-})
-export type GetFacilitiesByKeywordQuery = z.infer<typeof getFacilitiesByKeywordQuerySchema>
-
 // POST /facilities/search - 서버 CareFacilitySearchRequest 대응
 export const postFacilitiesSearchBodySchema = z.object({
   keyword: z.string().optional(),
