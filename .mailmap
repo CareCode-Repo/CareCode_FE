@@ -6,9 +6,10 @@
 # 형식: 정본이름 <정본이메일> [커밋에찍힌이름] <커밋에찍힌이메일>
 
 # RosieOh — 로컬 git 설정과 GitHub noreply 가 섞여 네 갈래로 갈라져 있었다
+# 이메일 비공개(Block command line pushes) 이후 새 커밋은 noreply 로 찍히므로 이름 무관하게 이메일로 묶는다
 RosieOh <dhxogns920@gmail.com> thoh <thoh@soundmind.life>
 RosieOh <dhxogns920@gmail.com> <20172207@gm.hannam.ac.kr>
-RosieOh <dhxogns920@gmail.com> TaehunOh <104690434+RosieOh@users.noreply.github.com>
+RosieOh <dhxogns920@gmail.com> <104690434+RosieOh@users.noreply.github.com>
 
 # bona1122 — 개인 메일과 GitHub noreply
 bona1122 <vnclfjqm12@gmail.com> <130641796+bona1122@users.noreply.github.com>
