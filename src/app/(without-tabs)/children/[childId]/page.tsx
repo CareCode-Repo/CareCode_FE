@@ -80,13 +80,22 @@ const ChildDetailPage = (): ReactElement => {
               </span>
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => setDeleteDialogOpen(true)}
-            className="text-b2-regular text-gray-500 underline"
-          >
-            삭제
-          </button>
+          <div className="flex shrink-0 items-center gap-3">
+            <button
+              type="button"
+              onClick={() => router.push(`/children/${childId}/edit`)}
+              className="text-b2-regular rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+            >
+              수정
+            </button>
+            <button
+              type="button"
+              onClick={() => setDeleteDialogOpen(true)}
+              className="text-b2-regular rounded text-gray-500 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+            >
+              삭제
+            </button>
+          </div>
         </section>
 
         <Tabs.Root defaultValue="vaccination" className="flex grow flex-col">

@@ -16,6 +16,7 @@ import {
   policyVerificationStatusSchema,
   retentionSchema,
 } from '@/types/apis/admin'
+import { postLoginResponseSchema, postRefreshTokenResponseSchema } from '@/types/apis/auth'
 import {
   childSchema,
   growthPointSchema,
@@ -50,6 +51,7 @@ import {
   regionalComparisonSchema,
 } from '@/types/apis/policy'
 import { consentStatusResponseSchema } from '@/types/apis/privacy'
+import { getProfileCompletionResponseSchema } from '@/types/apis/user'
 import { userSchema } from '@/types/apis/user'
 import {
   admissionForecastSchema,
@@ -150,6 +152,140 @@ describe('userSchema (UserDto)', () => {
 
   it('password 는 응답에 없다 (WRITE_ONLY) — 없어도 통과해야 한다', () => {
     expect(() => userSchema.parse({ id: 1, userId: 'u1' })).not.toThrow()
+  })
+})
+
+describe('postLoginResponseSchema (TokenDto)', () => {
+  /**
+   * POST /auth/login 이 실제로 돌려준 응답을 그대로 옮긴 픽스처.
+   * 서버는 DTO 에 선언된 최상위 userId/email/role 을 채우지 않는다
+   * (AuthServiceImpl.issueTokenForUser 가 .user(...) 만 세팅한다).
+   */
+  const LOGIN_RESPONSE = {
+    accessToken: 'eyJhbGciOiJIUzI1NiJ9.access',
+    refreshToken: 'eyJhbGciOiJIUzI1NiJ9.refresh',
+    tokenType: 'Bearer',
+    expiresIn: 3600000,
+    refreshExpiresIn: 2592000000,
+    userId: null,
+    email: null,
+    role: null,
+    success: true,
+    message: '로그인 성공!',
+    user: {
+      id: 2,
+      userId: 'user_1787417490710_394',
+      email: 'dev@carecode.local',
+      name: '개발계정',
+      role: 'PARENT',
+      isActive: true,
+      emailVerified: false,
+      registrationCompleted: false,
+      lastLoginAt: '2026-08-23T01:51:48.9822556',
+      createdAt: '2026-08-23T01:51:30.710671',
+      updatedAt: '2026-08-23T01:51:48.9822556',
+    },
+  }
+
+  it('최상위 userId/email/role 이 null 이어도 통과한다', () => {
+    const parsed = postLoginResponseSchema.parse(LOGIN_RESPONSE)
+
+    expect(parsed.success).toBe(true)
+  })
+
+  it('신원은 중첩된 user 에서 읽는다', () => {
+    const parsed = postLoginResponseSchema.parse(LOGIN_RESPONSE)
+
+    if (!parsed.success) throw new Error('성공 응답이어야 한다')
+    expect(parsed.user.userId).toBe('user_1787417490710_394')
+    expect(parsed.user.role).toBe('PARENT')
+  })
+
+  it('user 가 없으면 실패한다 — 토큰만으로는 누구인지 알 수 없다', () => {
+    const withoutUser: Record<string, unknown> = { ...LOGIN_RESPONSE }
+    delete withoutUser.user
+
+    expect(() => postLoginResponseSchema.parse(withoutUser)).toThrow()
+  })
+})
+
+describe('postRefreshTokenResponseSchema (TokenDto)', () => {
+  /**
+   * POST /auth/refresh 가 실제로 돌려준 응답.
+   *
+   * 이 스키마가 어긋나면 화면에는 아무 표시도 나지 않고 **새로고침할 때마다 로그아웃**된다.
+   * SessionBootstrap 이 파싱 실패를 "세션 만료" 로 보고 clearTokens() 를 부르기 때문이다.
+   */
+  const REFRESH_RESPONSE = {
+    accessToken: 'eyJhbGciOiJIUzI1NiJ9.new-access',
+    refreshToken: 'eyJhbGciOiJIUzI1NiJ9.new-refresh',
+    tokenType: 'Bearer',
+    expiresIn: 3600000,
+    refreshExpiresIn: 2592000000,
+    userId: null,
+    email: null,
+    role: null,
+    success: true,
+    message: '토큰 갱신 성공!',
+    user: {
+      id: 2,
+      userId: 'user_1787417490710_394',
+      email: 'dev@carecode.local',
+      name: '개발계정',
+      role: 'PARENT',
+    },
+    isNewUser: null,
+  }
+
+  it('최상위 userId 가 null 이어도 통과한다 — 신원은 user 에 있다', () => {
+    const parsed = postRefreshTokenResponseSchema.parse(REFRESH_RESPONSE)
+
+    expect(parsed.accessToken).toBe('eyJhbGciOiJIUzI1NiJ9.new-access')
+    expect(parsed.user.userId).toBe('user_1787417490710_394')
+  })
+
+  it('expiresIn 은 밀리초다 — 초로 오해하면 자동 갱신 타이머가 즉시 돈다', () => {
+    const parsed = postRefreshTokenResponseSchema.parse(REFRESH_RESPONSE)
+
+    expect(parsed.expiresIn).toBeGreaterThan(60_000)
+  })
+})
+
+describe('getProfileCompletionResponseSchema (UserProfileCompletionResponse)', () => {
+  /**
+   * GET /users/profile/completion 이 실제로 돌려준 응답.
+   * `missingFields` 는 문자열 배열이 아니라 **불리언 맵**이고, 완성 여부 키는 `complete` 다.
+   */
+  const COMPLETION_RESPONSE = {
+    completionPercentage: 20,
+    message: '프로필 완성도: 20% (4개 항목 추가 필요)',
+    missingFields: {
+      needsRealName: false,
+      needsPhoneNumber: true,
+      needsBirthDate: true,
+      needsGender: true,
+      needsAddress: true,
+    },
+    completedFields: 0,
+    totalFields: 0,
+    complete: false,
+  }
+
+  it('불리언 맵으로 온 missingFields 를 그대로 읽는다', () => {
+    const parsed = getProfileCompletionResponseSchema.parse(COMPLETION_RESPONSE)
+
+    expect(parsed.completionPercentage).toBe(20)
+    expect(parsed.missingFields?.needsAddress).toBe(true)
+    expect(parsed.missingFields?.needsRealName).toBe(false)
+  })
+
+  it('완성 여부는 complete 로 온다 — 이 키를 놓치면 다 채운 사용자에게도 안내가 뜬다', () => {
+    const parsed = getProfileCompletionResponseSchema.parse({
+      ...COMPLETION_RESPONSE,
+      complete: true,
+    })
+
+    expect(parsed.complete).toBe(true)
   })
 })
 

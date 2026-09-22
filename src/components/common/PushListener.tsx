@@ -2,6 +2,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { ReactNode, useEffect } from 'react'
 import { onForegroundPush } from '@/apis/push'
+import { notificationQueries } from '@/queries/notification'
 
 /**
  * 앱이 열려 있는 동안 도착한 푸시를 화면에 반영한다.
@@ -19,7 +20,7 @@ const PushListener = ({ children }: { children: ReactNode }): ReactNode => {
     let isCancelled = false
 
     onForegroundPush(() => {
-      queryClient.invalidateQueries({ queryKey: ['notification'] })
+      queryClient.invalidateQueries({ queryKey: notificationQueries._def })
     }).then((cleanup) => {
       // 구독이 완료되기 전에 언마운트됐다면 바로 해제한다.
       if (isCancelled) cleanup()

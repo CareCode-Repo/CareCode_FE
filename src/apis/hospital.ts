@@ -42,6 +42,12 @@ export const getHospitalsByType = async (type: string): Promise<Hospital[]> => {
   return hospitalListSchema.parse(res.data)
 }
 
+// GET /health/hospitals/likes - 내가 찜한 병원
+export const getLikedHospitals = async (): Promise<Hospital[]> => {
+  const res = await CareCode.get('/health/hospitals/likes')
+  return hospitalListSchema.parse(res.data)
+}
+
 // GET /health/hospitals/popular
 export const getPopularHospitals = async (limit = 10): Promise<Hospital[]> => {
   const res = await CareCode.get('/health/hospitals/popular', { params: { limit } })

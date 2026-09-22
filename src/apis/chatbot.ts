@@ -1,9 +1,9 @@
 import { CareCode } from './interceptor'
 import {
-  GetChatMessagesQuery,
-  getChatMessagesQuerySchema,
-  GetChatMessagesResponse,
-  getChatMessagesResponseSchema,
+  GetChatHistoryQuery,
+  getChatHistoryQuerySchema,
+  GetChatHistoryResponse,
+  getChatHistoryListSchema,
   GetChatSessionsQuery,
   getChatSessionsQuerySchema,
   GetChatSessionsResponse,
@@ -22,22 +22,18 @@ export const postChatMessage = async (
   return postChatMessageResponseSchema.parse(res.data)
 }
 
-export const getChatMessages = async (
-  query: GetChatMessagesQuery,
-): Promise<GetChatMessagesResponse> => {
-  const parsedQuery = getChatMessagesQuerySchema.parse(query)
-  const res = await CareCode.get(`/chatbot/history`, {
-    params: parsedQuery,
-  })
-  return getChatMessagesResponseSchema.parse(res.data)
+export const getChatHistory = async (
+  query: GetChatHistoryQuery = {},
+): Promise<GetChatHistoryResponse> => {
+  const parsedQuery = getChatHistoryQuerySchema.parse(query)
+  const res = await CareCode.get('/chatbot/history', { params: parsedQuery })
+  return getChatHistoryListSchema.parse(res.data)
 }
 
 export const getChatSessions = async (
-  query: GetChatSessionsQuery,
+  query: GetChatSessionsQuery = {},
 ): Promise<GetChatSessionsResponse> => {
   const parsedQuery = getChatSessionsQuerySchema.parse(query)
-  const res = await CareCode.get('/chatbot/sessions', {
-    params: parsedQuery,
-  })
+  const res = await CareCode.get('/chatbot/sessions', { params: parsedQuery })
   return getChatSessionsResponseSchema.parse(res.data)
 }

@@ -57,7 +57,9 @@ const redirectToLogin = (): void => {
 // 401 발생 시 refresh + 재시도
 CareCode.interceptors.response.use(
   (res: AxiosResponse) => {
-    printResponseConsole(res)
+    // 요청·에러와 마찬가지로 개발 환경에서만 찍는다.
+    // 이 앱은 건강기록·개인정보를 다루므로 응답 본문이 프로덕션 콘솔에 남으면 안 된다.
+    if (isDevelopment) printResponseConsole(res)
     return res
   },
   async (error) => {

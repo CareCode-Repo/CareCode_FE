@@ -16,7 +16,6 @@ export interface ChatStore {
 
 export type SendMessageOptions = {
   message: string
-  userId: string
 }
 
 export interface UseChatMessagesReturn {

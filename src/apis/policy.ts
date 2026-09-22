@@ -1,15 +1,13 @@
 import { CareCode } from '@/apis/interceptor'
 import {
-  GetPolicyListQuery,
-  getPolicyListQuerySchema,
-  getPolicyListResponseSchema,
   GetPolicyByIdPath,
   getPolicyByIdPathSchema,
   getPolicyByIdResponseSchema,
   GetPolicyByIdResponse,
-  GetPolicyListResponse,
   getLatestPoliciesResponseSchema,
   GetLatestPoliciesResponse,
+  PolicyCategoryList,
+  policyCategoryListSchema,
   PolicySearchRequestDto,
   policySearchRequestSchema,
   PolicySearchResponseDto,
@@ -31,12 +29,6 @@ import {
   benefitAmountReportBodySchema,
 } from '@/types/apis/policy'
 
-export const getPolicyList = async (query: GetPolicyListQuery): Promise<GetPolicyListResponse> => {
-  const parsedQuery = getPolicyListQuerySchema.parse(query)
-  const res = await CareCode.get('/policies', { params: parsedQuery })
-  return getPolicyListResponseSchema.parse(res.data)
-}
-
 export const getPolicyById = async (path: GetPolicyByIdPath): Promise<GetPolicyByIdResponse> => {
   const parsedPath = getPolicyByIdPathSchema.parse(path)
   const res = await CareCode.get(`/policies/${parsedPath.policyId}`)
@@ -45,6 +37,26 @@ export const getPolicyById = async (path: GetPolicyByIdPath): Promise<GetPolicyB
 
 export const getLatestPolicies = async (): Promise<GetLatestPoliciesResponse> => {
   const res = await CareCode.get('/policies/latest')
+  return getLatestPoliciesResponseSchema.parse(res.data)
+}
+
+// GET /policies/categories - 카테고리 이름 목록
+export const getPolicyCategories = async (): Promise<PolicyCategoryList> => {
+  const res = await CareCode.get('/policies/categories')
+  return policyCategoryListSchema.parse(res.data)
+}
+
+// GET /policies/category/{category} - 그 카테고리의 정책 목록
+export const getPoliciesByCategory = async (
+  category: string,
+): Promise<GetLatestPoliciesResponse> => {
+  const res = await CareCode.get(`/policies/category/${encodeURIComponent(category)}`)
+  return getLatestPoliciesResponseSchema.parse(res.data)
+}
+
+// GET /policies/popular - 조회수 기준 인기 정책
+export const getPopularPolicies = async (): Promise<GetLatestPoliciesResponse> => {
+  const res = await CareCode.get('/policies/popular')
   return getLatestPoliciesResponseSchema.parse(res.data)
 }
 

@@ -9,14 +9,16 @@ import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
 import ToggleChip from '@/components/common/ToggleChip'
 import Input from '@/components/common/input'
+import PopularSection from '@/components/features/facility/PopularSection'
 import { useGeolocation } from '@/hooks/useGeolocation'
-import { useHospitals, useNearbyHospitals } from '@/queries/hospital'
+import { useHospitals, useNearbyHospitals, usePopularHospitals } from '@/queries/hospital'
 import { HOSPITAL_GRADES, HospitalGrade } from '@/types/apis/hospital'
 
 const RADIUS_KM = 3
 
 const HospitalPage = (): ReactElement => {
   const router = useRouter()
+  const { data: popular = [] } = usePopularHospitals()
   const [keyword, setKeyword] = useState('')
   const [nearbyMode, setNearbyMode] = useState(false)
   const [selectedGrade, setSelectedGrade] = useState<HospitalGrade | null>(null)
@@ -57,6 +59,16 @@ const HospitalPage = (): ReactElement => {
 
   return (
     <Layout hasTopNav hasBackButton title="병원 찾기" contentClassName="px-4.5 py-5">
+      <PopularSection
+        title="많이 찾는 병원"
+        items={popular.map((item) => ({
+          id: item.id,
+          name: item.name,
+          subtitle: item.address,
+        }))}
+        onSelect={(id) => router.push(`/hospital/${id}`)}
+      />
+
       <Input
         value={keyword}
         placeholder="병원 이름이나 지역을 검색하세요"

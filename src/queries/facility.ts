@@ -11,7 +11,6 @@ import {
   cancelBooking,
   deleteFacilityReview,
   getFacilities,
-  getFacilitiesByKeyword,
   getFacilitiesByLocation,
   getFacilitiesByType,
   getFacilityById,
@@ -64,11 +63,6 @@ export const facilityQueries = createQueryKeys('facility', {
     queryFn: () => getFacilitiesByLocation({ location }),
   }),
 
-  keyword: (keyword: string) => ({
-    queryKey: ['keyword', keyword],
-    queryFn: () => getFacilitiesByKeyword({ keyword }),
-  }),
-
   search: (body: PostFacilitiesSearchBody) => ({
     queryKey: ['search', body],
     queryFn: () => postSearchFacilities(body),
@@ -101,9 +95,6 @@ export const useFacilitySearch = (
   enabled = true,
 ): UseQueryResult<PostFacilitiesSearchResponse, Error> =>
   useQuery({ ...facilityQueries.search(body), enabled })
-
-export const useFacilitiesByKeyword = (keyword: string): UseQueryResult<Facility[], Error> =>
-  useQuery({ ...facilityQueries.keyword(keyword), enabled: keyword.trim().length > 0 })
 
 /**
  * 조건 기반 고급 검색.

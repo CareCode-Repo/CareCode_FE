@@ -17,7 +17,6 @@ const CommunityPostEdit = (): JSX.Element => {
   const router = useRouter()
 
   const handleEditButton = () => {
-    console.log('Edit Confirm Button Pressed')
     editPost(
       { ...post, title, content },
       {
@@ -31,7 +30,7 @@ const CommunityPostEdit = (): JSX.Element => {
     )
   }
   return (
-    <div className="relative flex h-screen flex-col bg-white text-black">
+    <div className="relative flex h-full flex-col bg-white text-black">
       <header
         id="topNavigator"
         className="sticky top-0 z-1 flex items-center justify-start gap-2.5 bg-white py-3.5 pr-[0.9375rem] pl-5"

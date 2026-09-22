@@ -16,6 +16,7 @@ import {
   getHospitalsByType,
   getNearbyHospitals,
   getPopularHospitals,
+  getLikedHospitals,
   likeHospital,
   postHospitalReview,
   putHospitalReview,
@@ -34,6 +35,11 @@ export const hospitalQueries = createQueryKeys('hospital', {
   list: (page?: number, size?: number) => ({
     queryKey: ['list', { page, size }],
     queryFn: () => getHospitals(page, size),
+  }),
+
+  liked: () => ({
+    queryKey: ['liked'],
+    queryFn: getLikedHospitals,
   }),
 
   popular: (limit: number) => ({
@@ -69,6 +75,10 @@ export const hospitalQueries = createQueryKeys('hospital', {
 
 export const useHospitals = (page?: number, size?: number): UseQueryResult<Hospital[], Error> =>
   useQuery({ ...hospitalQueries.list(page, size) })
+
+/** 내가 찜한 병원. 찜은 걸 수 있는데 모아 볼 곳이 없었다. */
+export const useLikedHospitals = (): UseQueryResult<Hospital[], Error> =>
+  useQuery({ ...hospitalQueries.liked(), enabled: !!getAccessToken() })
 
 export const usePopularHospitals = (limit = 10): UseQueryResult<Hospital[], Error> =>
   useQuery({ ...hospitalQueries.popular(limit) })
@@ -128,7 +138,7 @@ export const useToggleHospitalLike = (
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: statusKey })
-      queryClient.invalidateQueries({ queryKey: ['hospital', 'popular'] })
+      queryClient.invalidateQueries({ queryKey: hospitalQueries.popular._def })
     },
   })
 }

@@ -11,14 +11,14 @@ import { clearTokens, getAccessToken } from '@/apis/auth'
 import {
   getProfileCompletion,
   getUserInfo,
-  patchNickname,
   postLogout,
   putUserInfo,
+  uploadProfileImage,
 } from '@/apis/user'
 import {
   GetProfileCompletionResponse,
   GetUserInfoResponse,
-  PatchNicknameBody,
+  ProfileImageResponse,
   PutUserInfoBody,
   PutUserInfoResponse,
 } from '@/types/apis/user'
@@ -70,17 +70,15 @@ export const useUpdateProfile = (): UseMutationResult<
   })
 }
 
-export const useUpdateNickname = (): UseMutationResult<
-  PutUserInfoResponse,
-  Error,
-  PatchNicknameBody
-> => {
+/** 프로필 이미지 업로드. 성공하면 프로필 캐시를 다시 받아 화면이 곧바로 바뀐다. */
+export const useUploadProfileImage = (): UseMutationResult<ProfileImageResponse, Error, File> => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: patchNickname,
-    onSuccess: (updated) => {
-      queryClient.setQueryData(userQueries.profile().queryKey, updated)
+    mutationFn: uploadProfileImage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userQueries.profile().queryKey })
+      queryClient.invalidateQueries({ queryKey: userQueries.completion().queryKey })
     },
   })
 }

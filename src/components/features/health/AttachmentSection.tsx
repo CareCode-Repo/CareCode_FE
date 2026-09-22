@@ -1,14 +1,19 @@
 'use client'
 import { ReactElement, useRef, useState } from 'react'
+import { downloadAttachment } from '@/apis/health'
 import TrashIcon from '@/assets/icons/trash.svg'
+import AttachmentPreview from '@/components/features/health/AttachmentPreview'
 import { useAttachments, useDeleteAttachment, useUploadAttachment } from '@/queries/health'
 import { getAttachmentId } from '@/types/apis/health'
+import { downloadBlob } from '@/utils/file'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 서버 업로드 제한과 동일
 
 interface AttachmentSectionProps {
   recordId: number
 }
+
+const isImage = (fileType?: string | null): boolean => !!fileType?.startsWith('image/')
 
 const formatFileSize = (bytes?: number | null): string => {
   if (!bytes) return ''
@@ -20,6 +25,7 @@ const formatFileSize = (bytes?: number | null): string => {
 const AttachmentSection = ({ recordId }: AttachmentSectionProps): ReactElement => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [localError, setLocalError] = useState<string | null>(null)
+  const [downloadingId, setDownloadingId] = useState<number | null>(null)
 
   const { data: attachments = [], isLoading } = useAttachments(recordId)
   const {
@@ -28,6 +34,22 @@ const AttachmentSection = ({ recordId }: AttachmentSectionProps): ReactElement =
     isError: isUploadError,
   } = useUploadAttachment(recordId)
   const { mutate: remove } = useDeleteAttachment(recordId)
+
+  /**
+   * 첨부는 인증을 거쳐야 받을 수 있어 주소를 그대로 열 수 없다.
+   * 본문을 받아 blob 으로 저장한다.
+   */
+  const handleDownload = async (attachmentId: number, fileName: string) => {
+    setDownloadingId(attachmentId)
+    setLocalError(null)
+    try {
+      downloadBlob(await downloadAttachment(recordId, attachmentId), fileName)
+    } catch {
+      setLocalError('파일을 받지 못했어요. 잠시 후 다시 시도해주세요.')
+    } finally {
+      setDownloadingId(null)
+    }
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -85,14 +107,22 @@ const AttachmentSection = ({ recordId }: AttachmentSectionProps): ReactElement =
                 key={id}
                 className="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white p-3"
               >
-                <a
-                  href={attachment.fileUrl ?? '#'}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-b1-regular min-w-0 flex-1 truncate text-gray-800 underline"
+                {isImage(attachment.fileType) && (
+                  <AttachmentPreview
+                    recordId={recordId}
+                    attachmentId={id}
+                    fileName={attachment.fileName ?? '첨부파일'}
+                  />
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => handleDownload(id, attachment.fileName ?? '첨부파일')}
+                  disabled={downloadingId === id}
+                  className="text-b1-regular min-w-0 flex-1 truncate text-left text-gray-800 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none disabled:opacity-60"
                 >
-                  {attachment.fileName ?? '첨부파일'}
-                </a>
+                  {downloadingId === id ? '받는 중...' : (attachment.fileName ?? '첨부파일')}
+                </button>
                 <span className="text-c1-regular shrink-0 text-gray-500">
                   {formatFileSize(attachment.fileSize)}
                 </span>

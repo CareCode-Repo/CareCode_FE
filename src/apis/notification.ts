@@ -1,10 +1,6 @@
 import { getAccessToken, getUserId } from '@/apis/auth'
 import { CareCode } from '@/apis/interceptor'
 import {
-  GetNotificationByIdPath,
-  GetNotificationByIdResponse,
-  getNotificationByIdPathSchema,
-  getNotificationByIdResponseSchema,
   GetNotificationChannelsResponse,
   getNotificationChannelsResponseSchema,
   GetNotificationPreferencesResponse,
@@ -25,17 +21,14 @@ export const getNotificationList = async (): Promise<GetNotificationsResponse> =
   return getNotificationsResponseSchema.parse(res.data)
 }
 
-export const getNotificationById = async (
-  path: GetNotificationByIdPath,
-): Promise<GetNotificationByIdResponse> => {
-  const parsedPath = getNotificationByIdPathSchema.parse(path)
-  const res = await CareCode.get(`/notifications/${parsedPath.notificationId}`)
-  return getNotificationByIdResponseSchema.parse(res.data)
-}
-
 export const putNotificationToRead = async (path: PutNotificationToReadPath): Promise<void> => {
   const parsedPath = putNotificationToReadPathSchema.parse(path)
   await CareCode.put(`/notifications/${parsedPath.notificationId}/read`)
+}
+
+// DELETE /notifications/{notificationId}
+export const deleteNotification = async (notificationId: number): Promise<void> => {
+  await CareCode.delete(`/notifications/${notificationId}`)
 }
 
 // PUT /notifications/read-all
