@@ -9,15 +9,90 @@ import Layout from '@/components/common/Layout'
 import Separator from '@/components/common/Separator'
 import Switch from '@/components/common/Switch'
 import { useLegalVersion } from '@/queries/legal'
-import { useConsents, useDeleteAccount, useExportMyData, useUpdateConsent } from '@/queries/privacy'
+import {
+  useConsentHistory,
+  useConsents,
+  useDeleteAccount,
+  useExportMyData,
+  useUpdateConsent,
+} from '@/queries/privacy'
 import { ConsentType, SENSITIVE_CONSENT_TYPES } from '@/types/apis/privacy'
 import { formatDate } from '@/utils/date'
 import { downloadJson } from '@/utils/file'
+
+/**
+ * 동의 이력.
+ *
+ * 약관은 개정되므로 "지금 동의했는가" 만으로는 무엇에 동의했는지 증명할 수 없다.
+ * 서버가 동의 시점의 약관 버전을 함께 남기므로 그대로 보여준다.
+ */
+const ConsentHistorySection = (): ReactElement => {
+  const { data: history = [], isLoading, isError, refetch } = useConsentHistory()
+
+  if (isLoading) {
+    return (
+      <ul className="flex flex-col gap-2">
+        {[0, 1].map((i) => (
+          <li key={i} className="h-12 animate-pulse rounded bg-gray-200" />
+        ))}
+      </ul>
+    )
+  }
+
+  if (isError) {
+    return (
+      <button
+        type="button"
+        onClick={() => refetch()}
+        className="text-b2-regular w-fit text-gray-700 underline"
+      >
+        이력을 불러오지 못했어요. 다시 시도
+      </button>
+    )
+  }
+
+  if (!history.length) {
+    return <p className="text-b2-regular text-gray-600">아직 남은 동의 이력이 없어요.</p>
+  }
+
+  return (
+    <ul className="flex flex-col divide-y divide-gray-200 rounded-lg border border-gray-200">
+      {history.map((item, index) => (
+        <li
+          key={`${item.consentType}-${item.createdAt ?? index}`}
+          className="flex flex-col gap-1 p-3"
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-b2-semibold text-gray-800">
+              {item.displayName ?? item.consentType}
+            </span>
+            <span
+              className={
+                item.granted ? 'text-b2-regular text-green-700' : 'text-b2-regular text-gray-500'
+              }
+            >
+              {item.granted ? '동의' : '철회'}
+            </span>
+          </div>
+          <span className="text-c1-regular text-gray-500">
+            {[
+              item.policyVersion && `약관 ${item.policyVersion}`,
+              formatDate(item.createdAt, 'yyyy.MM.dd HH:mm'),
+            ]
+              .filter(Boolean)
+              .join(' · ')}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 const PrivacyPage = (): ReactElement => {
   const router = useRouter()
   const [withdrawOpen, setWithdrawOpen] = useState(false)
 
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const { data, isLoading, isError, refetch } = useConsents()
   // 동의 이력에 남는 값이라 서버가 시행 중인 버전을 쓴다.
   const { data: policyVersion } = useLegalVersion()
@@ -116,6 +191,27 @@ const PrivacyPage = (): ReactElement => {
         </section>
 
         <Separator className="my-6" />
+
+        <section className="flex flex-col gap-3 px-4.5">
+          <h2 className="text-b1-semibold text-gray-800">동의 이력</h2>
+          <p className="text-b2-regular text-gray-600">
+            언제 어떤 버전의 약관에 동의했는지 남겨둔 기록이에요.
+          </p>
+
+          <button
+            type="button"
+            aria-expanded={isHistoryOpen}
+            onClick={() => setIsHistoryOpen((open) => !open)}
+            className="text-b2-regular w-fit rounded text-gray-700 underline focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:outline-none"
+          >
+            {isHistoryOpen ? '접기' : '이력 보기'}
+          </button>
+
+          {/* 열었을 때만 받아온다. 대부분의 방문에서는 필요 없는 조회다. */}
+          {isHistoryOpen && <ConsentHistorySection />}
+        </section>
+
+        <Separator className="h-2 shrink-0 bg-gray-100" />
 
         <section className="flex flex-col gap-3 px-4.5">
           <h2 className="text-b1-semibold text-gray-800">내 데이터</h2>

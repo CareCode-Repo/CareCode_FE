@@ -15,6 +15,8 @@ import {
   useCreateAdminPolicy,
   useDeleteAdminPolicy,
   useUpdateAdminPolicy,
+  useUnverifyPolicy,
+  useVerifyPolicy,
 } from '@/queries/admin'
 import { AdminPolicyDetail } from '@/types/apis/admin'
 import { formatDate } from '@/utils/date'
@@ -46,6 +48,8 @@ const AdminPolicyManagePage = (): ReactElement => {
     isError: isUpdateError,
   } = useUpdateAdminPolicy()
   const { mutate: deletePolicy, isPending: isDeletePending } = useDeleteAdminPolicy()
+  const { mutate: verifyPolicy, isPending: isVerifying } = useVerifyPolicy()
+  const { mutate: unverifyPolicy, isPending: isUnverifying } = useUnverifyPolicy()
 
   const policies = data?.content ?? []
 
@@ -105,11 +109,46 @@ const AdminPolicyManagePage = (): ReactElement => {
                 </span>
                 <span className="text-c1-regular text-gray-400">{policy.policyCode}</span>
 
-                <div className="flex gap-2 pt-1">
-                  <Button color="gray" size="small" onClick={() => setEditing(policy)}>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <Button
+                    color="gray"
+                    size="small"
+                    className="w-auto"
+                    onClick={() => setEditing(policy)}
+                  >
                     수정
                   </Button>
-                  <Button color="red" size="small" onClick={() => setDeleteTarget(policy)}>
+                  {/*
+                    검증 표시는 사용자 화면에서 "확정 금액" 과 "추정 금액" 을 가른다.
+                    근거 없이 검증으로 올리면 안 되므로 되돌리기도 함께 둔다.
+                  */}
+                  {policy.verifiedAt ? (
+                    <Button
+                      color="gray"
+                      size="small"
+                      className="w-auto"
+                      disabled={isUnverifying}
+                      onClick={() => unverifyPolicy(policy.id)}
+                    >
+                      검증 해제
+                    </Button>
+                  ) : (
+                    <Button
+                      color="green"
+                      size="small"
+                      className="w-auto"
+                      disabled={isVerifying}
+                      onClick={() => verifyPolicy({ policyId: policy.id })}
+                    >
+                      검증 표시
+                    </Button>
+                  )}
+                  <Button
+                    color="red"
+                    size="small"
+                    className="w-auto"
+                    onClick={() => setDeleteTarget(policy)}
+                  >
                     삭제
                   </Button>
                 </div>

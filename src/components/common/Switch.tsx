@@ -11,7 +11,8 @@ const Switch = forwardRef<HTMLButtonElement, SwitchProps>(({ className, ...props
     <RadixSwitch.Root
       ref={ref}
       className={clsx(
-        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none',
+        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors',
+        'focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2 focus-visible:outline-none',
         'data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-300',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className,

@@ -1,9 +1,10 @@
 import { createQueryKeys } from '@lukemorales/query-key-factory'
 import { useMutation, useQuery, UseQueryResult, UseMutationResult } from '@tanstack/react-query'
-import { getChatMessages, getChatSessions, postChatMessage } from '@/apis/chatbot'
+import { getAccessToken } from '@/apis/auth'
+import { getChatHistory, getChatSessions, postChatMessage } from '@/apis/chatbot'
 import {
-  GetChatMessagesQuery,
-  GetChatMessagesResponse,
+  GetChatHistoryQuery,
+  GetChatHistoryResponse,
   GetChatSessionsQuery,
   GetChatSessionsResponse,
   PostChatMessageBody,
@@ -11,8 +12,14 @@ import {
 } from '@/types/apis/chatbot'
 
 export const chatbotQueryKeys = createQueryKeys('chatbot', {
-  messages: (query?: GetChatMessagesQuery) => [query],
-  sessions: (query?: GetChatSessionsQuery) => [query],
+  history: (query: GetChatHistoryQuery = {}) => ({
+    queryKey: [query],
+    queryFn: () => getChatHistory(query),
+  }),
+  sessions: (query: GetChatSessionsQuery = {}) => ({
+    queryKey: [query],
+    queryFn: () => getChatSessions(query),
+  }),
 })
 
 export const usePostChatMessage = (): UseMutationResult<
@@ -25,34 +32,14 @@ export const usePostChatMessage = (): UseMutationResult<
   })
 }
 
-export const useGetChatMessages = (
-  query?: GetChatMessagesQuery,
-  enabled = false,
-): UseQueryResult<GetChatMessagesResponse, Error> => {
-  return useQuery({
-    queryKey: chatbotQueryKeys.messages(query).queryKey,
-    queryFn: () => {
-      if (!query?.userId) {
-        throw new Error('userId is required')
-      }
-      return getChatMessages(query)
-    },
-    enabled: enabled && !!query?.userId,
-  })
-}
+/** 지난 대화 세션 목록. 사용자는 서버가 토큰에서 꺼내므로 따로 넘기지 않는다. */
+export const useChatSessions = (
+  query: GetChatSessionsQuery = {},
+): UseQueryResult<GetChatSessionsResponse, Error> =>
+  useQuery({ ...chatbotQueryKeys.sessions(query), enabled: !!getAccessToken() })
 
-export const useGetChatSessions = (
-  query?: GetChatSessionsQuery,
-  enabled = false,
-): UseQueryResult<GetChatSessionsResponse, Error> => {
-  return useQuery({
-    queryKey: chatbotQueryKeys.sessions(query).queryKey,
-    queryFn: () => {
-      if (!query?.userId) {
-        throw new Error('userId is required')
-      }
-      return getChatSessions(query)
-    },
-    enabled: enabled && !!query?.userId,
-  })
-}
+/** 한 세션의 문답 기록. sessionId 를 비우면 전체 기록을 최신순으로 받는다. */
+export const useChatHistory = (
+  query: GetChatHistoryQuery = {},
+): UseQueryResult<GetChatHistoryResponse, Error> =>
+  useQuery({ ...chatbotQueryKeys.history(query), enabled: !!getAccessToken() })

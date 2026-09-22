@@ -9,7 +9,12 @@ import Spacer from '@/components/common/Spacer'
 import ToggleChip from '@/components/common/ToggleChip'
 import Input from '@/components/common/input'
 import FacilityListItem from '@/components/features/facility/FacilityListItem'
-import { useAdvancedFacilitySearch, useFacilitySearch } from '@/queries/facility'
+import PopularSection from '@/components/features/facility/PopularSection'
+import {
+  useAdvancedFacilitySearch,
+  useFacilitySearch,
+  usePopularFacilities,
+} from '@/queries/facility'
 import {
   FACILITY_TYPE_LABEL,
   FacilityAdvancedSearchBody,
@@ -21,6 +26,7 @@ const PAGE_SIZE = 20
 
 const FacilityPage = (): ReactElement => {
   const router = useRouter()
+  const { data: popular = [] } = usePopularFacilities()
   const [inputValue, setInputValue] = useState('')
   const [keyword, setKeyword] = useState('')
   const [selectedType, setSelectedType] = useState<FacilityType | null>(null)
@@ -93,6 +99,16 @@ const FacilityPage = (): ReactElement => {
 
   return (
     <Layout hasTopNav hasBackButton title="시설 찾기" contentClassName="px-4.5 py-5">
+      <PopularSection
+        title="많이 찾는 시설"
+        items={popular.map((item) => ({
+          id: item.id,
+          name: item.name,
+          subtitle: item.address,
+        }))}
+        onSelect={(id) => router.push(`/facility/${id}`)}
+      />
+
       <form onSubmit={handleSubmit}>
         <Input
           value={inputValue}

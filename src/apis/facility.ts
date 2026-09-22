@@ -12,8 +12,6 @@ import {
   facilityReviewBodySchema,
   facilityReviewListSchema,
   facilityReviewSchema,
-  GetFacilitiesByKeywordQuery,
-  getFacilitiesByKeywordQuerySchema,
   GetFacilitiesByLocationPath,
   getFacilitiesByLocationPathSchema,
   GetFacilitiesByTypePath,
@@ -73,15 +71,6 @@ export const getFacilitiesInRadius = async (
 ): Promise<Facility[]> => {
   const parsedQuery = getFacilitiesInRadiusQuerySchema.parse(query)
   const res = await CareCode.get('/facilities/radius', { params: parsedQuery })
-  return facilityListSchema.parse(res.data)
-}
-
-// 키워드 검색
-export const getFacilitiesByKeyword = async (
-  query: GetFacilitiesByKeywordQuery,
-): Promise<Facility[]> => {
-  const parsedQuery = getFacilitiesByKeywordQuerySchema.parse(query)
-  const res = await CareCode.get('/facilities/keyword', { params: parsedQuery })
   return facilityListSchema.parse(res.data)
 }
 

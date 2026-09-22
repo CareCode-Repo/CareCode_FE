@@ -20,5 +20,12 @@ export const BackButton = ({
     }
   }
 
-  return <IconButton icon={BackIcon} iconClassName="fill-black size-6" onClick={handleClick} />
+  return (
+    <IconButton
+      icon={BackIcon}
+      iconClassName="fill-black size-6"
+      aria-label="뒤로 가기"
+      onClick={handleClick}
+    />
+  )
 }

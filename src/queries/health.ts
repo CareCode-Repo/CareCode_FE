@@ -11,7 +11,9 @@ import {
   deleteAttachment,
   deleteHealthRecord,
   getAttachments,
+  downloadAttachment,
   getHealthAlerts,
+  getHealthRecommendations,
   getHealthRecord,
   getHealthRecordsByType,
   getUserHealthRecords,
@@ -19,10 +21,12 @@ import {
   putHealthRecord,
   uploadAttachment,
 } from '@/apis/health'
+import { childQueries } from '@/queries/child'
 import {
   Attachment,
   CreateHealthRecordBody,
   HealthAlert,
+  HealthRecommendation,
   HealthRecord,
   RecordType,
   UpdateHealthRecordBody,
@@ -44,9 +48,18 @@ export const healthQueries = createQueryKeys('health', {
     queryFn: () => getHealthRecord(recordId),
   }),
 
+  attachmentBlob: (recordId: number, attachmentId: number) => ({
+    queryKey: ['attachment-blob', recordId, attachmentId],
+    queryFn: () => downloadAttachment(recordId, attachmentId),
+  }),
+
   attachments: (recordId: number) => ({
     queryKey: ['attachments', recordId],
     queryFn: () => getAttachments(recordId),
+  }),
+
+  recommendations: () => ({
+    queryKey: ['recommendations'],
   }),
 
   alerts: (userId: string) => ({
@@ -66,6 +79,32 @@ export const useHealthRecord = (recordId: number): UseQueryResult<HealthRecord, 
   useQuery({
     ...healthQueries.record(recordId),
     enabled: Number.isFinite(recordId) && recordId > 0,
+  })
+
+/**
+ * 첨부 본문(blob).
+ *
+ * 첨부는 인증을 거쳐야 받을 수 있어 주소를 그대로 열 수 없다. 쿼리로 감싸 같은 첨부를
+ * 여러 곳에서 그려도 요청이 한 번만 나가게 한다(직접 useEffect 로 받으면 렌더마다 중복된다).
+ * 본문은 바뀌지 않으므로 오래 신선하게 둔다.
+ */
+export const useAttachmentBlob = (
+  recordId: number,
+  attachmentId: number,
+  enabled = true,
+): UseQueryResult<Blob, Error> =>
+  useQuery({
+    ...healthQueries.attachmentBlob(recordId, attachmentId),
+    enabled:
+      enabled && Number.isFinite(recordId) && Number.isFinite(attachmentId) && attachmentId > 0,
+    staleTime: 1000 * 60 * 30,
+  })
+
+export const useHealthRecommendations = (): UseQueryResult<HealthRecommendation, Error> =>
+  useQuery({
+    queryKey: healthQueries.recommendations().queryKey,
+    queryFn: getHealthRecommendations,
+    enabled: !!getAccessToken(),
   })
 
 export const useHealthAlerts = (): UseQueryResult<HealthAlert[], Error> => {
@@ -94,8 +133,8 @@ export const useCreateHealthRecord = (): UseMutationResult<
   return useMutation({
     mutationFn: postHealthRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }
@@ -109,8 +148,8 @@ export const useUpdateHealthRecord = (
     mutationFn: (body: UpdateHealthRecordBody) => putHealthRecord(recordId, body),
     onSuccess: (record) => {
       queryClient.setQueryData(healthQueries.record(recordId).queryKey, record)
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }
@@ -121,8 +160,8 @@ export const useDeleteHealthRecord = (): UseMutationResult<void, Error, number> 
   return useMutation({
     mutationFn: deleteHealthRecord,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['health', 'records'] })
-      queryClient.invalidateQueries({ queryKey: ['child', 'growth'] })
+      queryClient.invalidateQueries({ queryKey: healthQueries.records._def })
+      queryClient.invalidateQueries({ queryKey: childQueries.growth._def })
     },
   })
 }

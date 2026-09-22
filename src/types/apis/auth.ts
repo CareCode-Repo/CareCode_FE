@@ -1,6 +1,14 @@
 import { z } from 'zod'
+import { userRoleSchema, userSchema } from './user'
 
 // login 공통
+/**
+ * 서버 TokenDto 대응.
+ *
+ * DTO 에 최상위 `userId`/`email`/`role` 필드가 있지만 `AuthServiceImpl.issueTokenForUser`
+ * 는 이 셋을 채우지 않는다 — 신원은 항상 중첩된 `user` 안에 있다(카카오 응답도 같은 모양).
+ * 최상위 값을 필수로 두고 있어서 그동안 일반 로그인은 200 을 받고도 파싱 단계에서 실패했다.
+ */
 const loginSuccessSchema = z.object({
   success: z.literal(true),
   message: z.string(),
@@ -8,9 +16,8 @@ const loginSuccessSchema = z.object({
   refreshToken: z.string(),
   tokenType: z.string(),
   expiresIn: z.number(),
-  userId: z.string(),
-  email: z.string().email(),
-  role: z.enum(['PARENT', 'CHILD']),
+  refreshExpiresIn: z.number().nullish(),
+  user: userSchema,
 })
 const loginFailSchema = z.object({
   success: z.literal(false),
@@ -44,45 +51,6 @@ export type PostKakaoLoginBody = z.infer<typeof postKakaoLoginBodySchema>
 export const postKakaoLoginResponseSchema = kakaoLoginSuccessSchema
 export type PostKakaoLoginResponse = z.infer<typeof postKakaoLoginResponseSchema>
 
-// users
-const signupBodySchema = z.object({
-  name: z
-    .string()
-    .min(2, '닉네임은 2글자 이상이어야 합니다')
-    .max(10, '닉네임은 10글자 이하여야 합니다'),
-  role: z.enum(['ADMIN', 'CAREGIVER', 'GUEST', 'PARENT'], {
-    required_error: '역할을 선택해주세요',
-  }),
-  // 현재 API 요구사항 (향후 제거 예정)
-  // email: z.string().email('유효한 이메일 주소를 입력해주세요'),
-  // password: z.string().min(6, '비밀번호는 6글자 이상이어야 합니다'),
-  // phoneNumber: z.string().optional(),
-  // birthDate: z.string().optional(),
-  // gender: z.enum(['MALE', 'FEMALE']).optional(),
-  // address: z.string().optional(),
-})
-
-const signupResponseSchema = z.object({
-  id: z.number(),
-  userId: z.string(),
-  email: z.string(),
-  password: z.string().nullable(),
-  name: z.string(),
-  phoneNumber: z.string().nullable(),
-  birthDate: z.string().nullable(),
-  gender: z.string().nullable(),
-  address: z.string().nullable(),
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
-  profileImageUrl: z.string().nullable(),
-  role: z.string(),
-  isActive: z.boolean(),
-  emailVerified: z.boolean(),
-  lastLoginAt: z.string().nullable(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-})
-
 const registerBodySchema = z.object({
   kakaoAccessToken: z.string(),
   email: z.string().email(),
@@ -109,21 +77,22 @@ export type PostRegisterBody = z.infer<typeof postRegisterBodySchema>
 export const postRegisterResponseSchema = registerResponseSchema
 export type PostRegisterResponse = z.infer<typeof postRegisterResponseSchema>
 
-// /users
-export const postSignupBodySchema = signupBodySchema
-export type PostSignupBody = z.infer<typeof postSignupBodySchema>
-export const postSignupResponseSchema = signupResponseSchema
-export type PostSignupResponse = z.infer<typeof postSignupResponseSchema>
-
 // /auth/refresh
 // 리프레시 토큰은 HttpOnly 쿠키로 오가므로 요청 본문이 없다.
 // 응답의 refreshToken 도 쿠키를 쓰지 않는 클라이언트를 위한 값이라 읽지 않는다.
+/**
+ * 갱신 응답도 로그인과 같은 TokenDto 다 — 최상위 userId 는 채워지지 않는다.
+ *
+ * 여기를 `userId: z.string()` 으로 두는 바람에 서버가 200 과 새 토큰을 줘도 파싱에서
+ * 버려졌고, SessionBootstrap 이 그 실패를 세션 만료로 보고 clearTokens() 를 불렀다.
+ * 결과적으로 **새로고침할 때마다 로그아웃**됐고 401 재시도도 한 번도 성공하지 못했다.
+ */
 export const postRefreshTokenResponseSchema = z.object({
   success: z.boolean(),
   accessToken: z.string(),
   tokenType: z.string(),
   expiresIn: z.number(),
-  userId: z.string(),
+  user: userSchema,
 })
 export type PostRefreshTokenResponse = z.infer<typeof postRefreshTokenResponseSchema>
 
@@ -158,7 +127,7 @@ const kakaoAuthSuccessSchema = z.object({
   user: z.object({
     userId: z.string(),
     email: z.string(),
-    role: z.enum(['PARENT', 'CHILD']),
+    role: userRoleSchema,
     name: z.string(),
     registrationCompleted: z.boolean().optional(),
   }),
@@ -177,9 +146,7 @@ export const kakaoRegistrationRequestSchema = z.object({
     .string()
     .min(2, '닉네임은 2글자 이상이어야 합니다')
     .max(10, '닉네임은 10글자 이하여야 합니다'),
-  role: z.enum(['ADMIN', 'CAREGIVER', 'GUEST', 'PARENT'], {
-    required_error: '역할을 선택해주세요',
-  }),
+  role: userRoleSchema,
 })
 export type KakaoRegistrationRequest = z.infer<typeof kakaoRegistrationRequestSchema>
 

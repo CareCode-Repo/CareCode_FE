@@ -1,6 +1,7 @@
-import { z } from 'zod'
 import { CareCode } from './interceptor'
 import {
+  CommunityTag,
+  communityTagListSchema,
   PostListItem,
   postListItemSchema,
   ToggleBookmarkResponse,
@@ -27,6 +28,14 @@ import {
   postCommunityCommentPathSchema,
   PostCommunityCommentResponse,
   postCommunityCommentResponseSchema,
+  PutCommunityCommentBody,
+  putCommunityCommentBodySchema,
+  PutCommunityCommentPath,
+  putCommunityCommentPathSchema,
+  PutCommunityCommentResponse,
+  putCommunityCommentResponseSchema,
+  DeleteCommunityCommentPath,
+  deleteCommunityCommentPathSchema,
   PostCommunityPostBody,
   postCommunityPostBodySchema,
   PostCommunityPostResponse,
@@ -140,7 +149,24 @@ export const getBookmarkedPosts = async (): Promise<PostListItem[]> => {
 }
 
 // GET /community/tags - 인기 태그
-export const getCommunityTags = async (): Promise<string[]> => {
+export const getCommunityTags = async (): Promise<CommunityTag[]> => {
   const res = await CareCode.get('/community/tags')
-  return z.array(z.string()).parse(res.data)
+  return communityTagListSchema.parse(res.data)
+}
+
+// PUT /community/comments/{commentId}
+export const putCommunityComment = async (
+  path: PutCommunityCommentPath,
+  body: PutCommunityCommentBody,
+): Promise<PutCommunityCommentResponse> => {
+  const parsedPath = putCommunityCommentPathSchema.parse(path)
+  const parsedBody = putCommunityCommentBodySchema.parse(body)
+  const res = await CareCode.put(`/community/comments/${parsedPath.commentId}`, parsedBody)
+  return putCommunityCommentResponseSchema.parse(res.data)
+}
+
+// DELETE /community/comments/{commentId}
+export const deleteCommunityComment = async (path: DeleteCommunityCommentPath): Promise<void> => {
+  const parsedPath = deleteCommunityCommentPathSchema.parse(path)
+  await CareCode.delete(`/community/comments/${parsedPath.commentId}`)
 }

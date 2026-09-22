@@ -14,11 +14,10 @@ const KakaoCallbackContent = (): ReactElement | null => {
 
   useEffect(() => {
     const code = searchParams.get('code')
-    console.log('Kakao authorization code:', code)
 
     if (!code) {
-      console.error('No authorization code found')
-      router.push('/')
+      console.error('카카오 인가 코드가 없습니다.')
+      router.replace('/')
       return
     }
 
@@ -30,6 +29,10 @@ const KakaoCallbackContent = (): ReactElement | null => {
     // 코드 처리 시작 표시
     processedRef.current = code
 
+    // 인가 코드는 크리덴셜이다. 주소창·히스토리·리퍼러에 남기지 않는다.
+    // (교환은 이미 시작됐으므로 지워도 흐름에 영향이 없다)
+    window.history.replaceState({}, '', window.location.pathname)
+
     postKakaoAuth(
       { code },
       {
@@ -38,31 +41,21 @@ const KakaoCallbackContent = (): ReactElement | null => {
             // 리프레시 토큰은 서버가 HttpOnly 쿠키로 심어 주므로 여기서 다루지 않는다.
             setTokens(data.accessToken, data.user.userId, data.expiresIn)
 
-            // URL에서 code 파라미터 제거
-            // window.history.replaceState({}, '', window.location.pathname)
-
+            // 콜백은 히스토리에 남기지 않는다. 뒤로가기로 돌아오면 소진된 코드로 재시도하게 된다.
             // 회원가입이 완료되지 않은 경우 회원가입 페이지로
-            if (data.isNewUser) {
-              router.push('/signup')
-            } else {
-              router.push('/home')
-            }
+            router.replace(data.isNewUser ? '/signup' : '/home')
           } else {
-            console.error('Authentication failed:', data.message)
+            console.error('카카오 로그인 실패:', data.message)
             processedRef.current = null // 실패 시 재시도 가능하도록 초기화
-            router.push('/')
+            router.replace('/')
           }
         },
         onError: (error) => {
-          console.error('Kakao authentication error:', error)
+          console.error('카카오 로그인 오류:', error)
 
-          // authorization code 관련 에러인 경우 재시도하지 않음
-          // const isAuthCodeError = (error as any)?.response?.data?.message?.includes('authorization code')
-          // if (!isAuthCodeError) {
-          //   processedRef.current = null // 다른 에러의 경우 재시도 가능하도록 초기화
-          // }
-
-          router.push('/')
+          // 인가 코드는 일회용이라 같은 코드로 재시도해봐야 계속 실패한다.
+          // processedRef 를 되돌리지 않고 로그인 화면에서 새 코드를 받게 한다.
+          router.replace('/')
         },
       },
     )

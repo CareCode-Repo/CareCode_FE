@@ -60,6 +60,35 @@ export const postListItemSchema = z.object({
 })
 export type PostListItem = z.infer<typeof postListItemSchema>
 
+// PUT /community/comments/{commentId} - 서버 CommunityUpdateCommentRequest 대응
+export const putCommunityCommentPathSchema = z.object({ commentId: z.number() })
+export type PutCommunityCommentPath = z.infer<typeof putCommunityCommentPathSchema>
+export const putCommunityCommentBodySchema = z.object({
+  content: z.string().min(1, '내용을 입력해주세요'),
+})
+export type PutCommunityCommentBody = z.infer<typeof putCommunityCommentBodySchema>
+export const putCommunityCommentResponseSchema = postCommentSchema
+export type PutCommunityCommentResponse = z.infer<typeof putCommunityCommentResponseSchema>
+
+// DELETE /community/comments/{commentId}
+export const deleteCommunityCommentPathSchema = z.object({ commentId: z.number() })
+export type DeleteCommunityCommentPath = z.infer<typeof deleteCommunityCommentPathSchema>
+
+/**
+ * GET /community/tags — 서버 CommunityTagResponse 대응.
+ *
+ * `z.array(z.string())` 로 파싱하고 있어서 이 API 는 부를 때마다 실패했다.
+ * 서버는 이름뿐 아니라 id·설명까지 담은 객체를 준다.
+ */
+export const communityTagSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  description: z.string().nullish(),
+  createdAt: z.string().nullish(),
+})
+export type CommunityTag = z.infer<typeof communityTagSchema>
+export const communityTagListSchema = z.array(communityTagSchema)
+
 // /community/posts 게시글 리스트 조회
 export const getCommunityPostsQuerySchema = z.object({
   page: z.number().optional(),

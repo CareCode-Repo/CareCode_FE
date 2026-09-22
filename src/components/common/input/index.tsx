@@ -65,6 +65,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div
           className={clsx(
             'flex items-center border bg-white',
+            'focus-within:ring-2 focus-within:ring-green-600/40',
             // variant별 스타일
             {
               'rounded-md px-3 py-2': variant === 'default',

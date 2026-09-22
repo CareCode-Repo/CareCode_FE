@@ -5,13 +5,13 @@ CareCode 백엔드(Spring Boot)의 REST API를 소비하는 모바일 우선 웹
 
 ## 기술 스택
 
-| 영역        | 사용 기술                                   |
-| ----------- | ------------------------------------------- |
-| 프레임워크  | Next.js 15 (App Router) · React 19          |
-| 상태·서버   | TanStack Query v5 · zustand                 |
-| 스타일      | Tailwind CSS v4 · Radix UI                  |
-| 폼·검증     | react-hook-form · zod                       |
-| HTTP        | axios (`src/apis/interceptor.ts`)           |
+| 영역       | 사용 기술                          |
+| ---------- | ---------------------------------- |
+| 프레임워크 | Next.js 15 (App Router) · React 19 |
+| 상태·서버  | TanStack Query v5 · zustand        |
+| 스타일     | Tailwind CSS v4 · Radix UI         |
+| 폼·검증    | react-hook-form · zod              |
+| HTTP       | axios (`src/apis/interceptor.ts`)  |
 
 ## 시작하기
 
@@ -26,11 +26,12 @@ http://localhost:3000 에서 확인할 수 있습니다.
 
 ### 환경 변수
 
-| 이름                  | 설명                                                |
-| --------------------- | --------------------------------------------------- |
-| `NEXT_PUBLIC_API_URL` | CareCode 백엔드 베이스 URL (예: `http://localhost:8080`) |
-| `NEXT_PUBLIC_FIREBASE_*` | 웹 푸시(FCM) 설정. 선택 — 비우면 푸시 기능 전체가 꺼집니다 |
-| `NEXT_PUBLIC_FIREBASE_VAPID_KEY` | 웹 푸시 인증서 공개 키. 위와 함께 있어야 동작합니다 |
+| 이름                                        | 설명                                                          |
+| ------------------------------------------- | ------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                       | CareCode 백엔드 베이스 URL (예: `http://localhost:8080`)      |
+| `NEXT_PUBLIC_FIREBASE_*`                    | 웹 푸시(FCM) 설정. 선택 — 비우면 푸시 기능 전체가 꺼집니다    |
+| `NEXT_PUBLIC_FIREBASE_VAPID_KEY`            | 웹 푸시 인증서 공개 키. 위와 함께 있어야 동작합니다           |
+| `NEXT_PUBLIC_DEV_LOGIN_EMAIL` / `_PASSWORD` | 개발용 빠른 로그인 계정. 선택 — 비우면 버튼이 나오지 않습니다 |
 
 ## 디렉터리 구조
 
@@ -40,13 +41,27 @@ src/
 ├── queries/      TanStack Query 훅 (query-key-factory 기반 키)
 ├── types/apis/   서버 DTO 대응 zod 스키마 & 타입
 ├── app/          App Router 라우트
-│   ├── (with-tabs)/     하단 탭이 있는 화면 (홈·커뮤니티·검색·마이페이지)
-│   └── (without-tabs)/  단독 화면 (아이 관리·시설·게시글 상세 등)
+│   ├── (with-tabs)/     하단 탭이 있는 화면 (커뮤니티·육아 정보·홈·챗봇·마이페이지)
+│   ├── (without-tabs)/  단독 화면 (아이 관리·시설·게시글 상세·알림·회원가입 등)
+│   ├── admin/           관리자 (자체 레이아웃 + AdminGuard)
+│   └── auth/            OAuth 콜백 (화면이 아니라 통과 지점이라 그룹 밖)
 ├── components/
 │   ├── common/   디자인 시스템 단위 컴포넌트
 │   └── features/ 도메인 컴포넌트
 └── utils/        날짜·파일 등 순수 유틸
 ```
+
+**모든 화면은 두 그룹 중 하나에 들어갑니다.** 그룹 밖에 두면 어느 레이아웃도 받지 못해
+스크롤 컨테이너를 페이지마다 다시 짜게 됩니다. 특히 **하단 탭의 목적지는 반드시
+`(with-tabs)/`** 여야 합니다 — 그룹 밖 경로를 탭에 넣으면 그 탭을 누르는 순간 탭 바가
+사라져 다른 탭으로 돌아갈 수 없습니다.
+
+### 의존성 규칙
+
+**import 하는 패키지는 반드시 `package.json` 에 선언합니다.** 한동안 `framer-motion` 과
+radix 서브패키지 5개가 선언 없이 다른 패키지의 전이 의존성 호이스팅으로만 동작했습니다.
+npm 에서는 우연히 동작하지만 pnpm·yarn PnP 로 옮기거나 상위 패키지가 의존성을 정리하면
+그날로 빌드가 깨집니다. motion 은 `motion/react` 경로 하나로만 import 합니다.
 
 ### API 레이어 규칙
 
@@ -72,6 +87,98 @@ src/
 
 > 백엔드는 쿠키가 없으면 요청 본문의 `refreshToken` 도 계속 받습니다.
 > 쿠키를 쓸 수 없는 클라이언트(모바일 네이티브 등)와 함께 동작해야 하기 때문입니다.
+
+### 프로필 완성도 응답은 불리언 맵입니다
+
+`GET /users/profile/completion` 은 이런 모양입니다.
+
+```json
+{ "completionPercentage": 20, "complete": false,
+  "missingFields": { "needsAddress": true, "needsGender": true, ... } }
+```
+
+프런트 스키마는 `completionRate` 와 `missingFields: string[]` 을 기다리고 있었습니다. 모든
+필드가 `nullish()` 라 **파싱은 통과하고 값만 전부 `undefined` 가 되어** 완성도 0%, 빠진 항목
+없음처럼 조용히 틀렸고, `complete` 를 못 읽어 이미 다 채운 사용자에게도 안내가 계속 떴습니다.
+계약 테스트로 고정했습니다.
+
+주소가 비면 지역별 지원금 비교와 주변 시설 추천이 아예 동작하지 않는데 그 사실을 알려주는
+곳이 없었습니다. 마이페이지 상단에서 빠진 항목을 이름으로 알려주고 수정 화면으로 보냅니다.
+
+### 안 읽은 알림은 종 아이콘에 표시합니다
+
+`IconButton` 에 `showBadge` 가 있고 조회 훅도 있었지만 실제 화면에서 아무도 넘기지 않아
+(컴포넌트 갤러리에서만 썼습니다) 알림이 와도 알림함에 들어가 보기 전까지 알 수 없었습니다.
+`useHasUnreadNotifications()` 를 상단바가 있는 다섯 화면에서 씁니다 — 쿼리 키가 같아 요청은
+한 번만 나갑니다.
+
+### 작성자 판별은 어느 식별자인지 확인하고 씁니다
+
+서버는 사용자를 두 가지로 가리키고, 응답마다 담는 쪽이 다릅니다.
+
+| 값       | 예시                     | 담기는 곳                                              |
+| -------- | ------------------------ | ------------------------------------------------------ |
+| `userId` | `user_1787417490710_394` | 토큰·세션, **시설 리뷰**의 `userId`                    |
+| `id`     | `2`                      | **게시글·댓글**의 `authorId`, **병원 리뷰**의 `userId` |
+
+한쪽만 보고 비교하면 항상 거짓이 되어 본인 글에도 수정·삭제가 뜨지 않습니다 — 실제로 게시글
+상세가 그 상태였습니다(`getUserId() === post.authorId`). `useCurrentUser()` 가 둘을 함께
+돌려주므로, 비교할 필드가 어느 쪽인지 확인하고 골라 씁니다.
+
+### 아이 수정은 전체 교체입니다
+
+`PUT /children/{id}` 는 보내지 않은 필드를 `null` 로 만듭니다(`ChildService.updateChild`).
+그래서 수정 화면은 **현재 값을 모두 읽어와 채운 뒤** 저장해야 합니다.
+
+`specialNeeds`(알레르기·기저질환)는 등록 요청은 받으면서 응답에는 없어서 읽어올 방법이
+없었고, 이름만 고쳐도 특이사항이 지워졌습니다. 백엔드 `ChildInfoResponse`·`ChildMapper` 에
+필드를 추가해 왕복이 되도록 고쳤습니다.
+
+### 토큰 응답의 신원은 항상 `user` 안에 있습니다
+
+서버 `TokenDto` 에는 최상위 `userId`/`email`/`role` 필드가 있지만 `AuthServiceImpl.issueTokenForUser`
+는 이 셋을 채우지 않습니다. 로그인·갱신·카카오 로그인 **모두** 신원을 중첩된 `user` 로만 내려줍니다.
+
+이 값을 최상위에서 필수로 읽고 있어서 두 가지가 조용히 망가져 있었습니다.
+
+- **일반 로그인**: 200 과 토큰을 받고도 zod 파싱에서 실패해 한 번도 성공한 적이 없었습니다.
+- **세션 복구**: `POST /auth/refresh` 도 같은 모양이라 `SessionBootstrap` 이 파싱 실패를 세션 만료로
+  보고 `clearTokens()` 를 불렀습니다. 결과적으로 **새로고침할 때마다 로그아웃**됐고, 인터셉터의
+  401 → 갱신 → 재시도도 마지막 단계에서 항상 무너졌습니다.
+
+둘 다 화면에는 아무 표시가 나지 않는 종류라 계약 테스트로 고정했습니다
+(`postLoginResponseSchema` / `postRefreshTokenResponseSchema`).
+
+역할 값도 한 곳에서만 정의합니다. 로그인 응답 스키마가 `['PARENT', 'CHILD']` 로 좁혀져 있어
+서버에 없는 `CHILD` 를 기다리는 대신 실제 값인 `CAREGIVER`·`ADMIN`·`GUEST` 를 거부했습니다.
+지금은 `types/apis/user.ts` 의 `USER_ROLE` 이 정본이고 나머지는 이를 참조합니다.
+
+### 첫 렌더는 서버와 클라이언트가 같아야 합니다
+
+`SessionBootstrap` 이 `useState(() => hasStoredSession() && ...)` 로 시작하면, 서버에서는
+localStorage 를 읽을 수 없어 `false`(children 렌더), 클라이언트에서는 `true`(대기 화면 렌더)가 되어
+**모든 페이지에서 hydration 이 깨집니다.** 저장소를 읽는 판단은 effect 안에서만 하고, 첫 렌더는
+양쪽 모두 대기 화면으로 시작합니다.
+
+### 개발용 빠른 로그인
+
+카카오 로그인은 실제 앱 키와 등록된 리다이렉트 URI 가 있어야 해서 로컬에서는 쓸 수 없습니다.
+그러면 로그인 뒤 화면(아이 관리·건강 기록·마이페이지)을 전혀 확인할 수 없으므로, 일반 로그인을
+쓰는 개발 전용 버튼을 로그인 화면에 둡니다.
+
+```bash
+# 1) 백엔드에 개발 계정을 만든다 (role 을 ADMIN 으로 주면 /admin 까지 확인할 수 있다)
+curl -X POST http://localhost:8082/auth/register   -H 'Content-Type: application/json'   -d '{"email":"dev@carecode.local","password":"devpassword123!","name":"dev","role":"PARENT"}'
+
+# 2) .env.local 에 계정을 넣는다
+NEXT_PUBLIC_DEV_LOGIN_EMAIL=dev@carecode.local
+NEXT_PUBLIC_DEV_LOGIN_PASSWORD=devpassword123!
+```
+
+버튼은 두 겹으로 막혀 있습니다 — `NODE_ENV` 는 빌드 시 상수로 치환되므로 분기 전체가 죽은 코드가
+되어 제거되고, 계정 정보는 환경변수로만 들어옵니다. 값이 없으면 버튼이 렌더되지 않습니다.
+환경변수를 채운 채로 프로덕션 빌드를 돌려도 번들에 이메일·비밀번호·컴포넌트 이름이 남지 않는 것을
+확인했습니다.
 
 ### 동의 기반 접근 차단
 
@@ -110,28 +217,32 @@ src/
 - 대기 관리: 대기 신청 기록, 입소·포기 결과 남기기 (이 기록이 다른 부모의 통계가 됩니다)
 - 자녀 통합 현황: 다자녀 가구를 위한 접종·대기·다자녀 혜택 한눈에 보기
 - 약관·처리방침 원문 열람
-- 마이페이지: 프로필, 나의 활동, 내 예약, 개인정보 동의·데이터 내보내기·탈퇴
+- 마이페이지: 프로필 수정, 나의 활동(좋아요·북마크한 글·**북마크한 지원금**), 내 예약,
+  차단한 사용자, 개인정보 동의·**동의 이력**·데이터 내보내기·탈퇴, 프로필 완성도 안내
+- 커뮤니티 정리: 본인 글·댓글 수정·삭제, 신고, 사용자 차단(마이페이지에서 해제)
+- 리뷰: 시설·병원 리뷰 작성과 본인 리뷰 수정·삭제
+- 챗봇: 지난 상담 내역(세션별 문답 다시 보기)
 
 **관리자 (`/admin`)**
 
 `/admin` 은 요약 대시보드 + 섹션 인덱스입니다. 앱 셸이 모바일 폭(`max-w-sm`)이라
 탭을 늘리면 넘치므로 탭 바 대신 인덱스에서 각 섹션으로 들어가는 구조로 두었습니다.
 
-| 경로 | 내용 |
-| --- | --- |
-| `/admin` | 건수 요약, 신규 가입 추이, 최근 활동, 섹션 목록 |
-| `/admin/reports` | 신고 숨김/반려 |
-| `/admin/bookings` | 예약 확정·반려, 대기/확정/오늘 현황 |
-| `/admin/users` | 역할 변경, 계정 정지/해제 |
-| `/admin/community` | 게시글 직접 삭제 |
-| `/admin/policies/manage` | 정책 등록·수정·삭제 |
-| `/admin/policies` | 지역별 금액 검증률 |
-| `/admin/hospitals` | 병원 목록·삭제 |
-| `/admin/public-data` | 시설·유치원·정책·병원 동기화, 좌표 보정 |
-| `/admin/analytics` | 온보딩 퍼널(이탈 구간 강조), 코호트 리텐션, 이벤트 건수 |
-| `/admin/notifications` | 알림 발송·삭제 |
-| `/admin/health-records` | 건강기록 목록·삭제 (민감정보) |
-| `/admin/sample-data` | 샘플 데이터 적재·제거 (**개발 환경 전용**) |
+| 경로                     | 내용                                                    |
+| ------------------------ | ------------------------------------------------------- |
+| `/admin`                 | 건수 요약, 신규 가입 추이, 최근 활동, 섹션 목록         |
+| `/admin/reports`         | 신고 숨김/반려                                          |
+| `/admin/bookings`        | 예약 확정·반려, 대기/확정/오늘 현황                     |
+| `/admin/users`           | 역할 변경, 계정 정지/해제                               |
+| `/admin/community`       | 게시글 직접 삭제                                        |
+| `/admin/policies/manage` | 정책 등록·수정·삭제                                     |
+| `/admin/policies`        | 지역별 금액 검증률                                      |
+| `/admin/hospitals`       | 병원 목록·삭제                                          |
+| `/admin/public-data`     | 시설·유치원·정책·병원 동기화, 좌표 보정                 |
+| `/admin/analytics`       | 온보딩 퍼널(이탈 구간 강조), 코호트 리텐션, 이벤트 건수 |
+| `/admin/notifications`   | 알림 발송·삭제                                          |
+| `/admin/health-records`  | 건강기록 목록·삭제 (민감정보)                           |
+| `/admin/sample-data`     | 샘플 데이터 적재·제거 (**개발 환경 전용**)              |
 
 > 별도 어드민 앱을 만들지 않고 같은 앱에 역할 기반 라우트로 두었습니다.
 > `<AdminGuard>` 는 권한 없는 사용자가 빈 화면과 403 을 보지 않게 하는 **안내**일 뿐이고,
@@ -157,11 +268,11 @@ src/
 
 서버는 값의 null 여부가 아니라 **요청 JSON 에 그 키가 있었는지**로 판단합니다.
 
-| 요청 | 결과 |
-| --- | --- |
-| 키 없음 | 기존 값 유지 |
-| 키 있음 + 값 있음 | 그 값으로 변경 |
-| 키 있음 + `null` | 해당 항목을 비움 |
+| 요청              | 결과             |
+| ----------------- | ---------------- |
+| 키 없음           | 기존 값 유지     |
+| 키 있음 + 값 있음 | 그 값으로 변경   |
+| 키 있음 + `null`  | 해당 항목을 비움 |
 
 null 만으로 판단하면 "비우기" 와 "건드리지 않기" 를 구분할 수 없어 둘 중 하나는 불가능해집니다.
 그래서 프런트도 이 구분을 지켜야 합니다 — `toPolicyPatchBody()` 는 폼이 다루는 항목만 키로 넣고,
@@ -286,10 +397,18 @@ import 하면 SDK 가 모든 페이지 첫 로딩에 실립니다. 푸시를 설
 ```bash
 npm run dev        # 개발 서버 (turbopack)
 npm run build      # 프로덕션 빌드
-npm run lint       # ESLint + Prettier
+npm run lint       # ESLint + Prettier (설정 파일 포함 전체)
+npm run lint:fix   # 자동 수정
 npm run typecheck  # tsc --noEmit
-npm test           # Vitest (스키마 계약 테스트)
+npm test           # Vitest
 ```
+
+`next lint` 는 Next 15.3 에서 deprecated 되어 16 에서 제거되므로 `eslint .` 를 직접 씁니다.
+`src/` 만 보던 예전과 달리 `next.config.ts` 같은 설정 파일도 검사 대상입니다.
+
+이 네 가지는 PR 마다 CI(`.github/workflows/ci.yml`)에서 함께 돌아갑니다 — 여기에 빌드까지
+더해 다섯 단계입니다. 계약 테스트가 통과해도 서버 컴포넌트 경계 문제로 빌드가 깨질 수 있어
+빌드를 따로 둡니다.
 
 ### 개발 전용 화면
 
@@ -298,7 +417,7 @@ npm test           # Vitest (스키마 계약 테스트)
 
 ### 테스트
 
-Vitest + Testing Library (jsdom) 로 두 층을 덮습니다.
+Vitest + Testing Library (jsdom) 로 세 층을 덮습니다.
 
 **계약 테스트** — `src/types/apis/__tests__/contracts.test.ts`
 백엔드 응답 DTO 를 그대로 옮긴 픽스처로 zod 스키마를 검증합니다. 서버가 필드를 바꾸거나
@@ -308,6 +427,11 @@ Vitest + Testing Library (jsdom) 로 두 층을 덮습니다.
 **컴포넌트 테스트** — `src/components/**/__tests__/*.test.tsx`
 분기가 있는 컴포넌트만 다룹니다. 스타일이 아니라 **사용자가 실제로 보고 누르는 것**
 (접근 가능한 이름, `aria-pressed`, 비활성 상태)을 기준으로 검증합니다.
+
+**인터셉터 테스트** — `src/apis/__tests__/interceptor.test.ts`
+401 → 갱신 → 재시도 경로는 틀려도 화면에 아무 표시가 나지 않고 사용자만 이유 없이
+로그아웃됩니다. 갱신이 요청 수만큼 나가지 않는지(single-flight), 재시도가 한 번으로
+끝나는지, 갱신 API 자체의 401 을 갱신 대상으로 오해하지 않는지를 고정합니다.
 
 설정 메모:
 
@@ -319,4 +443,7 @@ Vitest + Testing Library (jsdom) 로 두 층을 덮습니다.
 
 ## 커밋 컨벤션
 
-`commitlint.config.cjs` 를 따릅니다. husky pre-commit 훅에서 린트가 실행됩니다.
+`commitlint.config.cjs` 를 따릅니다.
+
+- `.husky/commit-msg` — 커밋 메시지 형식 검사
+- `.husky/pre-commit` — `npm run lint`
