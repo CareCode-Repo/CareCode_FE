@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/globals.css'
 import { ReactNode } from 'react'
+import NotificationStreamListener from '@/components/common/NotificationStreamListener'
 import PushListener from '@/components/common/PushListener'
 import SessionBootstrap from '@/components/common/SessionBootstrap'
 import PromotionPanel from '@/components/organism/PromotionPanel'
@@ -37,17 +38,19 @@ export default function RootLayout({
         <QueryProvider>
           <SessionBootstrap>
             <PushListener>
-              <div className="flex min-h-dvh">
-                {/* 데스크톱 프로모션 패널 */}
-                <aside className="hidden sm:block sm:flex-1/3">
-                  <PromotionPanel />
-                </aside>
+              <NotificationStreamListener>
+                <div className="flex min-h-dvh">
+                  {/* 데스크톱 프로모션 패널 */}
+                  <aside className="hidden sm:block sm:flex-1/3">
+                    <PromotionPanel />
+                  </aside>
 
-                {/* 앱 콘텐츠 영역 */}
-                <div className="flex-1 bg-amber-50 sm:flex-2/3">
-                  <div className="mx-auto h-dvh max-w-sm overflow-y-auto">{children}</div>
+                  {/* 앱 콘텐츠 영역 */}
+                  <div className="flex-1 bg-amber-50 sm:flex-2/3">
+                    <div className="mx-auto h-dvh max-w-sm overflow-y-auto">{children}</div>
+                  </div>
                 </div>
-              </div>
+              </NotificationStreamListener>
             </PushListener>
           </SessionBootstrap>
         </QueryProvider>
