@@ -42,11 +42,17 @@ describe('HealthRecordCard', () => {
     expect(screen.getByText('예방접종')).toBeInTheDocument()
   })
 
-  it('서버가 모르는 기록 종류는 원본 값이라도 보여준다', () => {
-    // 라벨 매핑에 없다고 빈칸이 되면 사용자가 무슨 기록인지 알 수 없다.
+  it('서버에만 있던 기록 종류(치과·응급 등)도 한글 라벨로 보여준다', () => {
     render(<HealthRecordCard record={{ ...baseRecord, recordType: 'DENTAL' }} />)
 
-    expect(screen.getByText('DENTAL')).toBeInTheDocument()
+    expect(screen.getByText('치과')).toBeInTheDocument()
+  })
+
+  it('프런트가 모르는 새 기록 종류는 원본 값이라도 보여준다', () => {
+    // 라벨 매핑에 없다고 빈칸이 되면 사용자가 무슨 기록인지 알 수 없다.
+    render(<HealthRecordCard record={{ ...baseRecord, recordType: 'SOMETHING_NEW' }} />)
+
+    expect(screen.getByText('SOMETHING_NEW')).toBeInTheDocument()
   })
 
   it('측정값이 있으면 요약해서 보여준다', () => {

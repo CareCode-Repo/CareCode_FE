@@ -8,11 +8,16 @@ interface HealthRecordCardProps {
   onClick?: () => void
 }
 
-const TYPE_COLOR: Record<string, 'green' | 'blue' | 'purple' | 'yellow' | 'white'> = {
+const TYPE_COLOR: Record<string, 'green' | 'blue' | 'purple' | 'yellow' | 'red' | 'white'> = {
   VACCINATION: 'green',
   CHECKUP: 'blue',
+  GROWTH: 'blue',
+  DENTAL: 'blue',
+  EYE: 'blue',
   MEDICATION: 'purple',
+  ILLNESS: 'yellow',
   SYMPTOM: 'yellow',
+  EMERGENCY: 'red',
   OTHER: 'white',
 }
 

@@ -19,10 +19,10 @@ import {
 export const useGetKakaoAuthUrlMutation = (): UseMutationResult<
   GetKakaoAuthUrlResponse,
   Error,
-  string | undefined
+  void
 > => {
   return useMutation({
-    mutationFn: (redirectUri?: string) => getKakaoAuthUrl(redirectUri),
+    mutationFn: () => getKakaoAuthUrl(),
   })
 }
 

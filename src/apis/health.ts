@@ -12,8 +12,6 @@ import {
   HealthRecord,
   healthRecordListSchema,
   healthRecordSchema,
-  HealthStats,
-  healthStatsSchema,
   RecordType,
   UpdateHealthRecordBody,
   updateHealthRecordBodySchema,
@@ -44,18 +42,6 @@ export const getHealthRecordsByType = async (
   recordType: RecordType,
 ): Promise<HealthRecord[]> => {
   const res = await CareCode.get('/health/records/type', { params: { childId, recordType } })
-  return healthRecordListSchema.parse(res.data)
-}
-
-// GET /health/records/date-range-asc - 기간 조회 (성장 기록 확인용)
-export const getHealthRecordsByDateRange = async (
-  childId: number,
-  startDate: string,
-  endDate: string,
-): Promise<HealthRecord[]> => {
-  const res = await CareCode.get('/health/records/date-range-asc', {
-    params: { childId, startDate, endDate },
-  })
   return healthRecordListSchema.parse(res.data)
 }
 
@@ -123,12 +109,6 @@ export const deleteAttachment = async (attachmentId: number): Promise<void> => {
 export const getHealthAlerts = async (userId: string): Promise<HealthAlert[]> => {
   const res = await CareCode.get('/health/alerts', { params: { userId } })
   return healthAlertListSchema.parse(res.data)
-}
-
-// GET /health/statistics
-export const getHealthStatistics = async (userId: string): Promise<HealthStats> => {
-  const res = await CareCode.get('/health/statistics', { params: { userId } })
-  return healthStatsSchema.parse(res.data)
 }
 
 // GET /health/recommendations - 아이 월령 기준 추천

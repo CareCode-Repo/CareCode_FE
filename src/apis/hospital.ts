@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import { CareCode } from './interceptor'
 import {
   CreateHospitalReviewBody,
@@ -55,12 +54,6 @@ export const getPopularHospitals = async (limit = 10): Promise<Hospital[]> => {
 }
 
 // ==================== 찜 ====================
-
-// GET /health/hospitals/{id}/likes - 총 개수만 필요할 때 (비로그인 화면)
-export const getHospitalLikeCount = async (id: number): Promise<number> => {
-  const res = await CareCode.get(`/health/hospitals/${id}/likes`)
-  return z.number().parse(res.data)
-}
 
 // GET /health/hospitals/{id}/like-status - 내 찜 여부 + 총 개수
 export const getHospitalLikeStatus = async (id: number): Promise<HospitalLikeStatus> => {

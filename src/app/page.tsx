@@ -15,7 +15,7 @@ export default function Home(): JSX.Element {
   const handleKakaoLogin = () => {
     getKakaoAuthUrl(undefined, {
       onSuccess: (data) => {
-        window.location.href = data.authUrl
+        window.location.href = data.loginUrl
       },
       onError: (err) => {
         console.error('카카오 인증 URL을 가져오지 못했습니다:', err)

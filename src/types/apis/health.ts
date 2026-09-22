@@ -1,13 +1,33 @@
 import { z } from 'zod'
 
-export const RecordType = ['VACCINATION', 'CHECKUP', 'MEDICATION', 'SYMPTOM', 'OTHER'] as const
+/**
+ * 서버 HealthRecord.RecordType 과 같은 목록. 한쪽에만 있으면 저장이 실패하거나(프런트에만 있을 때)
+ * 코드가 그대로 찍히고 필터로 찾을 수 없다(서버에만 있을 때). 순서는 입력 칩에 보이는 순서다.
+ */
+export const RecordType = [
+  'VACCINATION',
+  'CHECKUP',
+  'ILLNESS',
+  'SYMPTOM',
+  'MEDICATION',
+  'GROWTH',
+  'DENTAL',
+  'EYE',
+  'EMERGENCY',
+  'OTHER',
+] as const
 export type RecordType = (typeof RecordType)[number]
 
 export const RECORD_TYPE_LABEL: Record<RecordType, string> = {
   VACCINATION: '예방접종',
   CHECKUP: '건강검진',
-  MEDICATION: '투약',
+  ILLNESS: '질병',
   SYMPTOM: '증상',
+  MEDICATION: '투약',
+  GROWTH: '성장',
+  DENTAL: '치과',
+  EYE: '안과',
+  EMERGENCY: '응급',
   OTHER: '기타',
 }
 

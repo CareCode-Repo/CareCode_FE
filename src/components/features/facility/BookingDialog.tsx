@@ -21,6 +21,23 @@ interface BookingDialogProps {
 /** date-time-local 값(yyyy-MM-ddTHH:mm)을 서버 LocalDateTime 형식으로 맞춘다. */
 const toLocalDateTime = (value: string): string => (value.length === 16 ? `${value}:00` : value)
 
+/**
+ * 방문 상담은 1시간으로 잡는다. 서버는 종료 시각이 필수(겹침 계산에 쓴다)인데 폼에는 종료 입력이 없어,
+ * 예약이 "예약 시작/종료 시간은 필수입니다" 로 항상 실패했다.
+ */
+const DEFAULT_VISIT_MINUTES = 60
+
+/** 시간대 없는 LocalDateTime 문자열에 분을 더한다. 브라우저 로컬 시각 기준으로 계산하고 그대로 돌려준다. */
+const addMinutes = (localDateTime: string, minutes: number): string => {
+  const date = new Date(localDateTime)
+  date.setMinutes(date.getMinutes() + minutes)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+    `T${pad(date.getHours())}:${pad(date.getMinutes())}:00`
+  )
+}
+
 const BookingDialog = ({
   isOpen,
   facilityName,
@@ -49,11 +66,14 @@ const BookingDialog = ({
   })
 
   const submit = (values: PostFacilityBookBody) => {
+    const startTime = toLocalDateTime(values.startTime)
     onSubmit({
       ...values,
       childAge: Number(values.childAge),
-      startTime: toLocalDateTime(values.startTime),
-      endTime: values.endTime ? toLocalDateTime(values.endTime) : undefined,
+      startTime,
+      endTime: values.endTime
+        ? toLocalDateTime(values.endTime)
+        : addMinutes(startTime, DEFAULT_VISIT_MINUTES),
     })
   }
 

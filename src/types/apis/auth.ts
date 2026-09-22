@@ -102,12 +102,17 @@ export const postLogoutResponseSchema = z.object({
 })
 export type PostLogoutResponse = z.infer<typeof postLogoutResponseSchema>
 
-// GET /oauth2/kakao/auth-url
+/**
+ * GET /auth/kakao/login-url — 카카오 인가 페이지 주소.
+ *
+ * 예전 경로 /oauth2/kakao/auth-url 은 서버에서 2025-10 에 지워졌다. 프런트가 계속 그 경로를 불러
+ * 메인 화면의 카카오 로그인 버튼이 404 로 아무 반응이 없었다. 응답 키도 authUrl 이 아니라 loginUrl 이다.
+ * redirect_uri 는 서버 설정(KAKAO_REDIRECT_URI)을 쓰므로 프런트가 보내지 않는다.
+ */
 export const getKakaoAuthUrlResponseSchema = z.object({
   success: z.boolean(),
-  redirectUri: z.string(),
-  authUrl: z.string().url(),
-  clientId: z.string(),
+  loginUrl: z.string().url(),
+  message: z.string().nullish(),
 })
 export type GetKakaoAuthUrlResponse = z.infer<typeof getKakaoAuthUrlResponseSchema>
 
@@ -150,24 +155,30 @@ export const kakaoRegistrationRequestSchema = z.object({
 })
 export type KakaoRegistrationRequest = z.infer<typeof kakaoRegistrationRequestSchema>
 
+/**
+ * 서버 UserDto. password 는 서버에서 WRITE_ONLY 라 응답에 아예 없다.
+ * 예전 스키마는 password 를 (nullable 이지만) 필수 키로 요구해 파싱이 항상 실패했고,
+ * 카카오 가입 마지막 단계에서 사용자가 /signup 화면에 갇혔다.
+ * 화면이 쓰지 않는 값은 서버가 빼거나 null 로 줘도 가입이 막히지 않게 느슨하게 받는다.
+ */
 export const kakaoRegistrationResponseSchema = z.object({
   id: z.number(),
   userId: z.string(),
   email: z.string(),
-  password: z.string().nullable(),
-  name: z.string(),
-  phoneNumber: z.string().nullable(),
-  birthDate: z.string().nullable(),
-  gender: z.string().nullable(),
-  address: z.string().nullable(),
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
-  profileImageUrl: z.string().nullable(),
+  name: z.string().nullish(),
+  phoneNumber: z.string().nullish(),
+  birthDate: z.string().nullish(),
+  gender: z.string().nullish(),
+  address: z.string().nullish(),
+  latitude: z.number().nullish(),
+  longitude: z.number().nullish(),
+  profileImageUrl: z.string().nullish(),
   role: z.string(),
-  isActive: z.boolean(),
-  emailVerified: z.boolean(),
-  lastLoginAt: z.string().nullable(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  isActive: z.boolean().nullish(),
+  emailVerified: z.boolean().nullish(),
+  registrationCompleted: z.boolean().nullish(),
+  lastLoginAt: z.string().nullish(),
+  createdAt: z.string().nullish(),
+  updatedAt: z.string().nullish(),
 })
 export type KakaoRegistrationResponse = z.infer<typeof kakaoRegistrationResponseSchema>

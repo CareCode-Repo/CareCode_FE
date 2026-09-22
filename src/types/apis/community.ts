@@ -7,18 +7,39 @@ export const postAuthorSchema = z.object({
 })
 export type PostAuthor = z.infer<typeof postAuthorSchema>
 
-export const postCommentSchema = z.object({
-  commentId: z.number(),
-  content: z.string(),
-  authorName: z.string(),
-  authorId: z.string(),
-  createdAt: z.string(),
-  likeCount: z.number(),
-  isLiked: z.boolean(),
-  parentCommentId: z.number().nullable(),
-  replies: z.array(z.string()).default([]),
-})
-export type PostComment = z.infer<typeof postCommentSchema>
+/**
+ * 서버 CommunityCommentResponse. replies 는 같은 모양의 댓글 객체 트리다.
+ *
+ * 예전 스키마는 replies 를 문자열 배열로 받아, 답글이 하나라도 달린 글은 상세 파싱 전체가 실패해
+ * 글이 열리지 않았다. 탈퇴한 작성자의 댓글은 authorId 가 없을 수 있다.
+ */
+export type PostComment = {
+  commentId: number
+  content: string
+  authorName: string
+  authorId?: string | null
+  createdAt: string
+  likeCount?: number | null
+  isLiked?: boolean | null
+  parentCommentId?: number | null
+  replies: PostComment[]
+}
+export const postCommentSchema: z.ZodType<PostComment, z.ZodTypeDef, unknown> = z.lazy(() =>
+  z.object({
+    commentId: z.number(),
+    content: z.string(),
+    authorName: z.string(),
+    authorId: z.string().nullish(),
+    createdAt: z.string(),
+    likeCount: z.number().nullish(),
+    isLiked: z.boolean().nullish(),
+    parentCommentId: z.number().nullish(),
+    replies: z
+      .array(postCommentSchema)
+      .nullish()
+      .transform((v) => v ?? []),
+  }),
+)
 
 export const postSchema = z.object({
   postId: z.number(),
