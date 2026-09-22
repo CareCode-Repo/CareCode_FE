@@ -27,7 +27,7 @@ import {
   useToggleCommunityLike,
 } from '@/queries/community'
 import { useBlockUser, useReport } from '@/queries/moderation'
-import { PostCommunityCommentBody } from '@/types/apis/community'
+import { PostComment, PostCommunityCommentBody } from '@/types/apis/community'
 import { formatDate } from '@/utils/date'
 
 const CommunityDetail = (): JSX.Element => {
@@ -184,11 +184,7 @@ const CommunityDetail = (): JSX.Element => {
             return (
               <Comment
                 key={comment.commentId}
-                comment={{
-                  author: comment.authorName,
-                  content: comment.content,
-                  timestamp: formatDate(comment.createdAt, 'MM/dd HH:mm'),
-                }}
+                comment={toCommentData(comment)}
                 className="w-full"
                 isSaving={isUpdatingComment}
                 onEdit={
@@ -317,3 +313,18 @@ const CommunityDetail = (): JSX.Element => {
 }
 
 export default CommunityDetail
+
+/** 답글까지 화면용 모양으로 바꾼다. 서버는 답글을 부모 댓글의 replies 에 트리로 담아 준다. */
+function toCommentData(comment: PostComment): {
+  author: string
+  content: string
+  timestamp: string
+  replies: ReturnType<typeof toCommentData>[]
+} {
+  return {
+    author: comment.authorName,
+    content: comment.content,
+    timestamp: formatDate(comment.createdAt, 'MM/dd HH:mm'),
+    replies: comment.replies.map(toCommentData),
+  }
+}

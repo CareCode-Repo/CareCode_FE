@@ -2,21 +2,10 @@ import { CareCode } from './interceptor'
 import {
   PostLoginBody,
   PostLoginResponse,
-  PostKakaoLoginBody,
-  PostKakaoLoginResponse,
-  PostRegisterBody,
-  PostRegisterResponse,
-  PostKakaoRegisterBody,
   PostRefreshTokenResponse,
-  postKakaoLoginBodySchema,
-  postKakaoLoginResponseSchema,
-  postKakaoRegisterBodySchema,
-  postKakaoRegisterResponseSchema,
   postLoginBodySchema,
   postLoginResponseSchema,
   postRefreshTokenResponseSchema,
-  postRegisterBodySchema,
-  postRegisterResponseSchema,
   getKakaoAuthUrlResponseSchema,
   GetKakaoAuthUrlResponse,
   postKakaoAuthBodySchema,
@@ -34,29 +23,6 @@ export const postLogin = async (body: PostLoginBody): Promise<PostLoginResponse>
   const parsedBody = postLoginBodySchema.parse(body)
   const res = await CareCode.post('/auth/login', parsedBody)
   return postLoginResponseSchema.parse(res.data)
-}
-
-// /auth/kakao/login
-export const postKakaoLogin = async (body: PostKakaoLoginBody): Promise<PostKakaoLoginResponse> => {
-  const parsedBody = postKakaoLoginBodySchema.parse(body)
-  const res = await CareCode.post('/auth/kakao/login', parsedBody)
-  return postKakaoLoginResponseSchema.parse(res.data)
-}
-
-// /auth/register
-export const PostRegister = async (body: PostRegisterBody): Promise<PostRegisterResponse> => {
-  const parsedBody = postRegisterBodySchema.parse(body)
-  const res = await CareCode.post('/auth/register', parsedBody)
-  return postRegisterResponseSchema.parse(res.data)
-}
-
-// /auth/kakao/register
-export const PostKakaoRegister = async (
-  body: PostKakaoRegisterBody,
-): Promise<PostRegisterResponse> => {
-  const parsedBody = postKakaoRegisterBodySchema.parse(body)
-  const res = await CareCode.post('/auth/kakao/register', parsedBody)
-  return postKakaoRegisterResponseSchema.parse(res.data)
 }
 
 let refreshTimer: NodeJS.Timeout | null = null
@@ -139,10 +105,9 @@ export async function refreshAccessToken(): Promise<PostRefreshTokenResponse> {
   return parsed
 }
 
-// GET /oauth2/kakao/auth-url - 카카오 인증 URL 요청
-export const getKakaoAuthUrl = async (redirectUri?: string): Promise<GetKakaoAuthUrlResponse> => {
-  const params = redirectUri ? { redirectUri } : {}
-  const res = await CareCode.get('/oauth2/kakao/auth-url', { params })
+// GET /auth/kakao/login-url - 카카오 인증 URL 요청
+export const getKakaoAuthUrl = async (): Promise<GetKakaoAuthUrlResponse> => {
+  const res = await CareCode.get('/auth/kakao/login-url')
   return getKakaoAuthUrlResponseSchema.parse(res.data)
 }
 

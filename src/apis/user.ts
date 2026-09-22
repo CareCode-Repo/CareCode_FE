@@ -47,15 +47,6 @@ export const getProfileCompletion = async (): Promise<GetProfileCompletionRespon
   return getProfileCompletionResponseSchema.parse(res.data)
 }
 
-// PUT /users/{userId}/location - 위치 갱신 (주변 시설 추천에 사용)
-export const putUserLocation = async (
-  userId: string,
-  latitude: number,
-  longitude: number,
-): Promise<void> => {
-  await CareCode.put(`/users/${userId}/location`, null, { params: { latitude, longitude } })
-}
-
 // POST /auth/logout - 서버의 리프레시 토큰 세션 폐기
 export const postLogout = async (): Promise<void> => {
   await CareCode.post('/auth/logout')
