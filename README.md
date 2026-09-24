@@ -447,3 +447,8 @@ Vitest + Testing Library (jsdom) 로 세 층을 덮습니다.
 
 - `.husky/commit-msg` — 커밋 메시지 형식 검사
 - `.husky/pre-commit` — `npm run lint`
+
+## 라이선스
+
+이 프로젝트의 소스 코드는 **MIT 라이선스**를 따릅니다. Copyright (c) 2025-2026 CareCode.
+전문은 [LICENSE](LICENSE) 파일에 있습니다.
