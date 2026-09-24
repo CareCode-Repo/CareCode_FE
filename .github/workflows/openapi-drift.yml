@@ -1,0 +1,35 @@
+# 서버 API 와 어긋났는지 매일 확인한다.
+#
+# PR CI 는 저장소에 있는 스펙 사본으로 검사한다(결과가 서버 저장소 상태에 따라 흔들리면 안 된다).
+# 그래서 사본이 낡으면 어긋남을 못 본다. 이 워크플로가 서버 main 의 스펙을 새로 가져와 대조해,
+# 서버가 경로를 바꿨을 때 하루 안에 드러나게 한다. 무관한 PR 을 막지는 않는다.
+name: OpenAPI drift
+
+on:
+  schedule:
+    # 매일 09:20 KST (00:20 UTC). 서버 배포가 몰리는 시간대를 지나서 본다.
+    - cron: '20 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: 서버 main 의 스펙 가져오기
+        run: npm run sync:openapi
+
+      - name: 가져온 스펙과 대조
+        run: npx vitest run src/apis/__tests__/openapi-contract.test.ts
+
+      - name: 사본과 서버 스펙의 차이 보여주기
+        if: always()
+        run: git --no-pager diff --stat -- openapi/openapi.json

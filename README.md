@@ -401,6 +401,7 @@ npm run lint       # ESLint + Prettier (설정 파일 포함 전체)
 npm run lint:fix   # 자동 수정
 npm run typecheck  # tsc --noEmit
 npm test           # Vitest
+npm run sync:openapi  # 서버 API 스펙(openapi/openapi.json) 갱신
 ```
 
 `next lint` 는 Next 15.3 에서 deprecated 되어 16 에서 제거되므로 `eslint .` 를 직접 씁니다.
@@ -409,6 +410,26 @@ npm test           # Vitest
 이 네 가지는 PR 마다 CI(`.github/workflows/ci.yml`)에서 함께 돌아갑니다 — 여기에 빌드까지
 더해 다섯 단계입니다. 계약 테스트가 통과해도 서버 컴포넌트 경계 문제로 빌드가 깨질 수 있어
 빌드를 따로 둡니다.
+
+### 서버 API 와 어긋나지 않게
+
+경로는 문자열이라 타입 검사도 린트도 불일치를 잡지 못합니다. 실제로 서버에서 지운 경로
+(`/oauth2/kakao/auth-url`)를 계속 불러 **메인 화면 카카오 로그인이 아무 반응 없던** 일이 있었습니다.
+
+그래서 서버가 저장소에 고정해 둔 OpenAPI 스펙과 `src/apis/*.ts` 의 호출을 대조합니다.
+
+| | 내용 |
+|---|---|
+| 스펙 사본 | `openapi/openapi.json` (원본은 서버 저장소 `docs/api/openapi.json`) |
+| 대조 테스트 | `src/apis/__tests__/openapi-contract.test.ts` — PR CI 에 포함 |
+| 사본 갱신 | `npm run sync:openapi` (서버 main 에서 가져옴, `OPENAPI_SRC` 로 로컬 파일 지정 가능) |
+| 사본이 낡는 문제 | 매일 도는 `openapi-drift` 워크플로가 서버 main 스펙을 새로 가져와 대조 |
+
+사본을 두는 이유는 PR CI 결과가 서버 저장소 상태에 따라 흔들리면 안 되기 때문입니다.
+그래서 "사본과 서버가 어긋났는지" 는 매일 도는 워크플로가 따로 봅니다.
+
+경로 변수 자리(`${facilityId}`)는 한 세그먼트 와일드카드로 비교합니다. 프런트의 `${type}` 이
+경로 변수인지 리터럴 값(`privacy-policy`)인지 문자열만 보고는 구분할 수 없기 때문입니다.
 
 ### 개발 전용 화면
 
