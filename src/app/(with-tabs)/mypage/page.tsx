@@ -1,18 +1,17 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { ReactElement, useState } from 'react'
-import BellIcon from '@/assets/icons/bell.svg'
 import CameraIcon from '@/assets/icons/camera_small.svg'
 import KakaoIcon from '@/assets/icons/logo/kakao.svg'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import AlertDialog from '@/components/common/AlertDialog'
 import AuthGuard from '@/components/common/AuthGuard'
 import Button from '@/components/common/Button'
+import ContextBar from '@/components/common/ContextBar'
 import Layout from '@/components/common/Layout'
 import IconButton from '@/components/common/top-navbar/IconButton'
 import MenuList from '@/components/features/mypage/MenuList'
 import { useIsAdmin } from '@/hooks/useIsAdmin'
-import { useHasUnreadNotifications } from '@/queries/notification'
 import { useLogout, useProfileCompletion, useUserProfile } from '@/queries/user'
 
 /** 서버가 주는 불리언 맵의 키를 사용자가 읽을 수 있는 말로 바꾼다. */
@@ -64,7 +63,6 @@ const ProfileCompletionBanner = (): ReactElement | null => {
 
 const MyPage = (): ReactElement => {
   const router = useRouter()
-  const hasUnread = useHasUnreadNotifications()
   const { data: user, isLoading } = useUserProfile()
   const { mutate: logout, isPending: isLoggingOut } = useLogout()
   const isAdmin = useIsAdmin()
@@ -73,18 +71,8 @@ const MyPage = (): ReactElement => {
 
   return (
     <AuthGuard>
-      <Layout
-        hasTopNav
-        title="마이페이지"
-        actionButtons={[
-          {
-            icon: BellIcon,
-            'aria-label': '알림',
-            showBadge: hasUnread,
-            onClick: () => router.push('/notification'),
-          },
-        ]}
-      >
+      <Layout hasTopNav={false}>
+        <ContextBar title="마이" />
         <ProfileCompletionBanner />
 
         {/* 프로필 */}
@@ -118,7 +106,6 @@ const MyPage = (): ReactElement => {
         </div>
 
         <MenuList
-          className="bg-white"
           title="우리 아이"
           items={[
             {
@@ -131,7 +118,6 @@ const MyPage = (): ReactElement => {
           ]}
         />
         <MenuList
-          className="bg-white"
           title="지원금"
           items={[
             {
@@ -147,7 +133,6 @@ const MyPage = (): ReactElement => {
           ]}
         />
         <MenuList
-          className="bg-white"
           title="나의 활동"
           items={[
             {
@@ -170,7 +155,6 @@ const MyPage = (): ReactElement => {
           ]}
         />
         <MenuList
-          className="bg-white"
           title="이용 안내"
           items={[
             {
@@ -193,7 +177,6 @@ const MyPage = (): ReactElement => {
         {/* 관리자에게만 노출한다. 실제 접근 통제는 서버가 한다. */}
         {isAdmin && (
           <MenuList
-            className="bg-white"
             title="관리자"
             items={[
               { id: 'admin', title: '지표·검증·신고 관리', onClick: () => router.push('/admin') },
@@ -201,7 +184,6 @@ const MyPage = (): ReactElement => {
           />
         )}
         <MenuList
-          className="bg-white"
           title="회원 관리"
           items={[
             { id: 'logout', title: '로그아웃', onClick: () => setLogoutDialogOpen(true) },

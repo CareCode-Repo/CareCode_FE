@@ -4,8 +4,8 @@ import { usePathname } from 'next/navigation'
 import { ReactElement } from 'react'
 import { TabItem } from './TabItem'
 
-import SearchIcon from '@/assets/icons/book.svg'
-import ChatIcon from '@/assets/icons/chat.svg'
+import PolicyIcon from '@/assets/icons/book.svg'
+import BuildingIcon from '@/assets/icons/building.svg'
 import HomeIcon from '@/assets/icons/home.svg'
 import CommunityIcon from '@/assets/icons/leaf.svg'
 import UserIcon from '@/assets/icons/user.svg'
@@ -14,12 +14,17 @@ import UserIcon from '@/assets/icons/user.svg'
  * 하단 탭. 여기 있는 경로는 모두 `(with-tabs)` 그룹 안에 있어야 한다.
  * 그룹 밖 경로를 넣으면 그 탭을 누르는 순간 탭 바 자체가 사라진다.
  */
+/*
+ * 탭은 이 서비스가 무엇을 하는 곳인지 말한다. 예전에는 커뮤니티·챗봇이 다섯 중 둘을 차지하고
+ * 정작 지원금과 어린이집은 탭에 없어서, 홈의 아이콘 줄을 거쳐야만 갈 수 있었다.
+ * 챗봇은 탭에서 내리고 홈의 진입점으로 남긴다(전체 화면 대화라 탭 바가 필요 없다).
+ */
 const tabData = [
-  { title: '커뮤니티', icon: CommunityIcon, url: '/community' },
-  { title: '육아 정보', icon: SearchIcon, url: '/search' },
   { title: '홈', icon: HomeIcon, url: '/home' },
-  { title: '챗봇 상담', icon: ChatIcon, url: '/chat' },
-  { title: '마이페이지', icon: UserIcon, url: '/mypage' },
+  { title: '지원금', icon: PolicyIcon, url: '/search' },
+  { title: '어린이집', icon: BuildingIcon, url: '/facility' },
+  { title: '커뮤니티', icon: CommunityIcon, url: '/community' },
+  { title: '마이', icon: UserIcon, url: '/mypage' },
 ]
 
 export interface TabBarProps {

@@ -3,6 +3,7 @@ import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import { ReactElement, useMemo, useState } from 'react'
 import AuthGuard from '@/components/common/AuthGuard'
+import BottomAction from '@/components/common/BottomAction'
 import Button from '@/components/common/Button'
 import EmptyState from '@/components/common/EmptyState'
 import ErrorView from '@/components/common/Error'
@@ -201,14 +202,11 @@ const HealthPage = (): ReactElement => {
         )}
 
         {children.length > 0 && (
-          <Button
-            color="green"
-            size="small"
-            className="mt-5"
-            onClick={() => router.push('/health/new')}
-          >
-            기록 추가하기
-          </Button>
+          <BottomAction>
+            <Button color="green" size="small" onClick={() => router.push('/health/new')}>
+              기록 추가하기
+            </Button>
+          </BottomAction>
         )}
       </Layout>
     </AuthGuard>

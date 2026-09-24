@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation'
 import { ReactElement, useMemo, useState } from 'react'
 import SearchIcon from '@/assets/icons/search.svg'
+import ContextBar from '@/components/common/ContextBar'
 import EmptyState from '@/components/common/EmptyState'
 import ErrorView from '@/components/common/Error'
 import Layout from '@/components/common/Layout'
@@ -98,7 +99,8 @@ const FacilityPage = (): ReactElement => {
   }
 
   return (
-    <Layout hasTopNav hasBackButton title="시설 찾기" contentClassName="px-4.5 py-5">
+    <Layout hasTopNav={false} contentClassName="px-4.5 pb-5">
+      <ContextBar title="어린이집" />
       <PopularSection
         title="많이 찾는 시설"
         items={popular.map((item) => ({
