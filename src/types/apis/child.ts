@@ -24,6 +24,50 @@ export const childBodySchema = z.object({
 })
 export type ChildBody = z.infer<typeof childBodySchema>
 
+// ==================== 할 일 타임라인 ====================
+
+export const TimelineItemType = ['VACCINATION', 'CHECKUP', 'POLICY_DEADLINE', 'NEW_TERM'] as const
+export type TimelineItemType = (typeof TimelineItemType)[number]
+
+export const TIMELINE_TYPE_LABEL: Record<TimelineItemType, string> = {
+  VACCINATION: '예방접종',
+  CHECKUP: '건강검진',
+  POLICY_DEADLINE: '지원금 신청',
+  NEW_TERM: '신학기',
+}
+
+export const TimelineItemStatus = ['OVERDUE', 'UPCOMING', 'DONE', 'INFO'] as const
+export type TimelineItemStatus = (typeof TimelineItemStatus)[number]
+
+/**
+ * 서버 ChildTimelineResponse.TimelineItem 대응.
+ *
+ * type·status 는 서버가 값을 추가할 수 있으므로 문자열로 받고 표시할 때 매핑한다
+ * (enum 으로 받으면 서버가 항목을 늘릴 때 화면 전체가 파싱 실패로 죽는다).
+ */
+export const timelineItemSchema = z.object({
+  date: z.string(), // yyyy-MM-dd
+  type: z.string(),
+  status: z.string(),
+  title: z.string(),
+  description: z.string().nullish(),
+  referenceId: z.string().nullish(),
+  ageMonths: z.number().nullish(),
+})
+export type TimelineItem = z.infer<typeof timelineItemSchema>
+
+export const childTimelineSchema = z.object({
+  childId: z.number(),
+  childName: z.string().nullish(),
+  birthDate: z.string().nullish(),
+  from: z.string(),
+  to: z.string(),
+  overdueCount: z.number(),
+  upcomingCount: z.number(),
+  items: z.array(timelineItemSchema),
+})
+export type ChildTimeline = z.infer<typeof childTimelineSchema>
+
 // ==================== 예방접종 ====================
 
 export const VaccinationStatus = ['SCHEDULED', 'COMPLETED', 'SKIPPED'] as const

@@ -3,6 +3,8 @@ import {
   Child,
   ChildBody,
   childBodySchema,
+  ChildTimeline,
+  childTimelineSchema,
   childListSchema,
   childSchema,
   GrowthMetric,
@@ -20,6 +22,21 @@ import {
 export const getMyChildren = async (): Promise<Child[]> => {
   const res = await CareCode.get('/children')
   return childListSchema.parse(res.data)
+}
+
+/**
+ * GET /children/{childId}/timeline - 접종·검진·지원금 마감을 한 축에 모은 할 일
+ *
+ * 기간을 주지 않으면 서버가 12개월로 잡는다(최대 36개월).
+ */
+export const getChildTimeline = async (
+  childId: number,
+  months?: number,
+): Promise<ChildTimeline> => {
+  const res = await CareCode.get(`/children/${childId}/timeline`, {
+    params: months ? { months } : {},
+  })
+  return childTimelineSchema.parse(res.data)
 }
 
 // GET /children/overview - 모든 자녀의 접종·대기·다자녀 혜택을 한 번에
