@@ -3,6 +3,7 @@ import * as Tabs from '@radix-ui/react-tabs'
 import clsx from 'clsx'
 import { useParams, useRouter } from 'next/navigation'
 import { ReactElement, useState } from 'react'
+import WarningIcon from '@/assets/icons/warning.svg'
 import AlertDialog from '@/components/common/AlertDialog'
 import AuthGuard from '@/components/common/AuthGuard'
 import Button from '@/components/common/Button'
@@ -12,9 +13,11 @@ import ErrorView from '@/components/common/Error'
 import Layout from '@/components/common/Layout'
 import ToggleChip from '@/components/common/ToggleChip'
 import GrowthChart from '@/components/features/child/GrowthChart'
+import TimelineItem from '@/components/features/child/TimelineItem'
 import VaccinationItem from '@/components/features/child/VaccinationItem'
 import {
   useChildDetail,
+  useChildTimeline,
   useCompleteVaccination,
   useDeleteChild,
   useGrowthChart,
@@ -34,6 +37,12 @@ const ChildDetailPage = (): ReactElement => {
 
   const { data: child, isLoading, isError, refetch } = useChildDetail(childId)
   const { data: schedules = [], isLoading: isScheduleLoading } = useVaccinationSchedule(childId)
+  const {
+    data: timeline,
+    isLoading: isTimelineLoading,
+    isError: isTimelineError,
+    refetch: refetchTimeline,
+  } = useChildTimeline(childId)
   const { data: growthPoints = [], isLoading: isGrowthLoading } = useGrowthChart(childId, metric)
   const { mutate: completeVaccination } = useCompleteVaccination(childId)
   const { mutate: removeChild, isPending: isDeleting } = useDeleteChild()
@@ -98,9 +107,10 @@ const ChildDetailPage = (): ReactElement => {
           </div>
         </section>
 
-        <Tabs.Root defaultValue="vaccination" className="flex grow flex-col">
+        <Tabs.Root defaultValue="todo" className="flex grow flex-col">
           <Tabs.List className="flex border-b border-gray-200 bg-white">
             {[
+              { value: 'todo', label: '할 일' },
               { value: 'vaccination', label: '예방접종' },
               { value: 'growth', label: '성장 기록' },
             ].map((tab) => (
@@ -116,6 +126,52 @@ const ChildDetailPage = (): ReactElement => {
               </Tabs.Trigger>
             ))}
           </Tabs.List>
+
+          {/* 할 일 — 접종·검진·지원금 마감을 한 축에 모아서 */}
+          <Tabs.Content value="todo" className="flex flex-col py-4">
+            {isTimelineError ? (
+              <ErrorView content="할 일을 불러오지 못했어요." onRetry={() => refetchTimeline()} />
+            ) : isTimelineLoading ? (
+              <div className="flex flex-col gap-2 px-4.5">
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-16 animate-pulse rounded bg-gray-200" />
+                ))}
+              </div>
+            ) : !timeline?.items.length ? (
+              <EmptyState
+                title="앞으로 1년 동안 챙길 일이 없어요"
+                description={'생년월일이 등록되면 접종·검진 시기가\n자동으로 채워져요.'}
+              />
+            ) : (
+              <>
+                {/* 놓친 일이 있으면 맨 위에서 한 번에 알린다. 목록에 섞이면 지나친다. */}
+                {timeline.overdueCount > 0 && (
+                  <div className="mx-4.5 mb-3 flex items-center gap-2 rounded-lg bg-red-50 px-3.5 py-3">
+                    <WarningIcon className="size-5 shrink-0" />
+                    <span className="text-b2-regular text-gray-800">
+                      기한이 지난 일이 <b className="text-b2-semibold">{timeline.overdueCount}건</b>{' '}
+                      있어요. 아직 할 수 있는지 확인해 보세요.
+                    </span>
+                  </div>
+                )}
+
+                <p className="text-c1-regular px-4.5 pb-2 text-gray-500">
+                  {formatDate(timeline.from)} ~ {formatDate(timeline.to)} · 예정{' '}
+                  {timeline.upcomingCount}건
+                </p>
+
+                <ul className="bg-white">
+                  {timeline.items.map((item, index) => (
+                    <TimelineItem key={`${item.type}-${item.referenceId ?? index}`} item={item} />
+                  ))}
+                </ul>
+
+                <p className="text-c1-regular px-4.5 pt-3 text-gray-500">
+                  검진·신학기는 권장 시기 안내예요. 실제 일정은 기관마다 다를 수 있어요.
+                </p>
+              </>
+            )}
+          </Tabs.Content>
 
           {/* 예방접종 */}
           <Tabs.Content value="vaccination" className="flex flex-col gap-4 py-4">

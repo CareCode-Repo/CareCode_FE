@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { getKakaoAuthUrlResponseSchema, kakaoRegistrationResponseSchema } from '@/types/apis/auth'
+import { childTimelineSchema } from '@/types/apis/child'
 import { postCommentSchema } from '@/types/apis/community'
 import { policySearchResponseSchema } from '@/types/apis/policy'
 
@@ -114,5 +115,55 @@ describe('policySearchResponseSchema (POST /policies/search)', () => {
 
     expect(parsed.totalElements).toBe(1)
     expect(parsed.policies[0].id).toBe(3)
+  })
+})
+
+describe('childTimelineSchema (GET /children/{childId}/timeline)', () => {
+  it('서버가 보내는 항목을 그대로 읽는다', () => {
+    const parsed = childTimelineSchema.parse({
+      childId: 7,
+      childName: '아이',
+      birthDate: '2025-08-20',
+      from: '2026-09-25',
+      to: '2027-09-25',
+      overdueCount: 2,
+      upcomingCount: 5,
+      items: [
+        {
+          date: '2026-10-01',
+          type: 'VACCINATION',
+          status: 'OVERDUE',
+          title: 'B형간염 3차',
+          description: '권장 시기가 지났습니다.',
+          referenceId: '31',
+          ageMonths: 13,
+        },
+        {
+          date: '2027-03-01',
+          type: 'NEW_TERM',
+          status: 'INFO',
+          title: '3월 신학기',
+          description: '신청 일정은 시설마다 다르므로 관심 시설에 직접 확인하세요.',
+          ageMonths: 18,
+        },
+      ],
+    })
+
+    expect(parsed.items).toHaveLength(2)
+    expect(parsed.items[0].status).toBe('OVERDUE')
+    expect(parsed.items[1].referenceId).toBeUndefined()
+  })
+
+  it('서버가 새 종류·상태를 추가해도 파싱은 통과한다 — 화면 전체가 죽지 않게', () => {
+    const parsed = childTimelineSchema.parse({
+      childId: 7,
+      from: '2026-09-25',
+      to: '2027-09-25',
+      overdueCount: 0,
+      upcomingCount: 1,
+      items: [{ date: '2026-12-01', type: 'DENTAL_CHECK', status: 'PLANNED', title: '치과 검진' }],
+    })
+
+    expect(parsed.items[0].type).toBe('DENTAL_CHECK')
   })
 })

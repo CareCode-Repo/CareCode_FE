@@ -10,6 +10,7 @@ import { getAccessToken } from '@/apis/auth'
 import {
   deleteChild,
   getChildById,
+  getChildTimeline,
   getGrowthChart,
   getLatestGrowth,
   getMyChildren,
@@ -23,6 +24,7 @@ import {
 import {
   Child,
   ChildBody,
+  ChildTimeline,
   GrowthMetric,
   GrowthPoint,
   SiblingOverview,
@@ -45,6 +47,11 @@ export const childQueries = createQueryKeys('child', {
     queryFn: () => getChildById(childId),
   }),
 
+  timeline: (childId: number, months?: number) => ({
+    queryKey: ['timeline', childId, months ?? 12],
+    queryFn: () => getChildTimeline(childId, months),
+  }),
+
   vaccinations: (childId: number) => ({
     queryKey: ['vaccinations', childId],
     queryFn: () => getVaccinationSchedule(childId),
@@ -65,6 +72,15 @@ export const childQueries = createQueryKeys('child', {
     queryFn: () => getLatestGrowth(childId, metric),
   }),
 })
+
+export const useChildTimeline = (
+  childId: number,
+  months?: number,
+): UseQueryResult<ChildTimeline, Error> =>
+  useQuery({
+    ...childQueries.timeline(childId, months),
+    enabled: !!getAccessToken() && Number.isFinite(childId),
+  })
 
 export const useMyChildren = (): UseQueryResult<Child[], Error> =>
   useQuery({ ...childQueries.list(), enabled: !!getAccessToken() })
