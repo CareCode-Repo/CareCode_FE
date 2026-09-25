@@ -1,16 +1,15 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
-import BellIcon from '@/assets/icons/bell.svg'
 import SearchIcon from '@/assets/icons/search.svg'
 import Chip from '@/components/common/Chip'
+import ContextBar from '@/components/common/ContextBar'
 import Layout from '@/components/common/Layout'
 import Spacer from '@/components/common/Spacer'
 import Input from '@/components/common/input'
 import IconButton from '@/components/common/top-navbar/IconButton'
 import { useRecentSearches } from '@/hooks/useRecentSearches'
 import { useSearchPolicy } from '@/hooks/useSearchPolicy'
-import { useHasUnreadNotifications } from '@/queries/notification'
 import { usePolicyCategories, usePopularPolicies } from '@/queries/policy'
 
 const Search = (): ReactElement => {
@@ -18,28 +17,16 @@ const Search = (): ReactElement => {
   const { data: categories = [] } = usePolicyCategories()
   const { data: popular = [] } = usePopularPolicies()
   const router = useRouter()
-  const hasUnread = useHasUnreadNotifications()
   const { inputValue, handleInputChange, search } = useSearchPolicy()
-  const handleNotificationClick = () => router.push('/notification')
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     search()
   }
 
   return (
-    <Layout
-      hasTopNav
-      title="육아 정보"
-      actionButtons={[
-        {
-          icon: BellIcon,
-          'aria-label': '알림',
-          showBadge: hasUnread,
-          onClick: handleNotificationClick,
-        },
-      ]}
-      contentClassName="overflow-y-scroll py-6 px-4.5"
-    >
+    <Layout hasTopNav={false} contentClassName="overflow-y-scroll px-4.5 pb-6">
+      <ContextBar title="지원금" />
+      <Spacer className="h-4 shrink-0" />
       <form onSubmit={handleSubmit}>
         <Input
           value={inputValue}

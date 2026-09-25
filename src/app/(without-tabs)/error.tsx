@@ -22,7 +22,7 @@ const GroupError = ({
 
   return (
     <div className="relative h-full">
-      <ErrorView onRetry={reset} />
+      <ErrorView fullScreen onRetry={reset} />
     </div>
   )
 }

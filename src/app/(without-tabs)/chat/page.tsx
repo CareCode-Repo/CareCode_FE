@@ -34,8 +34,9 @@ const Chat = (): ReactElement => {
     // 챗봇은 사용자별 대화 기록을 남긴다. 로그인 없이 들어오면 보낼 수 없다.
     <AuthGuard>
       <div className="flex h-full flex-col bg-gray-50">
-        {/* 탭의 최상위 화면이라 뒤로 가기를 두지 않는다. */}
+        {/* 탭에서 내려온 전체 화면 대화라 나가는 길은 뒤로 가기뿐이다. */}
         <TopNavBar
+          hasBackButton
           title="챗봇 상담"
           actionButtons={[
             {

@@ -2,7 +2,6 @@
 import { useRouter } from 'next/navigation'
 import { ReactElement } from 'react'
 import BabyIcon from '@/assets/icons/baby.svg'
-import BuildingIcon from '@/assets/icons/building.svg'
 import CompassIcon from '@/assets/icons/compass.svg'
 import HeartIcon from '@/assets/icons/leaf.svg'
 import PhoneIcon from '@/assets/icons/phone_small.svg'
@@ -12,10 +11,14 @@ const MENUS = [
   { icon: BabyIcon, label: '아이 관리', href: '/children' },
   { icon: HeartIcon, label: '건강 기록', href: '/health' },
   { icon: PhoneIcon, label: '병원 찾기', href: '/hospital' },
-  { icon: BuildingIcon, label: '시설 찾기', href: '/facility' },
 ]
 
-/** 홈에서 주요 기능으로 한 번에 이동하는 바로가기. */
+/**
+ * 홈에서 주요 기능으로 한 번에 이동하는 바로가기.
+ *
+ * 하단 탭에 있는 곳(어린이집·지원금·커뮤니티)은 넣지 않는다. 같은 목적지를 두 번 주면
+ * 어느 쪽이 정식 입구인지 흐려지고, 탭이 말하는 중요도도 무너진다.
+ */
 const QuickMenu = (): ReactElement => {
   const router = useRouter()
 
